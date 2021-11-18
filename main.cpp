@@ -47,9 +47,9 @@ int main()
     // {
     //     std::cout << *i << std::endl;
     // }
-    replica.insert(replica.end(), 10, 40);
-    for (int i = 0; i < replica.size(); i++)
-    {
-       std::cout << replica[i] << std::endl;
-    }
+    // replica.insert(replica.end(), 10, 40);
+    // for (int i = 0; i < replica.size(); i++)
+    // {
+    //    std::cout << replica[i] << std::endl;
+    // }
 }

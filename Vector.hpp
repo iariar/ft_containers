@@ -71,7 +71,7 @@ namespace ft
             }
             my_iterator operator--(int)
             {
-                my_iterator tmp = this;
+                my_iterator tmp = *this;
                 --(*this);
                 return (tmp);
             }
@@ -396,6 +396,7 @@ namespace ft
         size_type max_size() const
         {
             //returns maximum potential size that the container can reach 
+            return (u.max_size());
         }
         void resize (size_type n, value_type val = value_type())
         {
