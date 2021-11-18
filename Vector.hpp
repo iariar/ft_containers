@@ -369,7 +369,7 @@ namespace ft
         }
         const_iterator end() const
         {
-            return (iterator(data + _size))
+            return (iterator(data + _size));
         }
         iterator rbegin()
         {
