@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <iterator>
 #include <algorithm>
 
 namespace ft
@@ -16,7 +17,7 @@ namespace ft
         public:
             typedef T value_type;
             typedef size_t size_type;
-            typedef T* pointer;
+            typedef T pointer;
             typedef T& reference;
             typedef ptrdiff_t difference_type;
 
@@ -261,23 +262,7 @@ namespace ft
     template <class Iterator>
     bool operator<=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() <= rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    bool operator>  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    {
-        return (lhs.get_my_iterator_pointer() > rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    bool operator>=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    {
-        return (lhs.get_my_iterator_pointer() >= rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& it)
-    {
-        return *(it - n);
-    }
+     
     // template <class Iterator>
     // typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     // {
@@ -289,12 +274,6 @@ namespace ft
     template <class T, class Alloc = std::allocator<T> >
     class vector
     {
-        private:
-            T *data;
-            Alloc u;
-            int _size;
-            int _capacity;
-
         public:
             typedef T value_type;
             typedef size_t size_type;
@@ -302,11 +281,10 @@ namespace ft
             typedef T& reference_type;
             typedef Alloc allocator_type;
             typedef ptrdiff_t difference_type;
-            typedef typename ft::my_iterator<T> iterator;
-            typedef typename ft::my_iterator<const T> const_iterator;
+            typedef typename ft::my_iterator<T*> iterator;
+            typedef typename ft::my_iterator<const T*> const_iterator;
             typedef typename ft::my_reverse_iterator<T> reverse_iterator;
             typedef typename ft::my_reverse_iterator<const T> const_reverse_iterator;
-            // typedef typename const ft::my_iterator<T> const_iterator;
             typedef typename allocator_type::reference reference;
             typedef typename allocator_type::const_reference	 const_reference;
             typedef typename allocator_type::pointer pointer;
@@ -555,7 +533,7 @@ namespace ft
         void insert (iterator position, size_type n, const value_type& val)
         {
             pointer_type tmp = u.allocate(n);
-            int distance_vector = std::distance(this->begin(), this->end());
+            int distance_vector = dis(this->begin(), this->end());
             iterator last = this->end();
         
             if (_size + n >= _capacity)
@@ -571,13 +549,14 @@ namespace ft
                 data[distance_vector] = val;
                 distance_vector--;
             }
-            return (data[distance_vector]);
+            // return (data[distance_vector]);
         }
         template <class InputIterator>
+        // typename enable_if<is_arithmetic<T>::value, T>::type 
         void insert (iterator position, InputIterator first, InputIterator last)
         {
-            int len = std::distance(first, last);
-            int distance_vector = std::distance(this->begin(), this->end());
+            int len = dis(first, last);
+            int distance_vector = dis(this->begin(), this->end());
             iterator begining = this->end();
 
             if (_size + len >= _capacity)
@@ -594,7 +573,7 @@ namespace ft
                 last--;
                 distance_vector--;
             }
-            return (data[distance_vector]);       
+            // return (data[distance_vector]);       
         }
         iterator erase (iterator position)
         {
@@ -637,6 +616,20 @@ namespace ft
             return (object);
         }
         ~vector(){return;};
+        private:
+            T *data;
+            Alloc u;
+            int _size;
+            int _capacity;
+            int dis(iterator start, iterator last)
+            {
+                int i;
+                for (; start != last; start++)
+                {
+                    i++;
+                }
+                return (i);
+            }
     };
     template <class T, class Alloc>
     void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
@@ -672,6 +665,66 @@ namespace ft
     bool operator>=  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
     {
         return (lhs.data >= rhs.data);
+    }
+    template <class T1, class T2> struct pair
+    {
+        typedef T1 first_type; 
+        typedef T2 second_type;
+        pair() : first(NULL) , second(NULL){return;}
+        template <class U, class V>
+        pair (const pair<U,V>& pr)
+        {
+            *this = pr;
+        }
+        pair& operator= (const pair& pr)
+        {
+            this->first = pr.first;
+            this->second = pr.second;
+            return (*this);
+        }
+        pair (const first_type& a, const second_type& b)
+        {
+            first = a;
+            second = b;
+        }
+        private:
+            T1 first;
+            T2 second;
+    };
+    template <class T1, class T2>
+    bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first == rhs.first && lhs.second == rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first != rhs.first && lhs.second != rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {        
+        return (lhs.first < rhs.first && lhs.second < rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first <= rhs.first && lhs.second <= rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator> (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first > rhs.first && lhs.second > rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first >= rhs.first && lhs.second >= rhs.second);
+    }
+    template <class T1,class T2>
+    pair<T1,T2> make_pair (T1 x, T2 y)
+    {
+        return ( pair<T1,T2>(x,y) );
     }
 }
 

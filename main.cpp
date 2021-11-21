@@ -1,5 +1,28 @@
 #include "Vector.hpp"
 
+
+// template <typename T>
+// struct is_integral
+// {
+//     static bool value = false;/* data */
+// };
+
+// template <>
+// struct is_integral<int>
+// {
+//     static bool value = true;
+// };
+
+// template <bool, typename T = void>
+// struct enable_if{};
+
+// template <>
+// struct enable_if<true, T>{
+//     typedef T type;
+// };
+
+
+
 int main()
 {
     std::vector<int> original(1, 2);
@@ -47,7 +70,7 @@ int main()
     // {
     //     std::cout << *i << std::endl;
     // }
-    // replica.insert(replica.end(), 10, 40);
+    replica.insert(replica.end(), 10, 40);
     // for (int i = 0; i < replica.size(); i++)
     // {
     //    std::cout << replica[i] << std::endl;

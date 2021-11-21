@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "type_traits": "cpp",
+        "iterator": "cpp",
+        "vector": "cpp",
+        "array": "cpp",
+        "atomic": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "ranges": "cpp"
+    }
+}
