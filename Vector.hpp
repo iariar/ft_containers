@@ -3,10 +3,105 @@
 
 #include <vector>
 #include <iostream>
+#include <iterator>
 #include <algorithm>
 
 namespace ft
 {
+    //////////////////////////////
+    ////////////is_integral///////
+    //////////////////////////////
+    template <class T>
+    struct is_integral
+    {
+        const static bool value = false;
+        T type;
+    };
+    template <>
+    struct is_integral<bool>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<char>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<char16_t>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<char32_t>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<wchar_t>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<signed char>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<short int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<long int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<long long int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<unsigned char>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<unsigned short int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<unsigned int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<unsigned long int>
+    {
+        const static bool value = true;
+    };
+    template <>
+    struct is_integral<unsigned long long int>
+    {
+        const static bool value = true;
+    };
+    //////////////////////////////
+    ////////////enable_if/////////
+    //////////////////////////////
+    template <bool B, typename T = void>
+    struct enable_if{};
+
+    template <class T>
+    struct enable_if<true, T>{
+        typedef T type;
+    };
     //////////////////////////////
     ////////////iterator//////////
     //////////////////////////////
@@ -43,7 +138,6 @@ namespace ft
             {
                 return *(iterator_pointer + n);
             }
-
             my_iterator &operator++()
             {
                 iterator_pointer++;
@@ -258,26 +352,10 @@ namespace ft
     {
         return (lhs.get_my_iterator_pointer() < rhs.get_my_iterator_pointer());
     }
-    template <class Iterator>
-    bool operator<=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    {
-        return (lhs.get_my_iterator_pointer() <= rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    bool operator>  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    {
-        return (lhs.get_my_iterator_pointer() > rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    bool operator>=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    {
-        return (lhs.get_my_iterator_pointer() >= rhs.get_my_iterator_pointer());
-    }
-    template <class Iterator>
-    my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& it)
-    {
-        return *(it - n);
-    }
+    // template <class Iterator>
+    // bool operator<=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    // {
+     
     // template <class Iterator>
     // typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     // {
@@ -286,15 +364,9 @@ namespace ft
     //////////////////////////////
     /////////vector///////////////
     //////////////////////////////
-    template <class T, class Alloc = std::allocator<T> >
+    template < class T, class Alloc = std::allocator<T> >
     class vector
     {
-        private:
-            T *data;
-            Alloc u;
-            int _size;
-            int _capacity;
-
         public:
             typedef T value_type;
             typedef size_t size_type;
@@ -306,7 +378,6 @@ namespace ft
             typedef typename ft::my_iterator<const T> const_iterator;
             typedef typename ft::my_reverse_iterator<T> reverse_iterator;
             typedef typename ft::my_reverse_iterator<const T> const_reverse_iterator;
-            // typedef typename const ft::my_iterator<T> const_iterator;
             typedef typename allocator_type::reference reference;
             typedef typename allocator_type::const_reference	 const_reference;
             typedef typename allocator_type::pointer pointer;
@@ -442,8 +513,8 @@ namespace ft
         }
         void reserve (size_type n)
         {
-            // if (n > max_size())
-            //     throw std::length_error("something");
+            if (n > max_size())
+                throw std::length_error("something");
             if (n > _capacity)
             {
                 pointer_type tmp;
@@ -454,6 +525,8 @@ namespace ft
                 }
                 u.deallocate(data, _capacity);
                 data = tmp;
+                _size = n;
+                _capacity = n;
             }
         }
         reference operator[] (size_type n)
@@ -502,7 +575,7 @@ namespace ft
             }
             if (len > _size)
             {
-                u.deallocate(data, _capacity);/*DEABATABLE*/
+                u.deallocate(data, _capacity);/*DEBATABLE*/
                 _capacity = len;
                 u.allocate(len);
             }
@@ -531,6 +604,7 @@ namespace ft
             if (_size + 1 == _capacity)
                 reserve(_size * 2); /*DEBATABLE*/
             _size++;
+            _capacity++;
             data[_size - 1] = val;
         }
         void pop_back()
@@ -538,47 +612,53 @@ namespace ft
             u.destroy(data + (_size - 1));
             _size--;
         }
-        iterator insert (iterator position, const value_type& val)
+        iterator insert (iterator position, const value_type& val)//WORKING
         {
-            int distance_vector = std::distance(this->begin(), this->end());
-
-            if (_size + 1 == _capacity)
+            int distance_vector = dis(this->begin(), this->end());
+            iterator last = this->end();
+            if (_size == _capacity)
+            {
                 reserve(_capacity + 1);
-            for (iterator last = this->end(); last != position ; last--)
+            }
+            for (; last != position ; last--)
             {
                 data[distance_vector] = data[distance_vector - 1];
                 distance_vector--;
             }
+
             data[distance_vector] = val;
-            return (data[distance_vector]);
+            return (position);
         }
         void insert (iterator position, size_type n, const value_type& val)
         {
-            pointer_type tmp = u.allocate(n);
-            int distance_vector = std::distance(this->begin(), this->end());
-            iterator last = this->end();
-        
+            // pointer_type tmp = u.allocate(n);
+            int prev_distance = dis(this->begin(), this->end());
             if (_size + n >= _capacity)
-                reserve(_size + n);
-            for (; last != position && n ; last--)
+                reserve(_size + n + 1);
+            int distance_vector = dis(this->begin(), this->end());
+            iterator last = this->end();
+            // printf("size is %d\n", _size);
+            for (; prev_distance > 0; prev_distance--)
             {
+                printf("index is %lu\n", distance_vector - n);
                 data[distance_vector] = data[distance_vector - n];
                 distance_vector--;
-                n--;
+                // n--;
             }
-            for (; last != position; last--)
+            int len = n;
+            printf("distance is %d\n", distance_vector);
+            for (; len > 0 ; len--)
             {
                 data[distance_vector] = val;
                 distance_vector--;
             }
-            return (data[distance_vector]);
         }
         template <class InputIterator>
-        void insert (iterator position, InputIterator first, InputIterator last)
+        void insert (iterator position, InputIterator first, InputIterator last, typename enable_if<is_integral<InputIterator>::value, InputIterator>::Type)
         {
             int len = std::distance(first, last);
-            int distance_vector = std::distance(this->begin(), this->end());
             iterator begining = this->end();
+            int distance_vector = std::distance(this->begin(), this->end());
 
             if (_size + len >= _capacity)
                 reserve(_size + len);
@@ -588,13 +668,13 @@ namespace ft
                 distance_vector--;
                 len--;
             }
-            for (;  begining != position && last != first;  begining--)
+            for (;  begining != position && last != first;  last--)
             {
-                data[distance_vector] = *last;
+                data[distance_vector] = last;
                 last--;
                 distance_vector--;
             }
-            return (data[distance_vector]);       
+            // return (data[distance_vector]);       
         }
         iterator erase (iterator position)
         {
@@ -637,6 +717,20 @@ namespace ft
             return (object);
         }
         ~vector(){return;};
+        private:
+            T *data;
+            Alloc u;
+            int _size;
+            int _capacity;
+            int dis(iterator start, iterator last)
+            {
+                int i = 0;
+                for (; start != last; start++)
+                {
+                    i++;
+                }
+                return (i);
+            }
     };
     template <class T, class Alloc>
     void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
@@ -688,6 +782,66 @@ namespace ft
         return(0);
     }
 
+    template <class T1, class T2> struct pair
+    {
+        typedef T1 first_type; 
+        typedef T2 second_type;
+        pair() : first(NULL) , second(NULL){return;}
+        template <class U, class V>
+        pair (const pair<U,V>& pr)
+        {
+            *this = pr;
+        }
+        pair& operator= (const pair& pr)
+        {
+            this->first = pr.first;
+            this->second = pr.second;
+            return (*this);
+        }
+        pair (const first_type& a, const second_type& b)
+        {
+            first = a;
+            second = b;
+        }
+        private:
+            T1 first;
+            T2 second;
+    };
+    template <class T1, class T2>
+    bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first == rhs.first && lhs.second == rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first != rhs.first && lhs.second != rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {        
+        return (lhs.first < rhs.first && lhs.second < rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first <= rhs.first && lhs.second <= rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator> (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first > rhs.first && lhs.second > rhs.second);
+    }
+    template <class T1, class T2>
+    bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+    {
+        return (lhs.first >= rhs.first && lhs.second >= rhs.second);
+    }
+    template <class T1,class T2>
+    pair<T1,T2> make_pair (T1 x, T2 y)
+    {
+        return ( pair<T1,T2>(x,y) );
+    };
 }
 
 #endif
