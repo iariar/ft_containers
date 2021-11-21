@@ -673,6 +673,21 @@ namespace ft
     {
         return (lhs.data >= rhs.data);
     }
+    ///////////////////////////////
+    // lexicographical_compare()///
+    ///////////////////////////////
+    template <class InputIterator1, class InputIterator2>/*DEBATABLE*/
+    bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
+    {
+        for (first1; first1 != last1 && first2 != last2; first1++)
+        {
+            if (first1 != first2)
+                return(1);
+            first2++;
+        }
+        return(0);
+    }
+
 }
 
 #endif
