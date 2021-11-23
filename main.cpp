@@ -76,9 +76,9 @@ int main()
     // {
     //    std::cout << original[i] << std::endl;
     // }
-    replica.erase(replica.begin(), replica.begin()+ 2);
-    for (int i = 0; i < replica.size(); i++)
-    {
-       std::cout << replica[i] << std::endl;
-    }
+    replica.erase(replica.begin() + 1);
+    // for (int i = 0; i < replica.size(); i++)
+    // {
+    //    std::cout << replica[i] << std::endl;
+    // }
 }

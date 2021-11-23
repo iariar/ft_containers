@@ -136,7 +136,7 @@ namespace ft
             }
             my_iterator operator+ (difference_type n) const
             {
-                return (iterator_pointer + n);
+                return (my_iterator(iterator_pointer + n));
             }
             my_iterator &operator++()
             {
@@ -659,11 +659,15 @@ namespace ft
         iterator erase (iterator position)
         {
             iterator last = this->end();
-            for (int i = 0; position != last; position++)
+            iterator first = this->begin();
+            for (int i = 0; first != position; position--)
             {
-                position = position + 1;
+                printf("here\n");
+                printf("%d\n", *position);
+                // position = position + 1;
             }
             _size--;
+            return(position);
         }
         iterator erase (iterator first, iterator last)
         {
