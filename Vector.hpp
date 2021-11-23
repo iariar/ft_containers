@@ -136,7 +136,7 @@ namespace ft
             }
             my_iterator operator+ (difference_type n) const
             {
-                return *(iterator_pointer + n);
+                return (iterator_pointer + n);
             }
             my_iterator &operator++()
             {
@@ -566,38 +566,26 @@ namespace ft
             return (data[_size - 1]);
         }
         template <class InputIterator>
-        void assign (InputIterator first, InputIterator last)
+        void assign (InputIterator first, InputIterator last, typename enable_if<is_integral<InputIterator>::value, InputIterator>::Type)
         {
             int len = std::distance(first, last);
             for (size_t i = 0; i < _size; i++)
             {
                 u.destroy(data + i);
             }
-            if (len > _size)
-            {
-                u.deallocate(data, _capacity);/*DEBATABLE*/
-                _capacity = len;
-                u.allocate(len);
-            }
-            _size = len;
             for (int i = 0; first != last; first++)
             {
                 data[i] = first;
                 i++;
             }
         }
-        void assign (size_type n, const value_type& val)
+        void assign (size_type n, const value_type& val)//WORKING
         {
-            if (_size + n > _capacity)
-            {
-                resize(_size + n);
-                _capacity = _size + n;
-            }
-            for (int i = _size; i < _size + n; i++)
+            resize(n);
+            for (int i = 0; i < _size + n; i++)
             {
                 data[i] = val;
             }
-            _size = _size + n;
         }
         void push_back (const value_type& val)
         {
@@ -625,28 +613,24 @@ namespace ft
                 data[distance_vector] = data[distance_vector - 1];
                 distance_vector--;
             }
-
             data[distance_vector] = val;
             return (position);
         }
-        void insert (iterator position, size_type n, const value_type& val)
+        void insert (iterator position, size_type n, const value_type& val)//WORKING
         {
-            // pointer_type tmp = u.allocate(n);
-            int prev_distance = dis(this->begin(), this->end());
+            int number_of_elements_after = dis(position, this->end());
             if (_size + n >= _capacity)
-                reserve(_size + n + 1);
+                reserve(_size + n);
             int distance_vector = dis(this->begin(), this->end());
-            iterator last = this->end();
-            // printf("size is %d\n", _size);
-            for (; prev_distance > 0; prev_distance--)
+            // iterator last = this->end();
+            // // printf("size is %d\n", _size);
+            printf("distance_vector = %d\n", number_of_elements_after);
+            for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
-                printf("index is %lu\n", distance_vector - n);
                 data[distance_vector] = data[distance_vector - n];
                 distance_vector--;
-                // n--;
             }
             int len = n;
-            printf("distance is %d\n", distance_vector);
             for (; len > 0 ; len--)
             {
                 data[distance_vector] = val;
@@ -656,25 +640,21 @@ namespace ft
         template <class InputIterator>
         void insert (iterator position, InputIterator first, InputIterator last, typename enable_if<is_integral<InputIterator>::value, InputIterator>::Type)
         {
-            int len = std::distance(first, last);
-            iterator begining = this->end();
-            int distance_vector = std::distance(this->begin(), this->end());
-
-            if (_size + len >= _capacity)
-                reserve(_size + len);
-            for (;  begining != position && len ;  begining--)
+            int number_of_elements_after = dis(position, this->end());
+            int small_vec_len = dis(first, last);
+            if (_size + small_vec_len >= _capacity)
+                reserve(_size + small_vec_len);
+            int distance_vector = dis(this->begin(), this->end());
+            for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
-                data[distance_vector] = data[distance_vector - len];
-                distance_vector--;
-                len--;
-            }
-            for (;  begining != position && last != first;  last--)
-            {
-                data[distance_vector] = last;
-                last--;
+                data[distance_vector] = data[distance_vector - small_vec_len];
                 distance_vector--;
             }
-            // return (data[distance_vector]);       
+            for (; last != first ; last--)
+            {
+                data[distance_vector] = *last;
+                distance_vector--;
+            }
         }
         iterator erase (iterator position)
         {
@@ -685,19 +665,24 @@ namespace ft
             }
             _size--;
         }
-        // iterator erase (iterator first, iterator last)
-        // {
-        //     iterator ending = this->end();
-        //     int len = std::distance(first, last);
-        //     int dep = len;
-
-        //     for (int i = 0; position != ending && dep; position++)
-        //     {
-        //         position = position + len;
-        //         dep--;
-        //     }
-        //     _size -=len;
-        // }
+        iterator erase (iterator first, iterator last)
+        {
+            iterator ending = this->end();
+            iterator start = this->begin();
+            int len = dis(first, last);
+            int dup;
+            int numbers_after_erased = dis(last, ending);
+            dup = numbers_after_erased;
+            while (start != first)
+                start++;
+            for (; start != last && numbers_after_erased; start++)
+            {
+                data[numbers_after_erased] = data[numbers_after_erased + len];
+                numbers_after_erased--;
+            }
+            _size -=len;
+            return (this->end());
+        }
         void swap (vector& x)
         {
             vector tmp(x);
