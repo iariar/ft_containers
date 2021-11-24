@@ -102,6 +102,38 @@ namespace ft
     struct enable_if<true, T>{
         typedef T type;
     };
+
+    template<typename _Iterator>
+    struct iterator_traits
+    {
+      typedef typename _Iterator::iterator_category iterator_category;
+      typedef typename _Iterator::value_type        value_type;
+      typedef typename _Iterator::difference_type   difference_type;
+      typedef typename _Iterator::pointer           pointer;
+      typedef typename _Iterator::reference         reference;
+    };
+
+    template<typename _Tp>
+    struct iterator_traits<_Tp*>
+    {
+      typedef std::random_access_iterator_tag iterator_category;
+      typedef _Tp                         value_type;
+      typedef ptrdiff_t                   difference_type;
+      typedef _Tp*                        pointer;
+      typedef _Tp&                        reference;
+    };
+
+  /// Partial specialization for const pointer types.
+  template<typename _Tp>
+    struct iterator_traits<const _Tp*>
+    {
+      typedef std::random_access_iterator_tag iterator_category;
+      typedef _Tp                         value_type;
+      typedef ptrdiff_t                   difference_type;
+      typedef const _Tp*                  pointer;
+      typedef const _Tp&                  reference;
+    };
+    
     //////////////////////////////
     ////////////iterator//////////
     //////////////////////////////
@@ -109,12 +141,12 @@ namespace ft
     class my_iterator
     {
         public:
-            typedef T value_type;
-            typedef size_t size_type;
-            typedef T* pointer;
-            typedef T& reference;
-            typedef ptrdiff_t difference_type;
-
+            typedef typename iterator_traits<T>::value_type value_type;
+            typedef typename iterator_traits<T>::pointer pointer;
+            typedef typename iterator_traits<T>::reference reference;
+            typedef typename iterator_traits<T>::difference_type difference_type;
+            typedef typename iterator_traits<T>::iterator_category iterator_category;
+            typedef size_t   size_type;
             my_iterator(/* args */)
             {
                 iterator_pointer = NULL;
@@ -126,10 +158,10 @@ namespace ft
             {
                 *this = it;
             }
-            // iterator_type base() const
-            // {
-            //     return *(iterator_pointer + n);
-            // }
+            value_type base() const
+            {
+                return *(iterator_pointer);
+            }
             reference operator*() const
             {
                 return *(iterator_pointer);
@@ -156,7 +188,7 @@ namespace ft
             }
             my_iterator operator- (difference_type n) const
             {
-                return *(iterator_pointer - n);
+                return *(my_iterator(iterator_pointer - n));
             }
             my_iterator &operator--()
             {
@@ -196,9 +228,9 @@ namespace ft
         private:
             pointer iterator_pointer;
     };
-    ///////////////////////////////////
-    //rational operators for iterator//
-    ///////////////////////////////////
+    // ///////////////////////////////////
+    // //rational operators for iterator//
+    // ///////////////////////////////////
     template <class Iterator>
     bool operator== (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
@@ -239,23 +271,56 @@ namespace ft
     // {
     //     return *(it - n);
     // }
-    //////////////////////////////
-    /////////reverse_iterator/////
-    //////////////////////////////
+    // //////////////////////////////
+    // /////////reverse_iterator/////
+    // //////////////////////////////
+    // template <class Iterator>
+    // class my_reverse_iterator
+    // {
+        // typedef typename iterator_traits<T>::value_type value_type;
+        // typedef typename iterator_traits<T>::pointer pointer;
+        // typedef typename iterator_traits<T>::reference reference;
+        // typedef typename iterator_traits<T>::difference_type difference_type;
+        // typedef typename iterator_traits<T>::iterator_category iterator_category;
+    //     typedef size_t   size_type;
+    //     my_reverse_iterator()
+    //     {
+    //         iterator_pointer = NULL;
+    //     }
+    //     explicit reverse_iterator (iterator_type it)
+    //     {
+    //         iterator_pointer = it.iterator_pointer;
+    //     }
+    //     template <class Iter>
+    //     reverse_iterator (const reverse_iterator<Iter>& rev_it)
+    //     {
+    //         iterator_pointer = rev_it.iterator_pointer;
+    //     }
+    //     value_type base() const
+    //     {
+    //         return *(iterator_pointer -1);
+    //     }
+    //     reference operator*() const
+    //     {
+    //         return *(base());
+    //     }
+    //     my_iterator operator+ (difference_type n) const
+    //     {
+    //         return (base() - n);
+    //     }
+    //     private:
+    //         pointer iterator_pointer;
+    // }
     template <class T>
     class my_reverse_iterator
     {
         public:
-            typedef T value_type;
-            typedef size_t size_type;
-            typedef T* pointer;
-            typedef T& reference;
-            typedef ptrdiff_t difference_type;
+            typedef typename iterator_traits<T>::value_type value_type;
+            typedef typename iterator_traits<T>::pointer pointer;
+            typedef typename iterator_traits<T>::reference reference;
+            typedef typename iterator_traits<T>::difference_type difference_type;
+            typedef typename iterator_traits<T>::iterator_category iterator_category;
 
-            my_reverse_iterator(/* args */)
-            {
-                iterator_pointer = NULL;
-            }
             explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
             // MISSING CONSTRUCTOR
             template <class Iter>
@@ -374,10 +439,10 @@ namespace ft
             typedef T& reference_type;
             typedef Alloc allocator_type;
             typedef ptrdiff_t difference_type;
-            typedef typename ft::my_iterator<T> iterator;
-            typedef typename ft::my_iterator<const T> const_iterator;
-            typedef typename ft::my_reverse_iterator<T> reverse_iterator;
-            typedef typename ft::my_reverse_iterator<const T> const_reverse_iterator;
+            typedef typename ft::my_iterator<T*> iterator;
+            typedef typename ft::my_iterator<const T*> const_iterator;
+            typedef typename ft::my_reverse_iterator<iterator> reverse_iterator;
+            typedef typename ft::my_reverse_iterator<const iterator> const_reverse_iterator;
             typedef typename allocator_type::reference reference;
             typedef typename allocator_type::const_reference	 const_reference;
             typedef typename allocator_type::pointer pointer;
@@ -402,7 +467,7 @@ namespace ft
         vector (iterator first, iterator last,
                  const allocator_type& alloc = allocator_type()) : u(alloc)
         {
-            int len = std::distance(first, last);
+            int len = dis(first, last);
             data = u.allocate(len);
             _size = 0;
             _capacity = len;
@@ -418,7 +483,7 @@ namespace ft
         }
         vector &operator=(vector const &rhs)
         {
-            rhs.data = u.allocate(_capacity);
+            this->data = u.allocate(_capacity);
             for (int i = 0; i < _size; i++)
             {
                 this->data[i] = rhs.data[i];
@@ -624,7 +689,7 @@ namespace ft
             int distance_vector = dis(this->begin(), this->end());
             // iterator last = this->end();
             // // printf("size is %d\n", _size);
-            printf("distance_vector = %d\n", number_of_elements_after);
+            // printf("distance_vector = %d\n", number_of_elements_after);
             for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - n];
@@ -659,12 +724,9 @@ namespace ft
         iterator erase (iterator position)
         {
             iterator last = this->end();
-            iterator first = this->begin();
-            for (int i = 0; first != position; position--)
+            for (; position != last; position++)
             {
-                printf("here\n");
-                printf("%d\n", *position);
-                // position = position + 1;
+                *position = *(position + 1);
             }
             _size--;
             return(position);
@@ -672,19 +734,22 @@ namespace ft
         iterator erase (iterator first, iterator last)
         {
             iterator ending = this->end();
-            iterator start = this->begin();
             int len = dis(first, last);
-            int dup;
             int numbers_after_erased = dis(last, ending);
-            dup = numbers_after_erased;
-            while (start != first)
-                start++;
-            for (; start != last && numbers_after_erased; start++)
+
+            // printf("here %d\n", len);
+            for (; numbers_after_erased && first != ending; numbers_after_erased--)
             {
-                data[numbers_after_erased] = data[numbers_after_erased + len];
-                numbers_after_erased--;
+                // printf("%d = %d\n", *first , *(first + len));
+                *first = *(first + len);
+                first++;
+                // numbers_after_erased--;
+                // printf("%d\n", *first);
             }
-            _size -=len;
+            // *first = *(first + len);
+            // printf("size = %d\n", _size);
+            _size -= len;
+            // printf("size = %d\n", _size);
             return (this->end());
         }
         void swap (vector& x)
@@ -707,10 +772,14 @@ namespace ft
         }
         ~vector(){return;};
         private:
-            T *data;
+            pointer_type data;
             Alloc u;
             int _size;
             int _capacity;
+            // reference operator*() const
+            // {
+            //     return *(data);
+            // }
             int dis(iterator start, iterator last)
             {
                 int i = 0;
