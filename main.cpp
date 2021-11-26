@@ -522,7 +522,7 @@ int main ()
         ///////////////////////
         //TESTING  ASSIGN//////
         // ///////////////////////
-        // {
+        {
         //     std::vector<int> first;
         //     std::vector<int> second;
         //     std::vector<int> third;
@@ -539,7 +539,7 @@ int main ()
 
         //     std::cout << "Size of first: " << int (first.size()) << '\n';
         //     std::cout << "Size of second: " << int (second.size()) << '\n';
-        //     std::cout << "Size of third: " << int (third.size()) << '\n';/////////////////////NOT WORKING PROPERLY/////////////////
+        //     std::cout << "Size of third: " << int (third.size()) << '\n';
         // }
         // {
         //     ft::vector<int> first;
@@ -548,18 +548,18 @@ int main ()
 
         //     first.assign (7,100);             // 7 ints with a value of 100
 
-        //     std::vector<int>::iterator it;
-        //     it = first.begin()+1;
+        //     ft::vector<int>::iterator it;
+        //     it=first.begin()+1;
 
-        //     second.assign(it,first.end()-1); // the 5 central values of first
+        //     second.assign (it,first.end()-1); // the 5 central values of first
 
         //     int myints[] = {1776,7,4};
         //     third.assign (myints,myints+3);   // assigning from array.
 
         //     std::cout << "Size of first: " << int (first.size()) << '\n';
         //     std::cout << "Size of second: " << int (second.size()) << '\n';
-        //     std::cout << "Size of third: " << int (third.size()) << '\n';
-        // }
+        //     std::cout << "Size of third: " << int (third.size()) << '\n';/////////////////////FIXEDDDDD/////////////////
+        }
         ///////////////////////
         //TESTING PUSH_BACK////
         ///////////////////////
@@ -625,56 +625,55 @@ int main ()
         ///////////////////////
         //TESTING INSERT///////
         ///////////////////////
-        {
-            std::vector<int> myvector (3,100);
-            std::vector<int>::iterator it;
+            {
+                std::vector<int> myvector (3,100);
+                std::vector<int>::iterator it;
 
-            it = myvector.begin();
-            it = myvector.insert ( it , 200 );
+                it = myvector.begin();
+                it = myvector.insert ( it , 200 );
 
-            myvector.insert (it,2,300);
+                // myvector.insert (it,2,300);
 
-            // "it" no longer valid, get a new one:
-            // it = myvector.begin();
+                // // "it" no longer valid, get a new one:
+                // // it = myvector.begin();
 
-            // std::vector<int> anothervector (2,400);
-            // myvector.insert (it+2,anothervector.begin(),anothervector.end());/////////////////NOT WORKING PROPERLY///////////////
+                // // std::vector<int> anothervector (2,400);
+                // // myvector.insert (it+2,anothervector.begin(),anothervector.end());
 
-            // int myarray [] = { 501,502,503 };
-            // myvector.insert (myvector.begin(), myarray, myarray+3);
+                // // int myarray [] = { 501,502,503 };
+                // // myvector.insert (myvector.begin(), myarray, myarray+3);
 
-            std::cout << "myvector contains:";
-            for (it=myvector.begin(); it<myvector.end(); it++)
-                std::cout << ' ' << *it;
-            std::cout << '\n';
-        }
-        {
-            ft::vector<int> myvector (3,100);
-            ft::vector<int>::iterator it;
+                std::cout << "myvector contains:";
+                for (; it<myvector.end(); it++)
+                    std::cout << ' ' << *it;
+                std::cout << '\n';
+            }
+            {
+                ft::vector<int> myvector (3,100);
+                ft::vector<int>::iterator it;
 
-            it = myvector.begin();
-            it = myvector.insert ( it , 200 );
+                it = myvector.begin();
+                it = myvector.insert ( it , 200 );
 
+                // myvector.insert (it,2,300);
 
-            myvector.insert (it,2,300);
+                // // "it" no longer valid, get a new one:
+                // // it = myvector.begin();
 
-            // // "it" no longer valid, get a new one:
-            // it = myvector.begin();
+                // // ft::vector<int> anothervector (2,400);
+                // // myvector.insert (it+2,anothervector.begin(),anothervector.end());
 
-            // ft::vector<int> anothervector (2,400);
-            // myvector.insert (it+2,anothervector.begin(),anothervector.end());
+                // // int myarray [] = { 501,502,503 };
+                // // myvector.insert (myvector.begin(), myarray, myarray+3);
 
-            // int myarray [] = { 501,502,503 };
-            // myvector.insert (myvector.begin(), myarray, myarray+3);
-
-            std::cout << "myvector contains:";
-            for (it=myvector.begin(); it<myvector.end(); it++)
-                std::cout << ' ' << *it;
-            std::cout << '\n';
-        }
+                std::cout << "myvector contains:";
+                for (; it<myvector.end(); it++)
+                    std::cout << ' ' << *it;
+                std::cout << '\n';
+            }
         ///////////////////////
         //TESTING ERASE////////
-        ///////////////////////
+        /////////////////////// 
         // {
         //     std::vector<int> myvector;
 

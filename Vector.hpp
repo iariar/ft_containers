@@ -537,19 +537,20 @@ namespace ft
         }
         void resize (size_type n, value_type val = value_type())
         {
+
             pointer_type tmp = u.allocate(n);
             if (n < _size)
             {
                 for (int i = 0; i < n; i++)
                 {
-                    printf("%d = %d\n", tmp[i], data[i]);
+                    // printf("%d = %d\n", tmp[i], data[i]);
                     tmp[i] = data[i];
                 }
                 for (int i = 0; i < _size; i++)
                 {
                     u.destroy(data + i); /*DEBATABLE*/
                 }
-                u.deallocate(data, _capacity);
+                // u.deallocate(data, _capacity);
                 data = tmp;
             }
             if (n > _size)
@@ -562,7 +563,7 @@ namespace ft
                 {
                     tmp[i] = val;
                 }
-                u.deallocate(data, _size);
+                // u.deallocate(data, _size);
                 data = tmp;
             }
             _size = n;
@@ -643,6 +644,7 @@ namespace ft
             {
                 u.destroy(data + i);
             }
+            resize(len);
             for (int i = 0; first != last; first++)
             {
                 data[i] = *first;
@@ -696,18 +698,25 @@ namespace ft
                 number_of_elements_after--;
             }
             data[distance_vector] = val;
+            *last = val;
+            // printf("_size = %d capacity = %d\n", _size, _capacity);
             // printf("distance vec = %d\n", *last);
-            return (last);
+            iterator it = this->begin();
+            while (it != last)
+            {
+                it++;
+            }
+            return (it);
         }
         void insert (iterator position, size_type n, const value_type& val)//WORKING
         {
             int number_of_elements_after = dis(position, this->end());
-            // printf("val = %d\n", number_of_elements_after);
+            // printf("after = %d\n", number_of_elements_after);
             if (_size + n >= _capacity)
                 reserve(_size + n);
-            _size = _size + n;
             int distance_vector = dis(this->begin(), this->end());
-            for (; number_of_elements_after >= 0; number_of_elements_after--)
+            _size = _size + n;
+            for (; number_of_elements_after > 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - n];
                 distance_vector--;
@@ -754,19 +763,12 @@ namespace ft
             int len = dis(first, last);
             int numbers_after_erased = dis(last, ending);
 
-            // printf("here %d\n", len);
             for (; numbers_after_erased && first != ending; numbers_after_erased--)
             {
-                // printf("%d = %d\n", *first , *(first + len));
                 *first = *(first + len);
                 first++;
-                // numbers_after_erased--;
-                // printf("%d\n", *first);
             }
-            // *first = *(first + len);
-            // printf("size = %d\n", _size);
             _size -= len;
-            // printf("size = %d\n", _size);
             return (this->end());
         }
         void swap (vector& x)
