@@ -228,9 +228,9 @@ namespace ft
         private:
             pointer iterator_pointer;
     };
-    // ///////////////////////////////////
-    // //rational operators for iterator//
-    // ///////////////////////////////////
+    /////////////////////////////////////
+    ////rational operators for iterator//
+    /////////////////////////////////////
     template <class Iterator>
     bool operator== (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
@@ -322,6 +322,7 @@ namespace ft
             typedef typename iterator_traits<T>::iterator_category iterator_category;
 
             explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
+            my_reverse_iterator(){iterator_pointer = NULL;};
             // MISSING CONSTRUCTOR
             template <class Iter>
             my_reverse_iterator (const my_reverse_iterator<Iter>& it)
@@ -383,7 +384,7 @@ namespace ft
             }
             reference operator[] (difference_type n) const
             {
-                return *(iterator_pointer + n);
+                return *(iterator_pointer - n);
             }
             my_reverse_iterator &operator=(const my_reverse_iterator &rhs)
             {
@@ -424,7 +425,17 @@ namespace ft
     // template <class Iterator>
     // typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     // {
-    //     return *(it + n);
+    //     return *(lhs.iterator_pointer + rhs.iterator_pointer);
+    // }
+    // template <class Iterator>
+    // typename my_reverse_iterator<Iterator>::difference_type operator+ (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    // {
+    //     return *(lhs.iterator_pointer - rhs.iterator_pointer);
+    // }
+    // template <class Iterator>
+    // my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& rev_it)
+    // {
+    //     return (rev_it - n);
     // }
     //////////////////////////////
     /////////vector///////////////
@@ -682,41 +693,34 @@ namespace ft
         }
         iterator insert (iterator position, const value_type& val)//WORKING
         {
-            int distance_vector = dis(this->begin(), this->end());
-            int number_of_elements_after = dis(position, this->end());
-            // printf("%d\n", number_of_elements_after);
+            iterator start = this->begin();
             iterator last = this->end();
-            if (_size == _capacity)
+            int len = dis(this->begin(), this->end());
+            int number_elements_after = dis(position, this->end());
+            _size++;
+            if (_size >= _capacity)
             {
-                reserve(_capacity + 1);
+                if (_capacity == 0)
+                    reserve(1);
+                else
+                    reserve(_capacity * 2);
             }
-             _size = _size + 1;
-            for (; last != position && number_of_elements_after; last--)
+            for (; number_elements_after; number_elements_after--)
             {
-                data[distance_vector] = data[distance_vector - 1];
-                distance_vector--;
-                number_of_elements_after--;
+                data[len] = data[len - 1];
+                len--;
             }
-            data[distance_vector] = val;
-            *last = val;
-            // printf("_size = %d capacity = %d\n", _size, _capacity);
-            // printf("distance vec = %d\n", *last);
-            iterator it = this->begin();
-            while (it != last)
-            {
-                it++;
-            }
-            return (it);
+            data[len] = val;
+            return (iterator(&data[len]));
         }
         void insert (iterator position, size_type n, const value_type& val)//WORKING
         {
             int number_of_elements_after = dis(position, this->end());
-            // printf("after = %d\n", number_of_elements_after);
-            if (_size + n >= _capacity)
+            if (_size + n > _capacity)
                 reserve(_size + n);
-            int distance_vector = dis(this->begin(), this->end());
             _size = _size + n;
-            for (; number_of_elements_after > 0; number_of_elements_after--)
+            int distance_vector = dis(this->begin(), this->end());
+            for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - n];
                 distance_vector--;
@@ -734,18 +738,26 @@ namespace ft
             int number_of_elements_after = dis(position, this->end());
             int small_vec_len = dis(first, last);
             if (_size + small_vec_len >= _capacity)
-                reserve(_size + small_vec_len);
+            {
+                if (_capacity == 0)
+                    reserve(small_vec_len);
+                else
+                    reserve(_capacity * 2);
+            }
+            _size += small_vec_len;
             int distance_vector = dis(this->begin(), this->end());
             for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - small_vec_len];
                 distance_vector--;
             }
+            last--;
             for (; last != first ; last--)
             {
                 data[distance_vector] = *last;
                 distance_vector--;
             }
+            data[distance_vector] = *last;
         }
         iterator erase (iterator position)
         {
