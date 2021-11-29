@@ -1176,29 +1176,38 @@ int main()
     //////////////////////////
     ///NON-MEMBER OPERATOR+///
     //////////////////////////
+    // {
+    //     std::vector<int> myvector;
+    //     for (int i=0; i<10; i++) myvector.push_back(i);	// myvector: 0 1 2 3 4 5 6 7 8 9
+
+    //     typedef std::vector<int>::iterator iter_type;
+
+    //     std::reverse_iterator<iter_type> rev_it;
+
+    //     rev_it = 3 + myvector.rbegin();
+
+    //     std::cout << "The fourth element from the end is: " << *rev_it << '\n';
+    // }
+    // {
+    //     ft::vector<int> myvector;
+    //     for (int i=0; i<10; i++) myvector.push_back(i);	// myvector: 0 1 2 3 4 5 6 7 8 9/////////EXAMPLE NOT WORKING////////
+
+    //     typedef ft::vector<int>::iterator iter_type;
+
+    //     ft::my_reverse_iterator<iter_type> rev_it;
+
+    //     rev_it = 3 + myvector.rbegin();
+
+    //     std::cout << "The fourth element from the end is: " << *rev_it << '\n';
+    // }
+    ft::vector<int> my_vec;
+    ft::vector<int> another_vec(3, 6);
+
+    my_vec.assign(10, 5);
+    my_vec.assign(another_vec.begin(), another_vec.end());
+    my_vec.insert(my_vec.begin(), another_vec.begin(), another_vec.end());
+    for (ft::vector<int>::iterator it = my_vec.begin(); it < my_vec.end(); it++)
     {
-        std::vector<int> myvector;
-        for (int i=0; i<10; i++) myvector.push_back(i);	// myvector: 0 1 2 3 4 5 6 7 8 9
-
-        typedef std::vector<int>::iterator iter_type;
-
-        std::reverse_iterator<iter_type> rev_it;
-
-        rev_it = 3 + myvector.rbegin();
-
-        std::cout << "The fourth element from the end is: " << *rev_it << '\n';
+        std::cout << *it << std::endl;
     }
-    {
-        ft::vector<int> myvector;
-        for (int i=0; i<10; i++) myvector.push_back(i);	// myvector: 0 1 2 3 4 5 6 7 8 9
-
-        typedef ft::vector<int>::iterator iter_type;
-
-        ft::my_reverse_iterator<iter_type> rev_it;
-
-        rev_it = 3 + myvector.rbegin();
-
-        std::cout << "The fourth element from the end is: " << *rev_it << '\n';
-    }
-
 }

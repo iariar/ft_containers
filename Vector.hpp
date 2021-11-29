@@ -266,73 +266,33 @@ namespace ft
     {
         return *(it + n);
     }
-    // template <class Iterator>
-    // typename my_iterator<Iterator>::difference_type operator- (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
-    // {
-    //     return *(it - n);
-    // }
-    // //////////////////////////////
-    // /////////reverse_iterator/////
-    // //////////////////////////////
-    // template <class Iterator>
-    // class my_reverse_iterator
-    // {
-        // typedef typename iterator_traits<T>::value_type value_type;
-        // typedef typename iterator_traits<T>::pointer pointer;
-        // typedef typename iterator_traits<T>::reference reference;
-        // typedef typename iterator_traits<T>::difference_type difference_type;
-        // typedef typename iterator_traits<T>::iterator_category iterator_category;
-    //     typedef size_t   size_type;
-    //     my_reverse_iterator()
-    //     {
-    //         iterator_pointer = NULL;
-    //     }
-    //     explicit reverse_iterator (iterator_type it)
-    //     {
-    //         iterator_pointer = it.iterator_pointer;
-    //     }
-    //     template <class Iter>
-    //     reverse_iterator (const reverse_iterator<Iter>& rev_it)
-    //     {
-    //         iterator_pointer = rev_it.iterator_pointer;
-    //     }
-    //     value_type base() const
-    //     {
-    //         return *(iterator_pointer -1);
-    //     }
-    //     reference operator*() const
-    //     {
-    //         return *(base());
-    //     }
-    //     my_iterator operator+ (difference_type n) const
-    //     {
-    //         return (base() - n);
-    //     }
-    //     private:
-    //         pointer iterator_pointer;
-    // }
     template <class T>
     class my_reverse_iterator
     {
         public:
+            typedef my_iterator<T> iterator_type;
             typedef typename iterator_traits<T>::value_type value_type;
             typedef typename iterator_traits<T>::pointer pointer;
             typedef typename iterator_traits<T>::reference reference;
             typedef typename iterator_traits<T>::difference_type difference_type;
             typedef typename iterator_traits<T>::iterator_category iterator_category;
 
-            explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
+            // explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
             my_reverse_iterator(){iterator_pointer = NULL;};
-            // MISSING CONSTRUCTOR
+            explicit my_reverse_iterator (iterator_type it)
+            {
+                this->iterator_pointer = it.iterator_type;
+            }
+            // MISSING CONSTRUCTOR//maybe not
             template <class Iter>
             my_reverse_iterator (const my_reverse_iterator<Iter>& it)
             {
                 *this = it;
             }
-            // iterator_type base() const
-            // {
-            //     return *(iterator_pointer + n);
-            // }
+            iterator_type base() const
+            {
+                return *(iterator_pointer);
+            }
             reference operator*() const
             {
                 return *(iterator_pointer);
@@ -511,7 +471,7 @@ namespace ft
         }
         const_iterator begin() const
         {
-            return (iterator(data));
+            return (const_iterator(data));
         }
         iterator end()
         {
@@ -519,7 +479,7 @@ namespace ft
         }
         const_iterator end() const
         {
-            return (iterator(data + _size));
+            return (const_iterator(data + _size));
         }
         reverse_iterator rbegin()
         {
@@ -548,8 +508,9 @@ namespace ft
         }
         void resize (size_type n, value_type val = value_type())
         {
-
+            // std::cout << "here1" << std::endl;
             pointer_type tmp = u.allocate(n);
+            // std::cout << "here2" << std::endl;
             if (n < _size)
             {
                 for (int i = 0; i < n; i++)
@@ -561,7 +522,7 @@ namespace ft
                 {
                     u.destroy(data + i); /*DEBATABLE*/
                 }
-                // u.deallocate(data, _capacity);
+                u.deallocate(data, _capacity);
                 data = tmp;
             }
             if (n > _size)
@@ -594,8 +555,7 @@ namespace ft
                 throw std::length_error("something");
             if (n > _capacity)
             {
-                pointer_type tmp;
-                tmp = u.allocate(n);
+                pointer_type tmp = u.allocate(n);
                 for (int i = 0; i < _size; i++)
                 {
                     tmp[i] = data[i];
@@ -655,7 +615,9 @@ namespace ft
             {
                 u.destroy(data + i);
             }
-            resize(len);
+            if (_size != len)
+                resize(len);
+            std::cout << "here3" << std::endl;
             for (int i = 0; first != last; first++)
             {
                 data[i] = *first;
@@ -742,7 +704,7 @@ namespace ft
                 if (_capacity == 0)
                     reserve(small_vec_len);
                 else
-                    reserve(_capacity * 2);
+                    reserve(_capacity + small_vec_len);
             }
             _size += small_vec_len;
             int distance_vector = dis(this->begin(), this->end());
@@ -802,7 +764,12 @@ namespace ft
             allocator_type object;
             return (object);
         }
-        ~vector(){return;};
+        ~vector()
+        { 
+            // this->clear();
+            // u.deallocate(data, _capacity);
+
+        };
         private:
             pointer_type data;
             Alloc u;
