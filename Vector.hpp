@@ -270,7 +270,7 @@ namespace ft
     class my_reverse_iterator
     {
         public:
-            typedef my_iterator<T> iterator_type;
+            typedef T iterator_type;
             typedef typename iterator_traits<T>::value_type value_type;
             typedef typename iterator_traits<T>::pointer pointer;
             typedef typename iterator_traits<T>::reference reference;
@@ -278,33 +278,33 @@ namespace ft
             typedef typename iterator_traits<T>::iterator_category iterator_category;
 
             // explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
-            my_reverse_iterator(){iterator_pointer = NULL;};
+            my_reverse_iterator(){/*_iter = NULL;*/};
             explicit my_reverse_iterator (iterator_type it)
             {
-                this->iterator_pointer = it.iterator_type;
+                _iter = it;
             }
             // MISSING CONSTRUCTOR//maybe not
             template <class Iter>
             my_reverse_iterator (const my_reverse_iterator<Iter>& it)
             {
-                *this = it;
+                this->_iter = it._iter;
             }
             iterator_type base() const
             {
-                return *(iterator_pointer);
+                return (_iter);
             }
             reference operator*() const
             {
-                return *(iterator_pointer);
+                return *(_iter - 1);
             }
             my_reverse_iterator operator+ (difference_type n) const
             {
-                return *(iterator_pointer - n);
-            }
+                return *(_iter - n);
+            } 
 
             my_reverse_iterator &operator++()
             {
-                iterator_pointer--;
+                _iter--;
                 return (*this);
             }
             my_reverse_iterator operator++(int)
@@ -315,16 +315,16 @@ namespace ft
             }
             my_reverse_iterator& operator+=(difference_type n)
             {
-                this->iterator_pointer -= n;
+                this->_iter -= n;
                 return (*this);
             }
             my_reverse_iterator operator- (difference_type n) const
             {
-                return *(iterator_pointer + n);
+                return *(_iter + n);
             }
             my_reverse_iterator &operator--()
             {
-                iterator_pointer++;
+                _iter++;
                 return (*this);
             }
             my_reverse_iterator operator--(int)
@@ -335,30 +335,22 @@ namespace ft
             }
             my_reverse_iterator& operator-= (difference_type n)
             {
-                this->iterator_pointer += n;
+                this->_iter += n;
                 return (*this);
             }
             pointer operator->() const
             {
-                return (iterator_pointer);
+                return (_iter);
             }
             reference operator[] (difference_type n) const
             {
-                return *(iterator_pointer - n);
-            }
-            my_reverse_iterator &operator=(const my_reverse_iterator &rhs)
-            {
-                this->iterator_pointer = rhs.iterator_pointer;
-                return (*this);
-            }
-            pointer get_my_iterator_pointer(void) const
-            {
-                return (iterator_pointer);
+                return *(_iter - n);
             }
         ~my_reverse_iterator()
         {return;}
         private:
-            pointer iterator_pointer;
+            iterator_type _iter;
+            // pointer iterator_pointer;
     };
     ///////////////////////////////////////////
     //rational operators for reverse_iterator//
@@ -366,37 +358,43 @@ namespace ft
     template <class Iterator>
     bool operator== (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() == rhs.get_my_iterator_pointer());
+        return (lhs.base() == rhs.base());
     }
     template <class Iterator>
     bool operator!= (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() != rhs.get_my_iterator_pointer());
+        return (lhs.base() != rhs.base());
     }
     template <class Iterator>
     bool operator<  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() < rhs.get_my_iterator_pointer());
+        return (lhs.base() < rhs.base());
     }
-    // template <class Iterator>
-    // bool operator<=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    // {
-     
-    // template <class Iterator>
-    // typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    // {
-    //     return *(lhs.iterator_pointer + rhs.iterator_pointer);
-    // }
-    // template <class Iterator>
-    // typename my_reverse_iterator<Iterator>::difference_type operator+ (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
-    // {
-    //     return *(lhs.iterator_pointer - rhs.iterator_pointer);
-    // }
-    // template <class Iterator>
-    // my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& rev_it)
-    // {
-    //     return (rev_it - n);
-    // }
+    template <class Iterator>
+    bool operator<=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    {
+        return (lhs.base() <= rhs.base());
+    }
+    template <class Iterator>
+    bool operator>  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    {
+        return (lhs.base() > rhs.base());
+    }
+    template <class Iterator>
+    bool operator>=  (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    {
+        return (lhs.base() >= rhs.base());
+    }
+    template <class Iterator>
+    my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& rev_it)
+    {
+        return (rev_it->base() - n);
+    }
+    template <class Iterator>
+    typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
+    {
+        return(lhs.base() - rhs.base());
+    }
     //////////////////////////////
     /////////vector///////////////
     //////////////////////////////
@@ -508,9 +506,9 @@ namespace ft
         }
         void resize (size_type n, value_type val = value_type())
         {
-            // std::cout << "here1" << std::endl;
+            std::cout << n << std::endl;
             pointer_type tmp = u.allocate(n);
-            // std::cout << "here2" << std::endl;
+            std::cout << "here2" << std::endl;
             if (n < _size)
             {
                 for (int i = 0; i < n; i++)
@@ -518,11 +516,14 @@ namespace ft
                     // printf("%d = %d\n", tmp[i], data[i]);
                     tmp[i] = data[i];
                 }
-                for (int i = 0; i < _size; i++)
-                {
-                    u.destroy(data + i); /*DEBATABLE*/
-                }
-                u.deallocate(data, _capacity);
+                // if (_capacity)
+                // {
+                //     // for (int i = 0; i < _size; i++)
+                //     // {
+                //     //     u.destroy(data + i); /*DEBATABLE*/
+                //     // }
+                //     u.deallocate(data, _capacity);
+                // }
                 data = tmp;
             }
             if (n > _size)
@@ -535,7 +536,8 @@ namespace ft
                 {
                     tmp[i] = val;
                 }
-                // u.deallocate(data, _size);
+                // if (_capacity)
+                //     u.deallocate(data, _capacity);
                 data = tmp;
             }
             _size = n;
@@ -560,12 +562,12 @@ namespace ft
                 {
                     tmp[i] = data[i];
                 }
-                if (_capacity)
-                {
-                    // printf("capacity =  %d\n", _capacity);
-                    u.deallocate(data, _capacity);
-                    // printf("here2\n");
-                }
+                // if (_capacity)
+                // {
+                //     // printf("capacity =  %d\n", _capacity);
+                //     u.deallocate(data, _capacity);
+                //     // printf("here2\n");
+                // }
                 data = tmp;
                 // _size = n;
                 _capacity = n;
@@ -625,8 +627,12 @@ namespace ft
         }
         void assign (size_type n, const value_type& val)//WORKING
         {
+            for (size_t i = 0; i < _size; i++)
+            {
+                u.destroy(data + i);
+            }
             resize(n);
-            for (int i = 0; i < _size + n; i++)
+            for (int i = 0; i < n; i++)
             {
                 data[i] = val;
             }
