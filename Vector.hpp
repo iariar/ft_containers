@@ -617,7 +617,6 @@ namespace ft
             }
             if (_size != len)
                 resize(len);
-            std::cout << "here3" << std::endl;
             for (int i = 0; first != last; first++)
             {
                 data[i] = *first;
