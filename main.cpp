@@ -1200,14 +1200,25 @@ int main()
 
     //     std::cout << "The fourth element from the end is: " << *rev_it << '\n';
     // }
-    ft::vector<int> my_vec;
-    ft::vector<int> another_vec(3, 6);
+    // ft::vector<int> my_vec;
+    // ft::vector<int> another_vec(3, 6);
 
-    my_vec.assign(10, 5);
-    my_vec.assign(another_vec.begin(), another_vec.end());
-    my_vec.insert(my_vec.begin(), another_vec.begin(), another_vec.end());
-    for (ft::vector<int>::iterator it = my_vec.begin(); it < my_vec.end(); it++)
-    {
-        std::cout << *it << std::endl;
-    }
+    // my_vec.assign(10, 5);
+    // my_vec.assign(another_vec.begin(), another_vec.end());
+    // my_vec.insert(my_vec.begin(), another_vec.begin(), another_vec.end());
+    // for (ft::vector<int>::iterator it = my_vec.begin(); it < my_vec.end(); it++)
+    // {
+    //     std::cout << *it << std::endl;
+    // }
+    // std::vector<int> vec(10, 2);
+   
+    // std::vector<int>::reverse_iterator  it1 = vec.rbegin();
+    // std::cout << *it1 << std::endl;
+    // *it1 = 10;
+    // std::cout << *it1 << std::endl;
 }
+
+//  struct t
+//     {
+//         int a;
+//     };
