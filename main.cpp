@@ -22,8 +22,8 @@
 //     typedef T type;
 // };
 
-// int main ()
-// {
+int main ()
+{
 //     {
         ////////////////////////
         //testing constructors//
@@ -157,32 +157,32 @@
         ////////////////////
         //TESTING REND()////
         ////////////////////
-        // {
-        //     std::vector<int> myvector (5);  // 5 default-constructed ints
-        //     std::vector<int>::reverse_iterator rit = myvector.rbegin();
+        {
+            std::vector<int> myvector (5);  // 5 default-constructed ints
+            std::vector<int>::reverse_iterator rit = myvector.rbegin();
 
-        //     int i=0;
-        //     for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
-        //         *rit = ++i;
+            int i=0;
+            for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
+                *rit = ++i;
 
-        //     std::cout << "myvector contains:";
-        //     for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-        //         std::cout << ' ' << *it;
-        //     std::cout << '\n';
-        // }
-        // {
-        //     ft::vector<int> myvector (5);  // 5 default-constructed ints
-        //     ft::vector<int>::reverse_iterator rit = myvector.rbegin();
+            std::cout << "myvector contains:";
+            for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+                std::cout << ' ' << *it;
+            std::cout << '\n';
+        }
+        {
+            ft::vector<int> myvector (5);  // 5 default-constructed ints
+            ft::vector<int>::reverse_iterator rit = myvector.rbegin();
 
-        //     int i=0;
-        //     for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
-        //         *rit = ++i;
+            int i=0;
+            for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
+                *rit = ++i;
 
-        //     std::cout << "myvector contains:";
-        //     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-        //         std::cout << ' ' << *it;
-        //     std::cout << '\n';
-        // }
+            std::cout << "myvector contains:";
+            for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+                std::cout << ' ' << *it;
+            std::cout << '\n';
+        }
         ////////////////////
         //TESTING SIZE()////
         ////////////////////
@@ -796,10 +796,10 @@
         // }
 
 //     }
-// }
+}
 
-int main()
-{
+// int main()
+// {
     //////////////////
     ///constructors///
     //////////////////
@@ -1216,7 +1216,7 @@ int main()
     // std::cout << *it1 << std::endl;
     // *it1 = 10;
     // std::cout << *it1 << std::endl;
-}
+// }
 
 //  struct t
 //     {
