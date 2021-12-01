@@ -655,7 +655,7 @@
             //     ft::vector<int>::iterator it;
 
             //     it = myvector.begin();
-            //     it = myvector.insert ( it , 200 );////////////working/////////////
+            //     it = myvector.insert ( it , 200 );////////////WRONG CAPACITY/////////////
 
             //     std::cout << "my capacity = " << myvector.capacity() << std::endl;
             //     myvector.insert (it,10,300);
@@ -798,8 +798,8 @@
 //     }
 // }
 
-int main()
-{
+// int main()
+// {
     //////////////////
     ///constructors///
     //////////////////
@@ -934,7 +934,7 @@ int main()
 
     //     typedef ft::vector<int>::iterator iter_type;
 
-    //     std::reverse_iterator<iter_type> rev_it;
+    //     ft::my_reverse_iterator<iter_type> rev_it;
 
     //     rev_it = myvector.rbegin() +3;
 
@@ -1156,7 +1156,7 @@ int main()
     // }
     // {
     //     ft::vector<int> myvector;
-    //     for (int i=0; i<10; i++) myvector.push_back(i);     //////////////weird exmpl/////////////
+    //     for (int i=0; i<10; i++) myvector.push_back(i);     //////////////SEGFAULT/////////////
 
     //     typedef ft::vector<int>::iterator iter_type;
     //                                                             // ? 9 8 7 6 5 4 3 2 1 0 ?
@@ -1200,6 +1200,31 @@ int main()
 
     //     std::cout << "The fourth element from the end is: " << *rev_it << '\n';
     // }
+    //////////////////////////
+    ///NON-MEMBER OPERATOR-///
+    //////////////////////////
+    // {
+    //     std::vector<int> myvector;
+    //     for (int i=0; i<10; i++) myvector.push_back(i);
+
+    //     std::reverse_iterator<std::vector<int>::iterator> from,until;
+
+    //     from = myvector.rbegin();
+    //     until = myvector.rend();
+
+    //     std::cout << "myvector has " << (until-from) << " elements.\n";
+    // }
+    // {
+    //     ft::vector<int> myvector;
+    //     for (int i=0; i<10; i++) myvector.push_back(i);
+
+    //     ft::my_reverse_iterator<ft::vector<int>::iterator> from,until;
+
+    //     from = myvector.rbegin();
+    //     until = myvector.rend();
+
+    //     std::cout << "myvector has " << (until-from) << " elements.\n";
+    // }
     // ft::vector<int> my_vec;
     // ft::vector<int> another_vec(3, 6);
 
@@ -1216,9 +1241,67 @@ int main()
     // std::cout << *it1 << std::endl;
     // *it1 = 10;
     // std::cout << *it1 << std::endl;
-}
+// }
 
 //  struct t
 //     {
 //         int a;
 //     };
+
+int main()
+{
+    ///////////////
+    ///TEST PAIR///
+    ///////////////
+    // {
+    //     std::pair <std::string,double> product1;                     // default constructor
+    //     std::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
+    //     std::pair <std::string,double> product3 (product2);          // copy constructor
+
+    //     product1 = std::make_pair(std::string("lightbulbs"),0.99);   // using make_pair (move)
+
+    //     product2.first = "shoes";                  // the type of first is string
+    //     product2.second = 39.90;                   // the type of second is double
+
+    //     std::cout << "The price of " << product1.first << " is $" << product1.second << '\n';
+    //     std::cout << "The price of " << product2.first << " is $" << product2.second << '\n';
+    //     std::cout << "The price of " << product3.first << " is $" << product3.second << '\n';
+    // }
+    // std::cout << "END OF STD::PAIR" << std::endl;
+    // {
+    //     ft::pair <std::string,double> product1;                     // default constructor
+    //     ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
+    //     ft::pair <std::string,double> product3 (product2);          // copy constructor
+
+    //     product1 = ft::make_pair(std::string("lightbulbs"),0.99);   // using make_pair (move)
+
+    //     product2.first = "shoes";                  // the type of first is string
+    //     product2.second = 39.90;                   // the type of second is double
+
+    //     std::cout << "The price of " << product1.first << " is $" << product1.second << '\n';
+    //     std::cout << "The price of " << product2.first << " is $" << product2.second << '\n';
+    //     std::cout << "The price of " << product3.first << " is $" << product3.second << '\n';
+    // }
+    ///////////////
+    ///MAKE_PAIR///
+    ///////////////
+    {
+        std::pair <int,int> foo;
+        std::pair <int,int> bar;
+
+        foo = std::make_pair (10,20);
+        bar = std::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+        std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+        std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+    }
+    {
+        ft::pair <int,int> foo;
+        ft::pair <int,int> bar;
+        foo = ft::make_pair (10,20);
+        bar = ft::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+        std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+        std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+    }
+}
