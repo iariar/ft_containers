@@ -295,11 +295,11 @@ namespace ft
             }
             reference operator*() const
             {
-                return *(_iter - 1);
+                return *(base());
             }
             my_reverse_iterator operator+ (difference_type n) const
             {
-                return *(_iter - n);
+                return (my_reverse_iterator(_iter - n));
             } 
 
             my_reverse_iterator &operator++()
@@ -320,7 +320,7 @@ namespace ft
             }
             my_reverse_iterator operator- (difference_type n) const
             {
-                return *(_iter + n);
+                return (my_reverse_iterator(_iter + n));
             }
             my_reverse_iterator &operator--()
             {
@@ -344,7 +344,7 @@ namespace ft
             }
             reference operator[] (difference_type n) const
             {
-                return *(_iter - n);
+                return *(_iter - n - 1);
             }
         ~my_reverse_iterator()
         {return;}
@@ -388,12 +388,12 @@ namespace ft
     template <class Iterator>
     my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& rev_it)
     {
-        return (rev_it->base() - n);
+        return  my_reverse_iterator<Iterator>(rev_it + n);
     }
     template <class Iterator>
     typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return(lhs.base() - rhs.base());
+        return rhs.base() - lhs.base();
     }
     //////////////////////////////
     /////////vector///////////////
@@ -481,19 +481,19 @@ namespace ft
         }
         reverse_iterator rbegin()
         {
-            return (reverse_iterator(data + (_size - 1)));
+            return (reverse_iterator(end()));
         }
         const_reverse_iterator rbegin() const
         {
-            return (const_reverse_iterator(data + (_size - 1)));
+            return (const_reverse_iterator(end()));
         }
         reverse_iterator rend()
         {
-            return (reverse_iterator(data - 1));/*VERY DEBATABLE*/
+            return (reverse_iterator(begin()));/*VERY DEBATABLE*/
         }
         const_reverse_iterator rend() const
         {
-            return (const_reverse_iterator(data - 1));/*SAME*/
+            return (const_reverse_iterator(begin()));/*SAME*/
         }
         size_type size() const
         {
@@ -506,28 +506,16 @@ namespace ft
         }
         void resize (size_type n, value_type val = value_type())
         {
-            std::cout << n << std::endl;
-            pointer_type tmp = u.allocate(n);
-            std::cout << "here2" << std::endl;
             if (n < _size)
             {
-                for (int i = 0; i < n; i++)
+                for (; n < _size; n++)
                 {
-                    // printf("%d = %d\n", tmp[i], data[i]);
-                    tmp[i] = data[i];
+                    u.destroy(data + n);
                 }
-                // if (_capacity)
-                // {
-                //     // for (int i = 0; i < _size; i++)
-                //     // {
-                //     //     u.destroy(data + i); /*DEBATABLE*/
-                //     // }
-                //     u.deallocate(data, _capacity);
-                // }
-                data = tmp;
             }
             if (n > _size)
             {
+                pointer_type tmp = u.allocate(n);
                 for (int i = 0; i < _size; i++)
                 {
                     tmp[i] = data[i];
@@ -536,12 +524,12 @@ namespace ft
                 {
                     tmp[i] = val;
                 }
-                // if (_capacity)
-                //     u.deallocate(data, _capacity);
+                if (_capacity)
+                    u.deallocate(data, _capacity);
                 data = tmp;
+                _capacity = n;
             }
             _size = n;
-            _capacity = n;
         }
         size_type capacity() const
         {
@@ -665,7 +653,7 @@ namespace ft
             int len = dis(this->begin(), this->end());
             int number_elements_after = dis(position, this->end());
             _size++;
-            if (_size >= _capacity)
+            if (_size + 1 >= _capacity)
             {
                 if (_capacity == 0)
                     reserve(1);
@@ -709,7 +697,7 @@ namespace ft
                 if (_capacity == 0)
                     reserve(small_vec_len);
                 else
-                    reserve(_capacity + small_vec_len);
+                    reserve(_capacity * 2);
             }
             _size += small_vec_len;
             int distance_vector = dis(this->begin(), this->end());
@@ -845,28 +833,31 @@ namespace ft
         return(0);
     }
 
-    template <class T1, class T2> struct pair
+    template <class T1, class T2>
+    struct pair
     {
-        typedef T1 first_type; 
-        typedef T2 second_type;
-        pair() : first(NULL) , second(NULL){return;}
-        template <class U, class V>
-        pair (const pair<U,V>& pr)
-        {
-            *this = pr;
-        }
-        pair& operator= (const pair& pr)
-        {
-            this->first = pr.first;
-            this->second = pr.second;
-            return (*this);
-        }
-        pair (const first_type& a, const second_type& b)
-        {
-            first = a;
-            second = b;
-        }
-        private:
+        public:
+            typedef T1 first_type; 
+            typedef T2 second_type;
+            pair(){return;}
+            template <class U, class V>
+            pair (const pair<U,V>& pr)
+            {
+                *this = pr;
+            }
+            pair (const first_type& a, const second_type& b)
+            {
+                // printf("here\n");
+                first = a;
+                second = b;
+                // printf("here2\n");
+            }
+            pair& operator= (const pair& pr)
+            {
+                this->first = pr.first;
+                this->second = pr.second;
+                return (*this);
+            }
             T1 first;
             T2 second;
     };
