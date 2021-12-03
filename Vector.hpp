@@ -824,11 +824,14 @@ namespace ft
     template <class InputIterator1, class InputIterator2>/*DEBATABLE*/
     bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
     {
-        for (first1; first1 != last1 && first2 != last2; first1++)
+        while (first1 != last1)
         {
-            if (first1 != first2)
+            if (first2 != last2 || *first1 > *first2)
                 return(1);
-            first2++;
+            else if (*first1 < *first2)
+                return (0);
+            first1++;
+            first2++;   
         }
         return(0);
     }
@@ -843,14 +846,16 @@ namespace ft
             template <class U, class V>
             pair (const pair<U,V>& pr)
             {
-                *this = pr;
+                this->first = pr.first;
+                this->second = pr.second;
+                // printf("here\n");
+                // *this = pr;
+                // printf("here!\n");
             }
             pair (const first_type& a, const second_type& b)
             {
-                // printf("here\n");
                 first = a;
                 second = b;
-                // printf("here2\n");
             }
             pair& operator= (const pair& pr)
             {

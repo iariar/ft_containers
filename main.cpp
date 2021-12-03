@@ -22,8 +22,8 @@
 //     typedef T type;
 // };
 
-int main ()
-{
+// int main ()
+// {
 //     {
         ////////////////////////
         //testing constructors//
@@ -157,32 +157,32 @@ int main ()
         ////////////////////
         //TESTING REND()////
         ////////////////////
-        {
-            std::vector<int> myvector (5);  // 5 default-constructed ints
-            std::vector<int>::reverse_iterator rit = myvector.rbegin();
+        // {
+        //     std::vector<int> myvector (5);  // 5 default-constructed ints
+        //     std::vector<int>::reverse_iterator rit = myvector.rbegin();
 
-            int i=0;
-            for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
-                *rit = ++i;
+        //     int i=0;
+        //     for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
+        //         *rit = ++i;
 
-            std::cout << "myvector contains:";
-            for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-                std::cout << ' ' << *it;
-            std::cout << '\n';
-        }
-        {
-            ft::vector<int> myvector (5);  // 5 default-constructed ints
-            ft::vector<int>::reverse_iterator rit = myvector.rbegin();
+        //     std::cout << "myvector contains:";
+        //     for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+        //         std::cout << ' ' << *it;
+        //     std::cout << '\n';
+        // }
+        // {
+        //     ft::vector<int> myvector (5);  // 5 default-constructed ints
+        //     ft::vector<int>::reverse_iterator rit = myvector.rbegin();
 
-            int i=0;
-            for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
-                *rit = ++i;
+        //     int i=0;
+        //     for (rit = myvector.rbegin(); rit!= myvector.rend(); ++rit)
+        //         *rit = ++i;
 
-            std::cout << "myvector contains:";
-            for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-                std::cout << ' ' << *it;
-            std::cout << '\n';
-        }
+        //     std::cout << "myvector contains:";
+        //     for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+        //         std::cout << ' ' << *it;
+        //     std::cout << '\n';
+        // }
         ////////////////////
         //TESTING SIZE()////
         ////////////////////
@@ -796,7 +796,7 @@ int main ()
         // }
 
 //     }
-}
+// }
 
 // int main()
 // {
@@ -1247,7 +1247,8 @@ int main ()
 //     {
 //         int a;
 //     };
-
+// bool mycomp (char c1, char c2)
+// { return std::tolower(c1)<std::tolower(c2); }
 int main()
 {
     ///////////////
@@ -1285,23 +1286,58 @@ int main()
     ///////////////
     ///MAKE_PAIR///
     ///////////////
+    // {
+    //     std::pair <int,int> foo;
+    //     std::pair <int,int> bar;
+
+    //     foo = std::make_pair (10,20);
+    //     bar = std::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+    //     std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+    //     std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+    // }
+    // {
+    //     ft::pair <int,int> foo;
+    //     ft::pair <int,int> bar;
+    //         foo = ft::make_pair (10,20);
+    //     bar = ft::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+    //     std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+    //     std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+    // }
+    ///////////////////////////
+    //lexicographical compare//
+    ///////////////////////////
     {
-        std::pair <int,int> foo;
-        std::pair <int,int> bar;
+        char foo[]="Apple";
+        char bar[]="apartment";
 
-        foo = std::make_pair (10,20);
-        bar = std::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+        std::cout << std::boolalpha;
 
-        std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
-        std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+        std::cout << "Comparing foo and bar lexicographically (foo<bar):\n";
+
+        std::cout << "Using default comparison (operator<): ";
+        std::cout << std::lexicographical_compare(foo,foo+5,bar,bar+9);
+        std::cout << '\n';
+
+        std::cout << "Using mycomp as comparison object: ";
+        std::cout << std::lexicographical_compare(foo,foo+5,bar,bar+9,mycomp);
+        std::cout << '\n';
     }
     {
-        ft::pair <int,int> foo;
-        ft::pair <int,int> bar;
-        foo = ft::make_pair (10,20);
-        bar = ft::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+        char foo[]="Apple";
+        char bar[]="apartment";
 
-        std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
-        std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+        std::cout << std::boolalpha;
+
+        std::cout << "Comparing foo and bar lexicographically (foo<bar):\n";
+
+        std::cout << "Using default comparison (operator<): ";
+        std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9);
+        std::cout << '\n';
+
+        std::cout << "Using mycomp as comparison object: ";
+        std::cout << ft::lexicographical_compare(foo,foo+5,bar,bar+9,mycomp);
+        std::cout << '\n';
     }
 }
