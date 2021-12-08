@@ -3,7 +3,7 @@
 
 
 #include "iostream"
-#include "vector.hpp"
+#include "Vector.hpp"
 
 namespace ft
 {
@@ -14,7 +14,7 @@ namespace ft
     struct node
     {
         value_type  _value;
-        int         balace_factor;
+        int         balance_factor;
         struct node *_root;
         struct node *_left_child;
         struct node *_right_child;
@@ -83,60 +83,60 @@ namespace ft
         public:
             my_tree(/* args */)
             {
-                tree_node.value = 0;
+                // tree_node._value = nullptr;
                 tree_node.balance_factor = 0;
-                tree_node.root = nullptr;
+                tree_node._root = nullptr;
                 tree_node._left_child = nullptr;
-                tree_node._righ_child = nullptr;
+                tree_node._right_child = nullptr;
             }
             my_tree operator= (const my_tree& x)
             {
-                tree_node.value = x.tree_node.value;
+                tree_node._value = x.tree_node._value;
                 tree_node.balance_factor = x.tree_node.balance_factor;
-                tree_node.root = x.tree_node.root;
+                tree_node._root = x.tree_node._root;
                 tree_node._left_child = x.tree_node._left_child;
                 tree_node._righ_child = x.tree_node._righ_child;
             }
-            int height(tree_node nd)
+            int height(node<value_type> *nd)
             {
                 if (nd == NULL)
                     return (0);
-                return (__node->height);
+                return (nd->height);
             }
             int max(int a, int b)
             {
                 return (a > b ? a : b);
             }
-            tree_node *new_node(value_type pair)
+            node<value_type> *new_node(value_type pair)
             {
-                tree_node nd = new tree_node;
-                nd.value = pair;
-                nd._left_child = nullptr;
-                nd._right_child = nullptr;
-                nd.height = 1;/*probably a 0*/
+                node<value_type> *nd;;
+                nd->_value = pair;
+                nd->_left_child = nullptr;
+                nd->_right_child = nullptr;
+                nd->height = 1;/*probably a 0*/
                 return (nd);
             }
-            tree_node *right_rotation(tree_node *nd)
+            node<value_type> *right_rotation(node<value_type> *nd)
             {
-                tree_node *z = nd->_right_child;
-                tree_node *x = nd->_left_child;
+                node<value_type> *z = nd->_right_child;
+                node<value_type> *x = nd->_left_child;
                 nd->_right_child = nd;
                 nd->_left_child = z;
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 x->height = max(height(x->_left_child), height(x->_right_child) + 1);
                 return (x);
             }
-            tree_node *left_rotation(tree_node *nd)
+            node<value_type> *left_rotation(node<value_type> *nd)
             {
-                tree_node *z = nd->_left_child;
-                tree_node *x = nd->_right_child;
+                node<value_type> *z = nd->_left_child;
+                node<value_type> *x = nd->_right_child;
                 nd->_left_child = nd;
                 nd->_right_child = z;
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 x->height = max(height(x->_left_child), height(x->_right_child) + 1);
                 return (x);
             }
-            int get_balance(tree_node *nd)
+            int get_balance(node<value_type> *nd)
             {
                 if (nd == NULL)
                 {
@@ -144,31 +144,45 @@ namespace ft
                 }
                 return (height(nd->_left_child) - height(nd->_right_child));
             }
-            tree_node *insert(tree_node *nd, valu_type pair)
+            node<value_type> *insert(node<value_type> *nd, value_type pair)
             {
                 if (nd == NULL)
                 {
-                    retrun (new_node(pair));
+                    return (new_node(pair));
                 }
-                if (pair.first < nd._value.first)
+                if (pair.first < nd->_value.first)
                 {
-                    nd->_left_child = insert(node->_left_child, pair);
+                    nd->_left_child = insert(nd->_left_child, pair);
                 }
-                if (pair.first > nd._value.first)
+                if (pair.first > nd->_value.first)
                 {
-                    nd->_right_child = insert(node->_right_child, pair);
+                    nd->_right_child = insert(nd->_right_child, pair);
                 }
                 else
                     return (nd);
                 nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
                 int balance = get_balance(nd);
-                if (balance > 1 && )
-
+                if (balance > 1 && pair.first < nd->_left_child->_value.first)
+                {
+                    return (right_rotation(nd));//left left case////
+                }
+                if (balance < -1 && pair.first > nd->_right_child->_value.first)
+                {
+                    return (left_rotation(nd));//right right case////
+                }
+                if (balance > 1 && pair.first > nd->_left_child->_value.first)
+                {
+                    return (right_rotation(nd));//left right case////
+                }
+                if (balance < -1 && pair.first < nd->_right_child->_value.first)
+                {
+                    return (left_rotation(nd));//right right case////
+                }
+                return (nd);
             }
-
+            ~my_tree(){};
         private:
             node<value_type> tree_node;
-            ~my_tree();
     };
 }
 

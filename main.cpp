@@ -1,5 +1,5 @@
 #include "Vector.hpp"
-// #include "map.hpp"
+#include "map.hpp"
 #include <map>
 
 
@@ -1362,9 +1362,47 @@
 // }
 // }
 
-int main()
-{
-    ft::vector<int> test;
+// int main()
+// {
+//     ft::my_tree< ft::pair<const char *, int> > test;
+//     // ft::my_tree< ft::pair<int , int> > test2(test);
+//     ft::pair<const char * , int> pp("hello", 10);
+//     ft::pair<int , int> pp2(30, 40);
+//     // std::cout << pp.first << "\n" << pp.second << std::endl;
+//     // pp.first = 0;
+//     // pp.second = 10;
+//     // pp2.first = 50;
+//     // pp2.second = 60;
+//     // printf("pp first = %d -- pp second = %d\n", pp.first, pp.second);
+//     printf("here1\n");
+//     ft::node<ft::pair<const char *, int> > *nd = test.new_node(pp);
+//     printf("%s -- %d\n", nd->_value.first, nd->_value.second);
+//     // test.insert(test.new_node(ft::make_pair("hello", 12)), pp2);
+// }
 
-    test.get_allocator();
+// int main()
+// {
+//     ft::pair<char, int>pair1 = ft::make_pair('A', 1);
+//     ft::pair<char, int>pair2 = pair1;
+
+//     std::cout << "Contents of pair1 = " << pair1.first << " " << pair1.second << std::endl;
+//     std::cout << "Contents of pair2 = " << pair2.first << " " << pair2.second << std::endl;
+//     return 0;
+// }
+
+int main () {
+  printf("here\n");
+  ft::pair <std::string, double> product1;                     // default constructor
+//   ft::pair <std::string,double> product2 ("tomatoes",2.30);   // value init
+//   ft::pair <std::string,double> product3 (product2);          // copy constructor
+
+//   product1 = ft::make_pair(std::string("lightbulbs"),0.99);   // using make_pair (move)
+
+//   product2.first = "shoes";                  // the type of first is string
+//   product2.second = 39.90;                   // the type of second is double
+
+//   std::cout << "The price of " << product1.first << " is $" << product1.second << '\n';
+//   std::cout << "The price of " << product2.first << " is $" << product2.second << '\n';
+//   std::cout << "The price of " << product3.first << " is $" << product3.second << '\n';
+//   return 0;
 }

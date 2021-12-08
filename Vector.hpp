@@ -866,7 +866,13 @@ namespace ft
         public:
             typedef T1 first_type; 
             typedef T2 second_type;
-            pair() : first(0), second(0){ return; }
+            pair() : first(0) , second(0)
+            {
+                // printf("here2\n");
+                // first = nullptr;
+                // second = 0;
+                return; 
+            }
             template <class U, class V>
             pair (const pair<U,V>& pr)
             {
@@ -880,7 +886,7 @@ namespace ft
             }
             pair& operator= (const pair& pr)
             {
-                this->first = pr.first;
+                this->first  = pr.first;
                 this->second = pr.second;
                 return (*this);
             }
