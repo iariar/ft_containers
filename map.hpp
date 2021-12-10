@@ -15,68 +15,11 @@ namespace ft
     {
         value_type  _value;
         int         balance_factor;
-        struct node *_root;
+        // struct node *_root;       
         struct node *_left_child;
         struct node *_right_child;
         int         height;
     };
-    // template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator</*std::*/pair<const Key, T> > >
-    // class map
-    // {
-    //     public:
-    //         typedef Key                                         key_type;
-    //         typedef T                                           mapped_type;
-    //         typedef pair< key_type,mapped_type>                 value_type;
-    //         typedef Compare                                     key_compare;
-    //         typedef Allocator                                   allocator_type;
-    //         typedef typename allocator_type::reference          reference;
-    //         typedef typename allocator_type::const_reference    const_reference;
-    //         typedef typename allocator_type::pointer            pointer;
-    //         typedef typename allocator_type::const_pointer      const_pointer;
-    //         typedef size_t                                      size_type;
-    //         typedef node<value_type>                            _node;
-    //         typedef my_tree<value_type>                         tree;
-    //         explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :u(alloc)
-    //         {
-    //             _size = 0;
-    //         }
-    //         map (const map& x)
-    //         {
-    //             *this = x;
-    //         }
-    //         map& operator= (const map& x)
-    //         {
-    //             _size = x._size;
-    //             _tree.tree_node._tree = x._tree;
-    //             return (*this);
-    //         }
-    //         bool empty() const
-    //         {
-    //             return (_size == 0);
-    //         }
-    //         size_type size() const
-    //         {
-    //             return (_size);
-    //         }
-    //         size_type max_size() const
-    //         {
-    //             return (u.max_size);
-    //         }
-	// 		// pair<iterator,bool> insert (const value_type& val)
-	// 		// {
-	// 		// 	if (!root)
-	// 		// 	{
-	// 		// 		root = val;
-	// 		// 		return (root);
-	// 		// 	}
-	// 		// 	if ()
-	// 		// }
-    //         private:
-    //             allocator_type u;
-    //             // _node _my_node;
-    //             tree        _tree;
-    //             size_type _size;
-    // };
     template <class value_type>
     class my_tree
     {
@@ -85,7 +28,7 @@ namespace ft
             {
                 // tree_node._value = nullptr;
                 tree_node.balance_factor = 0;
-                tree_node._root = nullptr;
+                // tree_node._root = nullptr;
                 tree_node._left_child = nullptr;
                 tree_node._right_child = nullptr;
             }
@@ -109,32 +52,36 @@ namespace ft
             }
             node<value_type> *new_node(value_type pair)
             {
-                node<value_type> *nd;;
+                node<value_type> *nd = new node<value_type>;
                 nd->_value = pair;
-                nd->_left_child = nullptr;
-                nd->_right_child = nullptr;
+                nd->_left_child = NULL;
+                nd->_right_child = NULL;
                 nd->height = 1;/*probably a 0*/
                 return (nd);
             }
             node<value_type> *right_rotation(node<value_type> *nd)
             {
-                node<value_type> *z = nd->_right_child;
-                node<value_type> *x = nd->_left_child;
-                nd->_right_child = nd;
-                nd->_left_child = z;
+                node<value_type> *old_left = nd->_left_child;
+                node<value_type> *old_left_right = old_left->_right_child;
+
+                old_left->_right_child = nd;
+                nd->_left_child = old_left_right;
+
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
-                x->height = max(height(x->_left_child), height(x->_right_child) + 1);
-                return (x);
+                old_left->height = max(height(old_left->_left_child), height(old_left->_right_child) + 1);
+                return (old_left);
             }
             node<value_type> *left_rotation(node<value_type> *nd)
             {
-                node<value_type> *z = nd->_left_child;
-                node<value_type> *x = nd->_right_child;
-                nd->_left_child = nd;
-                nd->_right_child = z;
+                node<value_type> *old_right = nd->_right_child;
+                node<value_type> *old_right_left = old_right->_left_child;
+
+                old_right->_left_child = nd;
+                nd->_right_child = old_right_left;
+
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
-                x->height = max(height(x->_left_child), height(x->_right_child) + 1);
-                return (x);
+                old_right->height = max(height(old_right->_left_child), height(old_right->_right_child) + 1);
+                return (old_right);
             }
             int get_balance(node<value_type> *nd)
             {
@@ -146,20 +93,26 @@ namespace ft
             }
             node<value_type> *insert(node<value_type> *nd, value_type pair)
             {
+                printf("hoe many times\n");
                 if (nd == NULL)
                 {
+                    // node<value_type> *test_node = new_node(pair);
+                    // printf("%d\n", test_node->_value.second);
+                    printf("here\n");
                     return (new_node(pair));
                 }
                 if (pair.first < nd->_value.first)
                 {
                     nd->_left_child = insert(nd->_left_child, pair);
                 }
-                if (pair.first > nd->_value.first)
+                else if (pair.first > nd->_value.first)
                 {
                     nd->_right_child = insert(nd->_right_child, pair);
                 }
                 else
+                {
                     return (nd);
+                }
                 nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
                 int balance = get_balance(nd);
                 if (balance > 1 && pair.first < nd->_left_child->_value.first)
@@ -176,13 +129,89 @@ namespace ft
                 }
                 if (balance < -1 && pair.first < nd->_right_child->_value.first)
                 {
-                    return (left_rotation(nd));//right right case////
+                    return (left_rotation(nd));//right left case////
                 }
+                printf("here2\n");
                 return (nd);
             }
             ~my_tree(){};
-        private:
             node<value_type> tree_node;
+        private:
+    };
+    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator</*std::*/pair<const Key, T> > >
+    class map
+    {
+        public:
+            typedef Key                                         key_type;
+            typedef T                                           mapped_type;
+            typedef pair< key_type,mapped_type>                 value_type;
+            typedef Compare                                     key_compare;
+            typedef Allocator                                   allocator_type;
+            typedef typename allocator_type::reference          reference;
+            typedef typename allocator_type::const_reference    const_reference;
+            typedef typename allocator_type::pointer            pointer;
+            typedef typename allocator_type::const_pointer      const_pointer;
+            typedef size_t                                      size_type;
+            typedef node<value_type>                            _node;
+            typedef my_tree<value_type>                         tree;
+            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :u(alloc)
+            {
+                _size = 0;
+            }
+            map (const map& x)
+            {
+                *this = x;
+            }
+            map& operator= (const map& x)
+            {
+                _size = x._size;
+                _tree = x._tree;
+                return (*this);
+            }
+            bool empty() const
+            {
+                return (_size == 0);
+            }
+            size_type size() const
+            {
+                return (_size);
+            }
+            size_type max_size() const
+            {
+                return (u.max_size);
+            }
+            mapped_type& operator[] (const key_type& k)
+            {
+                tree tmp = _tree;
+                for (size_t i = 0; i < _size; i++)
+                {
+                    if (k == tmp.tree_node._value.first)
+                        return (tmp.tree_node._value.second);
+                    if (k > tmp.tree_node._value.first)
+                        tmp.tree_node = tmp.tree_node._right_child;
+                    else if (k < tmp.tree_node._value.first)
+                        tmp.tree_node = tmp.tree_node._left_child;
+                }  
+            }
+			void insert (const value_type& val)
+			{
+                printf("ho ho\n");
+                node<value_type> *test = _tree.insert(&_tree.tree_node, val);
+				// _tree.tree_node.balance_factor = test->balance_factor;
+				// _tree.tree_node.height = test->height;
+				// _tree.tree_node._left_child = test->_left_child;
+				// _tree.tree_node._right_child= test->_right_child;
+				// _tree.tree_node.balance_factor = test->balance_factor;
+				// _tree.tree_node._value = test->_value;
+                printf("inside insert %d\n", test->_value.first);
+                _size += 1;
+                // return (NULL);
+			}
+            tree        _tree;
+            private:
+                allocator_type u;
+                // _node _my_node;
+                size_type _size;
     };
 }
 
