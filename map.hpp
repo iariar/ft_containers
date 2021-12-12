@@ -27,18 +27,20 @@ namespace ft
             my_tree(/* args */)
             {
                 // tree_node._value = nullptr;
-                tree_node.balance_factor = 0;
-                // tree_node._root = nullptr;
-                tree_node._left_child = nullptr;
-                tree_node._right_child = nullptr;
+                // tree_node.balance_factor = 0;
+                // // tree_node._root = nullptr;
+                // tree_node._left_child = nullptr;
+                // tree_node._right_child = nullptr;
+                tree_node = nullptr;
             }
             my_tree operator= (const my_tree& x)
             {
-                tree_node._value = x.tree_node._value;
-                tree_node.balance_factor = x.tree_node.balance_factor;
-                tree_node._root = x.tree_node._root;
-                tree_node._left_child = x.tree_node._left_child;
-                tree_node._righ_child = x.tree_node._righ_child;
+                tree_node->_value = x.tree_node->_value;
+                tree_node->balance_factor = x.tree_node->balance_factor;
+                // tree_node->_root = x.tree_node->_root;
+                tree_node->_left_child = x.tree_node->_left_child;
+                tree_node->_right_child = x.tree_node->_right_child;
+                return (*this);
             }
             int height(node<value_type> *nd)
             {
@@ -93,12 +95,8 @@ namespace ft
             }
             node<value_type> *insert(node<value_type> *nd, value_type pair)
             {
-                printf("hoe many times\n");
                 if (nd == NULL)
                 {
-                    // node<value_type> *test_node = new_node(pair);
-                    // printf("%d\n", test_node->_value.second);
-                    printf("here\n");
                     return (new_node(pair));
                 }
                 if (pair.first < nd->_value.first)
@@ -131,11 +129,10 @@ namespace ft
                 {
                     return (left_rotation(nd));//right left case////
                 }
-                printf("here2\n");
                 return (nd);
             }
             ~my_tree(){};
-            node<value_type> tree_node;
+            node<value_type> *tree_node;
         private:
     };
     template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator</*std::*/pair<const Key, T> > >
@@ -185,25 +182,25 @@ namespace ft
                 tree tmp = _tree;
                 for (size_t i = 0; i < _size; i++)
                 {
-                    if (k == tmp.tree_node._value.first)
-                        return (tmp.tree_node._value.second);
-                    if (k > tmp.tree_node._value.first)
-                        tmp.tree_node = tmp.tree_node._right_child;
-                    else if (k < tmp.tree_node._value.first)
-                        tmp.tree_node = tmp.tree_node._left_child;
-                }  
+                    if (k == tmp.tree_node->_value.first)
+                        return (tmp.tree_node->_value.second);
+                    if (k > tmp.tree_node->_value.first)
+                        tmp.tree_node = tmp.tree_node->_right_child;
+                    else if (k < tmp.tree_node->_value.first)
+                        tmp.tree_node = tmp.tree_node->_left_child;
+                } 
+                return (tmp.tree_node->_value.second);
             }
 			void insert (const value_type& val)
 			{
-                printf("ho ho\n");
-                node<value_type> *test = _tree.insert(&_tree.tree_node, val);
+                _tree.tree_node = _tree.insert(_tree.tree_node, val);
 				// _tree.tree_node.balance_factor = test->balance_factor;
 				// _tree.tree_node.height = test->height;
 				// _tree.tree_node._left_child = test->_left_child;
 				// _tree.tree_node._right_child= test->_right_child;
 				// _tree.tree_node.balance_factor = test->balance_factor;
-				// _tree.tree_node._value = test->_value;
-                printf("inside insert %d\n", test->_value.first);
+				// _tree.tree_node->_value = test->_value;
+                // printf("inside insert %d\n", test->_value.first);
                 _size += 1;
                 // return (NULL);
 			}

@@ -866,7 +866,7 @@ namespace ft
         public:
             typedef T1 first_type; 
             typedef T2 second_type;
-            pair()/* : first(0) , second(0)*/
+            pair() : first(0) , second(0)
             {
                 return; 
             }
@@ -883,6 +883,7 @@ namespace ft
             }
             pair& operator= (const pair& pr)
             {
+                printf("pr.first = %d\npr.second = %d\n", this->first, this->second);
                 this->first  = pr.first;
                 this->second = pr.second;
                 return (*this);

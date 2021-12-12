@@ -1387,7 +1387,18 @@
 int main()
 {
     ft::map<int, int> test;
-    ft::pair<int, int> pp(1, 5);
-    test.insert(pp);
-    std::cout << "pp first = " << test._tree.tree_node._value.first << "\npp second = " << test._tree.tree_node._value.second << std::endl;
+    // ft::pair<int, int> pp(1, 50);
+    // ft::pair<int, int> pp2(0, 30);
+    // ft::pair<int, int> pp3(2, 20);
+    // ft::pair<int, int> pp4(3, 330);
+    // ft::pair<int, int> pp5(5, 550);
+    // test.insert(pp);
+    // test.insert(pp2);
+    // test.insert(pp3);
+    // test.insert(pp4);
+    // test.insert(pp5);
+    ft::map<int, int> test2;
+    test2 = test;
+    // std::cout << "pp first = " << test2._tree.tree_node->_value.first << "\npp second = " << test2._tree.tree_node->_value.second << std::endl;
+    // std::cout << "operator return val = " << test2._tree.tree_node->balance_factor << std::endl;
 }
