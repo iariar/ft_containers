@@ -35,11 +35,14 @@ namespace ft
             }
             my_tree operator= (const my_tree& x)
             {
-                tree_node->_value = x.tree_node->_value;
-                tree_node->balance_factor = x.tree_node->balance_factor;
-                // tree_node->_root = x.tree_node->_root;
-                tree_node->_left_child = x.tree_node->_left_child;
-                tree_node->_right_child = x.tree_node->_right_child;
+                tree_node = new node<value_type>;
+                if (x.tree_node)
+                {
+                    tree_node->_value = x.tree_node->_value ;
+                    tree_node->balance_factor = x.tree_node->balance_factor;
+                    tree_node->_left_child = x.tree_node->_left_child;
+                    tree_node->_right_child = x.tree_node->_right_child;
+                }
                 return (*this);
             }
             int height(node<value_type> *nd)
@@ -56,6 +59,7 @@ namespace ft
             {
                 node<value_type> *nd = new node<value_type>;
                 nd->_value = pair;
+                nd->balance_factor = 0;
                 nd->_left_child = NULL;
                 nd->_right_child = NULL;
                 nd->height = 1;/*probably a 0*/
@@ -71,6 +75,7 @@ namespace ft
 
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 old_left->height = max(height(old_left->_left_child), height(old_left->_right_child) + 1);
+                old_left->balance_factor = get_balance(old_left);
                 return (old_left);
             }
             node<value_type> *left_rotation(node<value_type> *nd)
@@ -83,6 +88,7 @@ namespace ft
 
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 old_right->height = max(height(old_right->_left_child), height(old_right->_right_child) + 1);
+                old_right->balance_factor = get_balance(old_right);
                 return (old_right);
             }
             int get_balance(node<value_type> *nd)
@@ -113,6 +119,8 @@ namespace ft
                 }
                 nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
                 int balance = get_balance(nd);
+                nd->balance_factor = balance;
+                printf("%d\n", balance);
                 if (balance > 1 && pair.first < nd->_left_child->_value.first)
                 {
                     return (right_rotation(nd));//left left case////

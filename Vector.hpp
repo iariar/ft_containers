@@ -883,8 +883,12 @@ namespace ft
             }
             pair& operator= (const pair& pr)
             {
-                printf("pr.first = %d\npr.second = %d\n", this->first, this->second);
+                // printf("pr.first = %d\npr.second = %d\n", this->first, this->second);
+                
+                // this->first  = *new first_type;
+                // printf("here\n");
                 this->first  = pr.first;
+                // this->second = *new second_type;
                 this->second = pr.second;
                 return (*this);
             }
