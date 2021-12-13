@@ -20,7 +20,7 @@ namespace ft
         struct node *_right_child;
         int         height;
     };
-    template <class value_type>
+    template <class value_type, class key_type>
     class my_tree
     {
         public:
@@ -120,7 +120,7 @@ namespace ft
                 nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
                 int balance = get_balance(nd);
                 nd->balance_factor = balance;
-                printf("%d\n", balance);
+                // printf("%d\n", balance);
                 if (balance > 1 && pair.first < nd->_left_child->_value.first)
                 {
                     return (right_rotation(nd));//left left case////
@@ -138,6 +138,30 @@ namespace ft
                     return (left_rotation(nd));//right left case////
                 }
                 return (nd);
+            }
+            node<value_type> *erase(node<value_type> *nd, key_type k)
+            {
+                if (nd == NULL)
+                {
+                    return (nd);
+                }
+                if (k < nd->_value.first)
+                {
+                    nd->_left_child = erase(nd->_left_child, pair);
+                }
+                else if (k > nd->_value.first)
+                {
+                    nd->_right_child = erase(nd->_right_child, pair);
+                }
+                else
+                {
+                    return (nd);
+                }
+                if (nd->_right_child)
+                {
+                    node<value_type> old_nd = nd;
+                    nd = 
+                }
             }
             ~my_tree(){};
             node<value_type> *tree_node;
@@ -158,7 +182,7 @@ namespace ft
             typedef typename allocator_type::const_pointer      const_pointer;
             typedef size_t                                      size_type;
             typedef node<value_type>                            _node;
-            typedef my_tree<value_type>                         tree;
+            typedef my_tree<value_type, key_type>                         tree;
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :u(alloc)
             {
                 _size = 0;
@@ -212,6 +236,27 @@ namespace ft
                 _size += 1;
                 // return (NULL);
 			}
+            size_type erase (const key_type& k)
+            {
+                _tree.tree_node = _tree.erase(_tree.tree_node, k);
+                // int found = 0;
+                // for (int i = 0; i < _size; i++)
+                // {
+                //     if (k == tmp.tree_node->_value.first)
+                //     {
+                //         found = 1;
+                //     }
+                //     if (k > tmp.tree_node->_value.first)
+                //         tmp.tree_node = tmp.tree_node->_right_child;
+                //     else if (k < tmp.tree_node->_value.first)
+                //         tmp.tree_node = tmp.tree_node->_left_child;
+                // }
+                // if (found)
+                // {
+                //     if (tmp.tree_node->_right_child)
+
+                // }                
+            }
             tree        _tree;
             private:
                 allocator_type u;
