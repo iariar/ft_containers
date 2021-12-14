@@ -141,27 +141,39 @@ namespace ft
             }
             node<value_type> *erase(node<value_type> *nd, key_type k)
             {
+                node<value_type> *tmp = nd;
+
                 if (nd == NULL)
                 {
                     return (nd);
                 }
                 if (k < nd->_value.first)
                 {
-                    nd->_left_child = erase(nd->_left_child, pair);
+                    nd->_left_child = erase(nd->_left_child, k);
                 }
                 else if (k > nd->_value.first)
                 {
-                    nd->_right_child = erase(nd->_right_child, pair);
+                    nd->_right_child = erase(nd->_right_child, k);
                 }
                 else
                 {
-                    return (nd);
+                    if (nd && nd->_right_child)
+                    {
+                        node<value_type> *old_nd = nd;
+                        nd = nd->_right_child;
+                        nd->_left_child = old_nd->_right_child;
+                    }
+                    else if (nd && nd->_left_child)
+                    {
+                        nd = nd->_left_child;
+                    }
+                    else
+                    {
+                        printf("inside nd something = %d\n", nd->_value.second);
+                        nd = nullptr;
+                    }
                 }
-                if (nd->_right_child)
-                {
-                    node<value_type> old_nd = nd;
-                    nd = 
-                }
+                return (tmp);
             }
             ~my_tree(){};
             node<value_type> *tree_node;
@@ -236,9 +248,10 @@ namespace ft
                 _size += 1;
                 // return (NULL);
 			}
-            size_type erase (const key_type& k)
+            void erase (const key_type& k)
             {
                 _tree.tree_node = _tree.erase(_tree.tree_node, k);
+                _size--;
                 // int found = 0;
                 // for (int i = 0; i < _size; i++)
                 // {
