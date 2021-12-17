@@ -100,7 +100,8 @@ namespace ft
     struct enable_if{};
 
     template <class T>
-    struct enable_if<true, T>{
+    struct enable_if<true, T>
+    {
         typedef T type;
     };
 
@@ -871,9 +872,9 @@ namespace ft
                 return; 
             }
             template <class U, class V>
-            pair (const pair<U,V>& pr)
+            pair (const pair<U,V>& pr) : first(pr.first)
             {
-                this->first = pr.first;
+                // this->first = pr.first;
                 this->second = pr.second;
             }
             pair (const first_type& a, const second_type& b)
@@ -883,12 +884,7 @@ namespace ft
             }
             pair& operator= (const pair& pr)
             {
-                // printf("pr.first = %d\npr.second = %d\n", this->first, this->second);
-                
-                // this->first  = *new first_type;
-                // printf("here\n");
-                this->first  = pr.first;
-                // this->second = *new second_type;
+                this->first = pr.first;
                 this->second = pr.second;
                 return (*this);
             }

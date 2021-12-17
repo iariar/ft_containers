@@ -1387,24 +1387,40 @@
 int main()
 {
     ft::map<int, int> test;
-    ft::pair<int, int> pp(1, 50);
-    ft::pair<int, int> pp2(0, 30);
-    ft::pair<int, int> pp3(2, 20);
-    ft::pair<int, int> pp4(3, 330);
-    ft::pair<int, int> pp5(5, 550);
-    ft::pair<int, int> pp6(6, 550);
-    test.insert(pp);
-    test.insert(pp2);
-    test.insert(pp3);
-    test.insert(pp4);
-    test.insert(pp5);          /////BALANCE FACTOR IS WRONG///////  
-    test.insert(pp6);          /////BALANCE FACTOR IS WRONG///////  
-    ft::map<int, int> test2;
-    test2 = test;
-    std::cout << "pp first = " << test._tree.tree_node->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
+    // printf("been there\n");
+    test.insert(ft::pair<int, int>(20, 20));
+    test.insert(ft::pair<int, int>(10, 10));
+    test.insert(ft::pair<int, int>(15, 30));
+    test.insert(ft::pair<int, int>(5, 40));
+    test.insert(ft::pair<int, int>(30, 50));
+    test.insert(ft::pair<int, int>(25, 60));
+    test.insert(ft::pair<int, int>(40, 70));
+    test.insert(ft::pair<int, int>(45, 80));
+    test.insert(ft::pair<int, int>(1, 90));
+    test.insert(ft::pair<int, int>(60, 80));
+    test.insert(ft::pair<int, int>(70, 80));
+    test.insert(ft::pair<int, int>(80, 80));
+    test.insert(ft::pair<int, int>(90, 80));
+    // printf("done that\n");
+    // test.insert(pp2);
+    // test.insert(pp3);
+    // test.insert(pp4);
+    // test.insert(pp5);          /////BALANCE FACTOR IS WRONG///////  
+    // test.insert(pp6);
+    // test.insert(pp7);
+    // ft::map<int, int> test2;
+    // test2 = test;
+    // std::cout << "pp first = " << test._tree.tree_node->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
+    // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+    // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
+    // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+
+    // std::cout << test[6] << std::endl;
+    test.erase(20);
+    test.erase(7);
+    test.erase(4);
+    std::cout << "pp first = " << test._tree.tree_node->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
     std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
-    test.erase(0);
-    // test.erase(1);
     // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
     // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
     // test.erase(0);
