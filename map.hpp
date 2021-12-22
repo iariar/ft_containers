@@ -311,6 +311,10 @@ namespace ft
                     return (nd);
                 return (tmp);
             }
+            void    destroy_node(_node *nd)
+            {
+                allocator.destroy(nd);
+            }
             ~my_tree(){};
             _node *tree_node;
         private:
@@ -378,8 +382,8 @@ namespace ft
                 }
                 else
                 {
-                    std::cout << nd->_value.first << " " << side << std::endl;
-                    std::cout << "Error in wich parent func" << std::endl;
+                    // std::cout << nd->_value.first << " " << side << std::endl;
+                    // std::cout << "Error in wich parent func" << std::endl;
                 }
             }
         }
@@ -423,6 +427,7 @@ namespace ft
         private:
         public:
             nodePtr _ptr;
+            my_map_iterator():_ptr(){}
             my_map_iterator(nodePtr ptr):_ptr(ptr){}
             my_map_iterator(const my_map_iterator  &it)
             {
@@ -491,6 +496,7 @@ namespace ft
         private:
         public:
             nodePtr _ptr;
+            my_map_reverse_iterator():_ptr(){};
             my_map_reverse_iterator(nodePtr ptr):_ptr(ptr){}
             my_map_reverse_iterator(const my_map_reverse_iterator  &it)
             {
@@ -592,7 +598,7 @@ namespace ft
                 if (first._ptr)
                 {
                     _tree.tree_node = _tree.new_node();
-                    std::cout << _tree.tree_node->_value.first;
+                    // std::cout << _tree.tree_node->_value.first;
                     _node *tmp =  _tree.tree_node;
                     // root = _tree.tree_node;
                     _tree.tree_node = _tree.tree_node->_left_child;
@@ -671,10 +677,10 @@ namespace ft
                 _size += 1;
                 return (ft::make_pair (find(val.first), 1));
 			}
-            // iterator insert (iterator position, const value_type& val)
-            // {
-            //     // _tree.tree_node = _tree.insert();
-            // }
+            iterator insert (iterator position, const value_type& val)
+            {
+                _tree.tree_node = _tree.insert();
+            }
             template <class InputIterator>
             void insert (InputIterator first, InputIterator last)
             {
@@ -683,11 +689,25 @@ namespace ft
                     insert(first._ptr->_value);
                 }
             }
+            void erase (iterator position)
+            {
+                erase(position->first);
+                _size--;
+            }
             size_type erase (const key_type& k)
             {
                 _tree.tree_node = _tree.erase(_tree.tree_node, k);
                 _size--;   
                 return (1);           
+            }
+            void erase (iterator first, iterator last)
+            {
+                for (; first != last; first++)
+                {
+                    erase(first);
+                    _size--;
+                }
+                
             }
             iterator begin()
             {
@@ -696,7 +716,7 @@ namespace ft
             iterator end()
             {
                 // std::cout << find_successor(tree_max(_tree.tree_node))->_value.second<< " sk" << std::endl; 
-                return (/*iterator(tree_max(_tree.tree_node))*/root);
+                return (iterator(tree_max(_tree.tree_node))++);
             }
             // const_iterator cbegin()
             // {
@@ -723,11 +743,10 @@ namespace ft
                 iterator it = this->begin();
                 // std::cout << "this begin before" << std::endl;
                 // std::cout << "this begin = " << it->first << std::endl;
-                for (iterator it = this->begin(); it != iterator(root); )
+                for (iterator it = this->begin(); it._ptr && it != iterator(root); it++)
                 {
                     if (k == it->first)
                         return (it);
-                    it++;
                 }
                 return (this->end()); 
             }
@@ -758,6 +777,13 @@ namespace ft
             //     x._tree = tmp->_tree;
             //     x._size = tmp->_size;
             // }
+            void clear()
+            {
+                for (iterator it = this->end(); this->begin() != it; it--)
+                {
+                    _tree.destroy_node(it.ptr);
+                }
+            }
             tree        _tree;
             private:
                 _node *root;
