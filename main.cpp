@@ -1384,46 +1384,207 @@
 //     printf("pp3 first = %d -- pp3 second = %d\n", test_node->_left_child->_value.first ,test_node->_left_child->_value.second);
 // }
 
-int main()
-{
-    ft::map<int, int> test;
-    // printf("been there\n");
-    test.insert(ft::pair<int, int>(20, 20));
-    test.insert(ft::pair<int, int>(10, 10));
-    test.insert(ft::pair<int, int>(15, 30));
-    test.insert(ft::pair<int, int>(5, 40));
-    test.insert(ft::pair<int, int>(30, 50));
-    test.insert(ft::pair<int, int>(25, 60));
-    test.insert(ft::pair<int, int>(40, 70));
-    test.insert(ft::pair<int, int>(45, 80));
-    test.insert(ft::pair<int, int>(1, 90));
-    test.insert(ft::pair<int, int>(60, 80));
-    test.insert(ft::pair<int, int>(70, 80));
-    test.insert(ft::pair<int, int>(80, 80));
-    test.insert(ft::pair<int, int>(90, 80));
-    // printf("done that\n");
-    // test.insert(pp2);
-    // test.insert(pp3);
-    // test.insert(pp4);
-    // test.insert(pp5);          /////BALANCE FACTOR IS WRONG///////  
-    // test.insert(pp6);
-    // test.insert(pp7);
-    // ft::map<int, int> test2;
-    // test2 = test;
-    // std::cout << "pp first = " << test._tree.tree_node->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
-    // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
-    // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
-    // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+// int main()
+// {
+//     ft::map<int, int> test;
+//     ft::map<int, int> test2;
+//     // printf("been there\n");
+//     test.insert(ft::pair<int, int>(20, 20));
+//     test.insert(ft::pair<int, int>(10, 10));
+//     test.insert(ft::pair<int, int>(15, 30));
+//     test.insert(ft::pair<int, int>(5, 40));
+//     test.insert(ft::pair<int, int>(30, 50));
+//     test.insert(ft::pair<int, int>(25, 60));
+//     test.insert(ft::pair<int, int>(40, 70));
+//     test.insert(ft::pair<int, int>(45, 80));
+//     test.insert(ft::pair<int, int>(1, 90));
+//     test.insert(ft::pair<int, int>(60, 660));
+//     test.insert(ft::pair<int, int>(70, 770));
+//     test.insert(ft::pair<int, int>(80, 880));
+//     test.insert(ft::pair<int, int>(90, 990));
+//     test2.insert(test.begin(), test.end());
+//     test2.insert(ft::pair<int, int>(0, 0));
 
-    // std::cout << test[6] << std::endl;
-    test.erase(20);
-    test.erase(7);
-    test.erase(4);
-    std::cout << "pp first = " << test._tree.tree_node->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
-    std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
-    // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
-    // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
-    // test.erase(0);
-    // test.erase(0);
-    // test.erase(0);
+//     for (ft::map<int, int>::iterator it = test2.begin();it != test2.end() ; it++)
+//     {
+//         std::cout << it->first << std::endl;
+//     }
+    
+//     // ft::map<int, int>::reverse_iterator it = test.begin();
+//     // std::cout << test.count(30) << std::endl;
+//     // test2.swap(test);
+//     // std::cout << test.count(33) << std::endl;
+//     // for (ft::map<int, int>::reverse_iterator it = test.rbegin(); it != test.rend(); it++)
+//     // {
+//     //    std::cout << it->first << std::endl;
+//     // }
+//     // std::cout << test._tree.tree_node->_left_child->_right_child->_right_child->_value.first << std::endl;
+    
+//     // test_iterator++;
+//     // test_iterator--;
+//     // printf("done that\n");
+//     // test.insert(pp2);
+//     // test.insert(pp3);
+//     // test.insert(pp4);
+//     // test.insert(pp5);          /////BALANCE FACTOR IS WRONG///////  
+//     // test.insert(pp6);
+//     // test.insert(pp7);
+//     // ft::map<int, int> test2;
+//     // test2 = test;
+//     // std::cout << "pp first = " << test._tree.tree_node->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
+//     // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+//     // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
+//     // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+
+//     // std::cout << test[6] << std::endl;
+//     // test.erase(20);
+//     // test.erase(7);
+//     // test.erase(4);
+//     // std::cout << "pp first = " << test._tree.tree_node->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_value.second << std::endl;
+//     // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+//     // std::cout << test_iterator->first << std::endl;
+//     // std::cout << "pp first = " << test._tree.tree_node->_left_child->_left_child->_value.first << "\npp second = " << test._tree.tree_node->_left_child->_left_child->_value.second << std::endl;
+//     // std::cout << "operator return val = " << test._tree.tree_node->balance_factor << std::endl;
+//     // test.erase(0);
+//     // test.erase(0);
+//     // test.erase(0);
+// }
+
+bool fncomp (char lhs, char rhs) {return lhs<rhs;}
+
+struct classcomp {
+  bool operator() (const char& lhs, const char& rhs) const
+  {return lhs<rhs;}
+};
+
+int main ()
+{
+    //////////////////////
+    //CONSTRUCTORS////////
+    //////////////////////
+    // {
+    //     std::map<char,int> first;
+
+    //     first['a']=10;
+    //     first['b']=30;
+    //     first['c']=50;
+    //     first['d']=70;
+
+    //     std::map<char,int> second (first.begin(),first.end());
+
+    //     std::map<char,int> third (second);
+
+    //     std::map<char,int,classcomp> fourth;                 // class as Compare
+
+    //     bool(*fn_pt)(char,char) = fncomp;
+    //     std::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
+    // }
+    // {
+    //     ft::map<char,int> first;
+
+    //     first['a']=10;
+    //     first['b']=30;
+    //     first['c']=50;
+    //     first['d']=70;
+
+    //     ft::map<char,int> second (first.begin(),first.end());
+
+    //     ft::map<char,int> third (second);
+
+    //     ft::map<char,int,classcomp> fourth;                 // class as Compare
+
+    //     bool(*fn_pt)(char,char) = fncomp;
+    //     ft::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
+    // }
+    //////////////////////
+    //OPERATOR=///////////
+    //////////////////////
+    // {
+    //     std::map<char,int> first;
+    //     std::map<char,int> second;
+
+    //     first['x']=8;
+    //     first['y']=16;
+    //     first['z']=32;
+
+    //     second=first;                // second now contains 3 ints
+    //     first=std::map<char,int>();  // and first is now empty
+
+    //     std::cout << "Size of first: " << first.size() << '\n';
+    //     std::cout << "Size of second: " << second.size() << '\n';
+    // }
+    // {
+    //     ft::map<char,int> first;
+    //     ft::map<char,int> second;
+
+    //     first['x']=8;
+    //     first['y']=16;
+    //     first['z']=32;
+
+
+    //     second=first;                // second now contains 3 ints
+    //     first=ft::map<char,int>();  // and first is now empty
+
+    //     std::cout << "Size of first: " << second.size() << '\n';
+    //     std::cout << "Size of second: " << second.size() << '\n';
+    // }
+    //////////////////////
+    //OPERATOR[]//////////
+    //////////////////////
+    // {
+    //     std::map<char,std::string> mymap;
+
+    //     mymap['a']="an element";
+    //     mymap['b']="another element";
+    //     mymap['c']=mymap['b'];
+
+    //     std::cout << "mymap['a'] is " << mymap['a'] << '\n';
+    //     std::cout << "mymap['b'] is " << mymap['b'] << '\n';
+    //     std::cout << "mymap['c'] is " << mymap['c'] << '\n';
+    //     std::cout << "mymap['d'] is " << mymap['d'] << '\n';
+
+    //     std::cout << "mymap now contains " << mymap.size() << " elements.\n";
+    // }
+    // {
+    //     ft::map<char,std::string> mymap;
+
+    //     mymap['a']="an element";
+    //     mymap['b']="another element";
+    //     mymap['c']=mymap['b'];
+
+    //     std::cout << "mymap['a'] is " << mymap['a'] << '\n';
+    //     std::cout << "mymap['b'] is " << mymap['b'] << '\n';
+    //     std::cout << "mymap['c'] is " << mymap['c'] << '\n';
+    //     std::cout << "mymap['d'] is " << mymap['d'] << '\n';
+
+    //     std::cout << "mymap now contains " << mymap.size() << " elements.\n";
+    // }
+    //////////////////////
+    //BEGIN()/////////////
+    //////////////////////
+    {
+        std::map<char,int> mymap;
+
+        mymap['b'] = 100;
+        mymap['a'] = 200;
+        mymap['c'] = 300;
+
+        // show content:
+        for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+            std::cout << it->first << " => " << it->second << '\n';
+    }
+    {
+        ft::map<char,int> mymap;
+
+        mymap['b'] = 100;
+        mymap['a'] = 200;
+        mymap['c'] = 300;
+
+        // show content:
+        for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+            std::cout << it->first << " => " << it->second << '\n';
+    }
+
+
+  return 0;
 }

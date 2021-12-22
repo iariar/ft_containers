@@ -10,22 +10,11 @@ namespace ft
 	/////////////////////
     //////MAP////////////
     /////////////////////
-
-//     template <class _NodePtr>
-// _NodePtr  tree_min(_NodePtr __x) 
-// {
-//     while (__x->__left_ != nullptr)
-//         __x = __x->__left_;
-//     return __x;
-// }
-
-
     template <class value_type>
     struct node
     {
         value_type  _value;
-        int         balance_factor;
-        // struct node *_root;       
+        int         balance_factor;      
         struct node *_left_child;
         struct node *_right_child;
         struct node *_parent;
@@ -33,22 +22,17 @@ namespace ft
         node(){};
         node(value_type pir) : _value(pir){};
     };
-    // template <class value_type, class __node_pointer>
-    // class __tree_iterator{
-    //     typedef value_type *        pointer;
-
-    //     typedef __node_pointer       nodePtr;
-
-    //     private:
-    //         nodePtr _ptr;
-    //     public:
-    //         __tree_iterator(nodePtr ptr):_ptr(ptr){}
-    // };
-
     template <class value_type, class key_type, class allocator_type>
     class my_tree
     {
         public:
+            typedef node<value_type> _node;
+            typedef typename allocator_type::template rebind<_node>::other node_allocator;
+            // typename allocator_type::rebind<node<value_type> >::other;
+            // template< class U > struct rebind
+            // {
+            //     typedef allocator_type<U> other;
+            // };
             my_tree(/* args */)
             {
                 // tree_node._value = nullptr;
@@ -62,16 +46,16 @@ namespace ft
             {
                 if (x.tree_node)
                 {
-                    tree_node = new node<value_type>(x.tree_node->_value);
-                    // tree_node->_value = new node<value_type>(x.tree_node->_value);
-                    tree_node->balance_factor = x.tree_node->balance_factor;
-                    tree_node->_left_child = x.tree_node->_left_child;
-                    tree_node->_parent = x.tree_node->_parent;
-                    tree_node->_right_child = x.tree_node->_right_child;
+                    tree_node = allocator.allocate(1);
+                    allocator.construct(tree_node, x.tree_node->_value);
+                    this->tree_node->balance_factor = x.tree_node->balance_factor;
+                    this->tree_node->_left_child = x.tree_node->_left_child;
+                    this->tree_node->_parent = x.tree_node->_parent;
+                    this->tree_node->_right_child = x.tree_node->_right_child;
                 }
                 return (*this);
             }
-            int height(node<value_type> *nd)
+            int height(_node *nd)
             {
                 if (nd == NULL)
                     return (0);
@@ -81,22 +65,21 @@ namespace ft
             {
                 return (a > b ? a : b);
             }
-            node<value_type> *new_node(value_type pair)
+            _node *new_node(value_type pair)
             {
-                node<value_type> *nd = new node<value_type>(pair);
-                // nd = test;
-                // nd->_value = pair;
+                _node *nd = allocator.allocate(1);
+                allocator.construct(nd, pair);
                 nd->balance_factor = 0;
                 nd->_left_child = NULL;
                 nd->_parent= NULL;
                 nd->_right_child = NULL;
-                nd->height = 1;/*probably a 0*/
+                nd->height = 1;/*probably a 0*/  
                 return (nd);
             }
-            node<value_type> *right_rotation(node<value_type> *nd)
+            _node *right_rotation(_node *nd)
             {
-                node<value_type> *old_left = nd->_left_child;
-                node<value_type> *old_left_right = old_left->_right_child;
+                _node *old_left = nd->_left_child;
+                _node *old_left_right = old_left->_right_child;
 
                 old_left->_right_child = nd;
                 nd->_left_child = old_left_right;
@@ -106,10 +89,10 @@ namespace ft
                 old_left->balance_factor = get_balance(old_left);
                 return (old_left);
             }
-            node<value_type> *left_rotation(node<value_type> *nd)
+            _node *left_rotation(_node *nd)
             {
-                node<value_type> *old_right = nd->_right_child;
-                node<value_type> *old_right_left = old_right->_left_child;
+                _node *old_right = nd->_right_child;
+                _node *old_right_left = old_right->_left_child;
 
                 old_right->_left_child = nd;
                 nd->_right_child = old_right_left;
@@ -119,7 +102,7 @@ namespace ft
                 old_right->balance_factor = get_balance(old_right);
                 return (old_right);
             }
-            int get_balance(node<value_type> *nd)
+            int get_balance(_node *nd)
             {
                 if (nd == NULL)
                 {
@@ -127,28 +110,9 @@ namespace ft
                 }
                 return (height(nd->_left_child) - height(nd->_right_child));
             }
-            // node<value_type> *tree_min(){
-            //     tree_min_helper(tree_node);
-            // }
-            node<value_type> *tree_min/*_helper*/(node<value_type> *nd)
+            _node *prev_node(_node *nd, key_type k, int *side)
             {
-                while (nd && nd->_left_child)
-                {
-                    nd = nd->_left_child;
-                }
-                return (nd);
-            }
-            node<value_type> *tree_max(node<value_type> *nd)
-            {
-                while (nd && nd->_right_child)
-                {
-                    nd = nd->_right_child;
-                }
-                return (nd);
-            }
-            node<value_type> *prev_node(node<value_type> *nd, key_type k, int *side)
-            {
-                node<value_type> *prev = NULL;
+                _node *prev = NULL;
                 (*side) = 0;
                 while (nd)
                 {
@@ -171,12 +135,12 @@ namespace ft
                 }
                 return (prev);
             }
-            node<value_type> *insert(node<value_type> *nd, value_type pair)
+            _node *insert(_node *nd, value_type pair)
             {
-                node<value_type> *tmp = nd;
-                node<value_type> *parent = NULL;
+                _node *tmp = nd;
+                _node *parent = NULL;
                 if (tmp == NULL)
-                {
+                {  
                     return (new_node(pair));
                 }
                 while (tmp)
@@ -218,10 +182,10 @@ namespace ft
                 // }
                 return (nd);
             }
-            node<value_type> *erase(node<value_type> *nd, key_type k)
+            _node *erase(_node *nd, key_type k)
             {
-                node<value_type> *tmp = nd;
-                node<value_type> *prev = NULL;
+                _node *tmp = nd;
+                _node *prev = NULL;
                 int side;
 
                 if (nd == NULL)
@@ -232,15 +196,11 @@ namespace ft
                 {
                     if (k < nd->_value.first && nd->_left_child)
                     {
-                        // prev = nd;
                         nd = nd->_left_child;
-                        // continue;
                     }
                     else if (k > nd->_value.first && nd->_right_child)
                     {
-                        // prev = nd;
                         nd = nd->_right_child;                                                  /*MAY NEED TO FIX HEIGHT / BALANCE*/
-                        // continue;
                     }
                     else
                     {
@@ -262,11 +222,10 @@ namespace ft
                             {
                                 prev->_left_child = nd->_right_child;;
                             }
-                            nd->_parent = prev;/*debatable*/
+                            nd->_parent = prev;/*debatable*//*NOT*/
                         }
                         else if (nd->_left_child && !nd->_right_child)
                         {
-                            // prev = prev_node(tmp, nd->_value.first, &side);
                             if (side == 1)
                             {
                                 prev->_right_child = nd->_left_child;
@@ -279,10 +238,10 @@ namespace ft
                         }
                         else
                         {
-                            node<value_type> *tr_min = tree_min(nd->_right_child);
-                            node<value_type> *old_right = nd->_right_child;
-                            node<value_type> *old_left = nd->_left_child;
-                            node<value_type> *old_parent = nd->_parent;
+                            _node *tr_min = tree_min(nd->_right_child);
+                            _node *old_right = nd->_right_child;
+                            _node *old_left = nd->_left_child;
+                            _node *old_parent = nd->_parent;
                             //////place tr_min in place of nd that we want to erase///////
                             if (nd->_parent)
                             {
@@ -342,81 +301,279 @@ namespace ft
                 return (tmp);
             }
             ~my_tree(){};
-            node<value_type> *tree_node;
+            _node *tree_node;
         private:
-            allocator_type alloc;
+            node_allocator allocator;
     };
-    // template <typename map_type>
-    // class my_map_iterator
-    // {
-    //     public:
-    //     // typedef std::bidirectional_iterator_tag iterator_category;
-    //         // typedef typename map_type::tree iterator_tree_type;
-    //         // typedef typename map_type::key_type key_type;
-    //         // typedef typename map_type::value_type value_type;
-    //         // typedef typename map_type::_node iterator_node;
-    //         key_type    first;
-    //         value_type  second;
-    //         iterator_tree_type iterator_tree; 
-    //         // iterator_node
-    //         // node        iterator_node;
-    //         my_map_iterator()/* : first(0), second(0)*/
-    //         {
-                
-    //         };
-    //         my_map_iterator(my_map_iterator const &x)
-    //         {
-    //             this->first = x.first;
-    //             this->second = x.second;
-    //         };
-    //         // my_map_iterator(node *nd)
-    //         // {
-    //         //     iterator_node = nd;
-    //         //     first = nd->_value.first;
-    //         // }
-    //         my_map_iterator operator=(my_map_iterator const &x)
-    //         {
-    //             this->first = x.first;
-    //             this->second = x.second;
-    //             return (*this);
-    //         };
-    //         ~my_map_iterator();
-
-    // };
+    template <class node_pointer>
+    node_pointer *tree_min(node_pointer *nd)
+    {
+        while (nd && nd->_left_child)
+        {
+            nd = nd->_left_child;
+        }
+        return (nd);
+    }
+    template <class node_pointer>
+    node_pointer *tree_max(node_pointer *nd)
+    {
+        while (nd && nd->_right_child)
+        {
+            nd = nd->_right_child;
+        }
+        return (nd);
+    }
+    template <class node_pointer>
+    int wich_parent_side(node_pointer *nd, node_pointer *nd_parent)
+    {
+        if (nd && nd_parent)
+        {
+            if (nd == nd_parent->_right_child)
+                return (1);
+            else if (nd == nd_parent->_left_child)
+                return (2);
+            else
+                return (0);
+        }
+        return (-1);
+    }
+    template <class node_pointer>
+    node_pointer *find_successor(node_pointer * nd)
+    {
+        if (nd)
+        {
+            if (nd->_right_child)
+            {
+                return (tree_min(nd->_right_child));
+            }
+            else
+            {
+                // printf("node %d was here\n", nd->_value.first);
+                int side = 0;
+                side = wich_parent_side(nd, nd->_parent);
+                if (side == 2)
+                {
+                    return (nd->_parent);
+                }
+                else if(side == 1)
+                {
+                    while((side = wich_parent_side(nd, nd->_parent)) == 1)
+                    {
+                        nd = nd->_parent;
+                    }
+                    if (side == -1)
+                        return (nd->_parent);
+                    return (nd->_parent);
+                }
+                // else
+                //     std::cout << "Error in wich parent func" << std::endl;
+            }
+        }
+        return (NULL);
+    }
+    template <class node_pointer>
+    node_pointer *find_predeccessor(node_pointer * nd)
+    {
+        if (nd->_left_child)
+        {
+            return (tree_max(nd->_left_child));
+        }
+        else
+        {
+            int side = 0;
+            side = wich_parent_side(nd, nd->_parent);
+            if (side == 1)
+            {
+                return (nd->_parent);
+            }
+            else if(side == 2)
+            {
+                while((side = wich_parent_side(nd, nd->_parent)) == 2)
+                {
+                    nd = nd->_parent;
+                }
+                return (nd->_parent);
+            }
+            // else
+            //     std::cout << "Error in wich_parent func" << std::endl;
+        }
+        return (NULL);
+    }
     template <class value_type, class node_pointer>
     class my_map_iterator
     {
-        typedef value_type*        pointer_to_value;
+        typedef value_type*        pointer;
+        typedef value_type&        reference;
         typedef node_pointer       nodePtr;
 
         private:
-            nodePtr _ptr;
         public:
+            nodePtr _ptr;
             my_map_iterator(nodePtr ptr):_ptr(ptr){}
-
+            my_map_iterator(const my_map_iterator  &it)
+            {
+                this->_ptr = it._ptr;
+            }
+            my_map_iterator operator=(const my_map_iterator &it)
+            {
+                this->_ptr = it._ptr;
+                return (*this);
+            }
+            reference operator*() const
+            {
+                return (_ptr->_value);
+            }
+            pointer operator->() const
+            {
+                return (&_ptr->_value);
+            }
+            my_map_iterator &operator++()
+            {
+                this->_ptr = find_successor(_ptr);
+                return (*this);
+            }
+            my_map_iterator operator++(int)       /*COULD BE WRONG*/
+            {
+                my_map_iterator tmp = *this;
+                this->_ptr = find_successor(_ptr);
+                return (tmp);
+            }
+            my_map_iterator &operator--()
+            {
+                this->_ptr = find_predeccessor(_ptr);
+                return (*this);
+            }
+            my_map_iterator operator--(int)       /*COULD BE WRONG*//*RETURNS DECREMENTED VALUE IN THE SAME LINE*/
+            {
+                my_map_iterator tmp = *this;
+                this->_ptr = find_predeccessor(_ptr);
+                return (tmp);
+            }
+            ~my_map_iterator(){};
     };
-    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator</*std::*/pair<const Key, T> > >
+    template <class value_type, class node_pointer>
+    bool operator== (const my_map_iterator<value_type, node_pointer>& lhs, const my_map_iterator<value_type, node_pointer>& rhs)
+    {
+        if (lhs._ptr->_value == rhs._ptr->_value && lhs._ptr->_left_child == rhs._ptr->_left_child && lhs._ptr->_right_child == rhs._ptr->_right_child && lhs._ptr->_parent == rhs._ptr->_parent)
+            return (1);
+        return (0);
+    }
+    template <class value_type, class node_pointer>
+    bool operator!= (const my_map_iterator<value_type, node_pointer>& lhs, const my_map_iterator<value_type, node_pointer>& rhs)
+    {
+        if (lhs._ptr->_value != rhs._ptr->_value || lhs._ptr->_left_child != rhs._ptr->_left_child || lhs._ptr->_right_child != rhs._ptr->_right_child || lhs._ptr->_parent != rhs._ptr->_parent)
+        {
+            return (1);
+        }
+        return (0);
+    }
+    template <class value_type, class node_pointer>
+    class my_map_reverse_iterator
+    {
+        typedef value_type*        pointer;
+        typedef value_type&        reference;
+        typedef node_pointer       nodePtr;
+
+        private:
+        public:
+            nodePtr _ptr;
+            my_map_reverse_iterator(nodePtr ptr):_ptr(ptr){}
+            my_map_reverse_iterator(const my_map_reverse_iterator  &it)
+            {
+                this->_ptr = it._ptr;
+            }
+            my_map_reverse_iterator operator=(const my_map_reverse_iterator &it)
+            {
+                this->_ptr = it._ptr;
+                return (*this);
+            }
+            reference operator*() const
+            {
+                return (*_ptr->_value.second);
+            }
+            pointer operator->() const
+            {
+                return (&_ptr->_value);
+            }
+            my_map_reverse_iterator &operator++()
+            {
+                this->_ptr = find_predeccessor(_ptr);
+                return (*this);
+            }
+            my_map_reverse_iterator operator++(int)       /*COULD BE WRONG*//*RETURNS DECREMENTED VALUE IN THE SAME LINE*/
+            {
+                my_map_reverse_iterator tmp = *this;
+                this->_ptr = find_predeccessor(_ptr);
+                return (tmp);
+            }
+            my_map_reverse_iterator &operator--()
+            {
+                this->_ptr = find_successor(_ptr);
+                return (*this);
+            }
+            my_map_reverse_iterator operator--(int)       /*COULD BE WRONG*/
+            {
+                my_map_reverse_iterator tmp = *this;
+                this->_ptr = find_successor(_ptr);
+                return (tmp);
+            }
+            ~my_map_reverse_iterator(){};
+    };
+    template <class value_type, class node_pointer>
+    bool operator== (const my_map_reverse_iterator<value_type, node_pointer>& lhs, const my_map_reverse_iterator<value_type, node_pointer>& rhs)
+    {
+        if (lhs._ptr->_value == rhs._ptr->_value && lhs._ptr->_left_child == rhs._ptr->_left_child && lhs._ptr->_right_child == rhs._ptr->_right_child && lhs._ptr->_parent == rhs._ptr->_parent)
+            return (1);
+        return (0);
+    }
+    template <class value_type, class node_pointer>
+    bool operator!= (const my_map_reverse_iterator<value_type, node_pointer>& lhs, const my_map_reverse_iterator<value_type, node_pointer>& rhs)
+    {
+        if (lhs._ptr->_value != rhs._ptr->_value || lhs._ptr->_left_child != rhs._ptr->_left_child || lhs._ptr->_right_child != rhs._ptr->_right_child || lhs._ptr->_parent != rhs._ptr->_parent)
+        {
+            return (1);
+        }
+        return (0);
+    }
+    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
     class map
     {
         public:
-            typedef Key                                         key_type;
-            typedef T                                           mapped_type;
-            typedef pair<const key_type,mapped_type>            value_type;
-            typedef Compare                                     key_compare;
-            typedef Allocator                                   allocator_type;
-            typedef typename allocator_type::reference          reference;
-            typedef typename allocator_type::const_reference    const_reference;
-            typedef typename allocator_type::pointer            pointer;
-            typedef typename allocator_type::const_pointer      const_pointer;
-            typedef size_t                                      size_type;
-            typedef node<value_type>                            _node;
-            typedef my_tree<value_type, key_type, allocator_type>               tree;
-            // typedef my_map_iterator<map>       iterator;
-
+            typedef Key                                                         key_type;
+            typedef T                                                           mapped_type;
+            typedef pair<const key_type,mapped_type>                            value_type;
+            typedef node<value_type>                                            _node;
+            typedef Compare                                                     key_compare;
+            ////////COMPARE FUNCTION///////
+            typedef Allocator                                                   allocator_type;
+            typedef typename allocator_type::reference                          reference;
+            typedef typename allocator_type::const_reference                    const_reference;
+            typedef typename allocator_type::pointer                            pointer;
+            typedef typename allocator_type::const_pointer                      const_pointer;
             typedef my_map_iterator<value_type, _node *>    iterator;
-            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :u(alloc)
+            typedef my_map_iterator<const value_type, const _node *>            const_iterator;
+            typedef my_map_reverse_iterator<value_type, _node *>                reverse_iterator;
+            typedef my_map_reverse_iterator<const value_type, const _node *>    const_reverse_iterator;
+            typedef ptrdiff_t                                                   differende_type;
+            typedef size_t                                                      size_type;
+            typedef my_tree<value_type, key_type, allocator_type>               tree;
+
+
+            explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 _size = 0;
+            }
+            template <class InputIterator>
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
+            {
+                if (first._ptr)
+                {
+                    for (; first != last; first++)
+                    {
+                        _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value);
+                        _size++;
+                    }
+                }
             }
             map (const map& x)
             {
@@ -443,22 +600,58 @@ namespace ft
             mapped_type& operator[] (const key_type& k)
             {
                 tree tmp = _tree;
-                for (size_t i = 0; i < _size; i++)
+                while (tmp.tree_node)
                 {
                     if (k == tmp.tree_node->_value.first)
                         return (tmp.tree_node->_value.second);
                     if (k > tmp.tree_node->_value.first)
+                    {
                         tmp.tree_node = tmp.tree_node->_right_child;
+                    }
                     else if (k < tmp.tree_node->_value.first)
+                    {
                         tmp.tree_node = tmp.tree_node->_left_child;
-                } 
-                return (tmp.tree_node->_value.second);
+                    }
+                }
+                if (tmp.tree_node)
+                    return (tmp.tree_node->_value.second);
+                else
+                {
+                    // _size++;
+                    return insert(ft::make_pair (k, NULL)).first->second;//////////NEED TO FIX INSERT RETUTRN VALUE///////////
+                }
             }
-			void insert (const value_type& val)
+			// void insert (const value_type& val)
+			// {
+            //     // if (count(val.first))
+            //     // {
+            //     //     return (ft::make_pair(find(val.first), 0));
+            //     // }
+            //     _tree.tree_node = _tree.insert(_tree.tree_node, val);
+            //     _size += 1;
+			// }
+			pair<iterator, bool> insert (const value_type& val)
 			{
+                if (count(val.first))
+                {
+                    return ft::make_pair (find(val.first), 0);///////return pair who's first type is an iterator pointing to where it found it and 0 in case it was there /////
+                }
                 _tree.tree_node = _tree.insert(_tree.tree_node, val);
                 _size += 1;
+                return (ft::make_pair (find(val.first), 1));
 			}
+            // iterator insert (iterator position, const value_type& val)
+            // {
+            //     // _tree.tree_node = _tree.insert();
+            // }
+            template <class InputIterator>
+            void insert (InputIterator first, InputIterator last)
+            {
+                for (; first != last; first++)
+                {
+                    insert(first._ptr->_value);
+                }
+            }
             size_type erase (const key_type& k)
             {
                 _tree.tree_node = _tree.erase(_tree.tree_node, k);
@@ -467,13 +660,70 @@ namespace ft
             }
             iterator begin()
             {
-                return (iterator(_tree.tree_min()));
+                return (iterator(tree_min(_tree.tree_node)));
             }
             iterator end()
             {
-                return (iterator(_tree.tree_max()));
+                return (iterator(tree_max(_tree.tree_node))++);
             }
-            // const_iterator begin() const;
+            // const_iterator cbegin()
+            // {
+            //     return (const_iterator(tree_min(_tree.tree_node)));
+            // }
+            // const_iterator cend()
+            // {
+            //     return (const_iterator(tree_max(_tree.tree_node))++);
+            // }
+            reverse_iterator rbegin()
+            {
+                return (reverse_iterator(tree_max(_tree.tree_node)));
+            }
+            reverse_iterator rend()
+            {
+                return (reverse_iterator(tree_min(_tree.tree_node))++);
+            }
+            iterator find (const key_type& k) 
+            {
+                if (_size == 0)
+                {
+                    return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
+                }
+                for (iterator it = this->begin(); it != this->end(); it++)
+                {
+                    // printf("%d\n", it._ptr->_value.first);
+                    // std::cout << "here2\n" << std::endl;
+                    if (k == it->first)
+                        return (it);
+                }
+                return (this->end()); 
+            }
+            // const_iterator find (const key_type& k)
+            // {
+            //     for (const_iterator it = this->cbegin(); it != this->cend(); it++)//////////////requires cbegin/cend/////////
+            //     {
+            //         // printf("%d\n", it._ptr->_value.first);
+            //         if (k == it->first)
+            //             return (it);
+            //     }
+            //     return (this->cend()); 
+            // }
+            size_type count (const key_type& k) const
+            {
+                // if (find(k) == this->end())
+                //     return (0);
+                // return(1);
+                if (_size == 0)
+                    return(0);
+                return ( const_cast<map *>(this)->find(k) == const_cast<map *>(this)->end() ? 0 : 1);///////////calling a non-const func inside a const func/////////
+            }
+            // void swap (map& x)
+            // {
+            //     map *tmp = this;
+            //     this->_tree = x._tree;
+            //     this->_size = x._size;
+            //     x._tree = tmp->_tree;
+            //     x._size = tmp->_size;
+            // }
             tree        _tree;
             private:
                 allocator_type u;
