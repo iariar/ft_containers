@@ -1581,8 +1581,9 @@ int main ()
         mymap['c'] = 300;
 
         // show content:
-        for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-            std::cout << it->first << " => " << it->second << '\n';
+        // std::cout << mymap.begin()->first << std::endl;
+        // for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+        //     std::cout << it->first << " => " << it->second << '\n';
     }
 
 

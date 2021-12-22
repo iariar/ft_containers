@@ -76,6 +76,17 @@ namespace ft
                 nd->height = 1;/*probably a 0*/  
                 return (nd);
             }
+            _node *new_node(void)
+            {
+                _node *nd = allocator.allocate(1);
+                allocator.construct(nd);
+                nd->balance_factor = 0;
+                nd->_left_child = NULL;
+                nd->_parent= NULL;
+                nd->_right_child = NULL;
+                nd->height = 1;/*probably a 0*/  
+                return (nd);
+            }
             _node *right_rotation(_node *nd)
             {
                 _node *old_left = nd->_left_child;
@@ -365,8 +376,11 @@ namespace ft
                         return (nd->_parent);
                     return (nd->_parent);
                 }
-                // else
-                //     std::cout << "Error in wich parent func" << std::endl;
+                else
+                {
+                    std::cout << nd->_value.first << " " << side << std::endl;
+                    std::cout << "Error in wich parent func" << std::endl;
+                }
             }
         }
         return (NULL);
@@ -562,12 +576,27 @@ namespace ft
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 _size = 0;
+                _node *tmp = _tree.new_node();
+                _tree.tree_node = tmp;
+                _tree.tree_node = tmp->_left_child;
+                root = tmp;
+                // _node *tmp =  _tree.tree_node;
+                // _tree.tree_node = _tree.tree_node->_left_child;
+                // std::cout << "!" << std::endl;
+                // _tree.tree_node->_parent = tmp;
+                // std::cout << "3" << std::endl;
             }
             template <class InputIterator>
             map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 if (first._ptr)
                 {
+                    _tree.tree_node = _tree.new_node();
+                    std::cout << _tree.tree_node->_value.first;
+                    _node *tmp =  _tree.tree_node;
+                    // root = _tree.tree_node;
+                    _tree.tree_node = _tree.tree_node->_left_child;
+                    _tree.tree_node->_parent = tmp;
                     for (; first != last; first++)
                     {
                         _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value);
@@ -637,6 +666,8 @@ namespace ft
                     return ft::make_pair (find(val.first), 0);///////return pair who's first type is an iterator pointing to where it found it and 0 in case it was there /////
                 }
                 _tree.tree_node = _tree.insert(_tree.tree_node, val);
+                // if (_size == 0)
+                //     _tree.tree_node->_parent = root;
                 _size += 1;
                 return (ft::make_pair (find(val.first), 1));
 			}
@@ -664,7 +695,8 @@ namespace ft
             }
             iterator end()
             {
-                return (iterator(tree_max(_tree.tree_node))++);
+                // std::cout << find_successor(tree_max(_tree.tree_node))->_value.second<< " sk" << std::endl; 
+                return (/*iterator(tree_max(_tree.tree_node))*/root);
             }
             // const_iterator cbegin()
             // {
@@ -680,7 +712,7 @@ namespace ft
             }
             reverse_iterator rend()
             {
-                return (reverse_iterator(tree_min(_tree.tree_node))++);
+                return (reverse_iterator(tree_min(_tree.tree_node)));
             }
             iterator find (const key_type& k) 
             {
@@ -688,12 +720,14 @@ namespace ft
                 {
                     return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
                 }
-                for (iterator it = this->begin(); it != this->end(); it++)
+                iterator it = this->begin();
+                // std::cout << "this begin before" << std::endl;
+                // std::cout << "this begin = " << it->first << std::endl;
+                for (iterator it = this->begin(); it != iterator(root); )
                 {
-                    // printf("%d\n", it._ptr->_value.first);
-                    // std::cout << "here2\n" << std::endl;
                     if (k == it->first)
                         return (it);
+                    it++;
                 }
                 return (this->end()); 
             }
@@ -726,8 +760,8 @@ namespace ft
             // }
             tree        _tree;
             private:
+                _node *root;
                 allocator_type u;
-                // _node _my_node;
                 size_type _size;
     };
 }
