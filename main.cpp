@@ -1581,43 +1581,38 @@ int main ()
     //     mymap['c'] = 300;
 
     //     // show content:
-    //     // std::cout << mymap.begin()->first << std::endl;
     //     for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    //     {
-    //         std::cout << "one" << std::endl;
     //         std::cout << it->first << " => " << it->second << '\n';
-    //         std::cout << "two" << std::endl;
-    //     }
     // }
     //////////////////////
     //EMPTY()/////////////
     //////////////////////
-    // {
-    //     std::map<char,int> mymap;
+    {
+        std::map<char,int> mymap;
 
-    //     mymap['a']=10;
-    //     mymap['b']=20;
-    //     mymap['c']=30;
+        mymap['a']=10;
+        mymap['b']=20;
+        mymap['c']=30;
 
-    //     while (!mymap.empty())
-    //     {
-    //         std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
-    //         mymap.erase(mymap.begin());
-    //     }
-    // }
-    // {
-    //     ft::map<char,int> mymap;
+        while (!mymap.empty())
+        {
+            std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
+            mymap.erase(mymap.begin());
+        }
+    }
+    {
+        ft::map<char,int> mymap;
 
-    //     mymap['a']=10;
-    //     mymap['b']=20;
-    //     mymap['c']=30;
+        mymap['a']=10;
+        mymap['b']=20;
+        mymap['c']=30;
 
-    //     while (!mymap.empty())
-    //     {
-    //         std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
-    //         mymap.erase(mymap.begin());
-    //     }
-    // }
+        while (!mymap.empty())
+        {
+            std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
+            mymap.erase(mymap.begin());
+        }
+    }
     //////////////////////
     //ERASE()/////////////
     //////////////////////
