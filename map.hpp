@@ -224,34 +224,41 @@ namespace ft
                                 nd->_parent->_right_child = nullptr;
                             else
                                 nd->_parent->_left_child = nullptr;
+                            if (nd == tmp)
+                                return (NULL);
                         }
                         else if (nd->_right_child && !nd->_left_child)
                         {
                             if (side == 1)
                             {
-                                prev->_right_child = nd->_right_child;;
+                                nd->_parent->_right_child = nd->_right_child;
                             }
                             else if (side == 2)
                             {
-                                prev->_left_child = nd->_right_child;;
+                                nd->_parent->_left_child = nd->_right_child;
                             }
-                            nd->_parent = prev;/*debatable*//*NOT*/
+                            nd->_right_child->_parent = nd->_parent;/*debatable*//*NOT*/
+                            if (nd == tmp)
+                                return (nd->_right_child);
                         }
                         else if (nd->_left_child && !nd->_right_child)
                         {
                             if (side == 1)
                             {
-                                prev->_right_child = nd->_left_child;
+                                nd->_parent->_right_child = nd->_left_child;
                             }
                             else if (side == 2)
                             {
-                                prev->_left_child = nd->_left_child;
+                                nd->_parent->_left_child = nd->_left_child;
                             }
-                            nd->_parent = prev;
+                            nd->_left_child->_parent = nd->_parent;
+                            if (nd == tmp)
+                                return (nd->_right_child);
                         }
                         else
                         {
                             _node *tr_min = tree_min(nd->_right_child);
+                            _node *old_nd = nd;
                             _node *old_right = nd->_right_child;
                             _node *old_left = nd->_left_child;
                             _node *old_parent = nd->_parent;
@@ -261,7 +268,7 @@ namespace ft
                                 prev_node(tmp, nd->_value.first, &side);////if nd is not root place tr_min on it's right or left depending on wich side nd was////
                                 if (side == 1)
                                 {
-                                    nd->_parent->_right_child = tr_min;
+                                    nd->_parent->_right_child = tr_min;                                      /*VERY DEBATABLE SINCE I CHANGED THE PARENT OF ROOT TO END*/
                                 }
                                 else if (side == 2)
                                     nd->_parent->_left_child = tr_min;
@@ -284,6 +291,8 @@ namespace ft
                             {
                                 tr_min->_parent->_left_child = NULL;
                             }
+                            if (old_nd == tmp)
+                                return (nd);
                             // nd->_parent = prev;
                         }
                         break ;
@@ -309,21 +318,22 @@ namespace ft
                 // {
                 //     return (left_rotation(nd));//right left case////
                 // }
-                if(!nd->_parent)//IN CASE OF ROOT TO BE REMOVED TMP HAS OLD ROOT
-                    return (nd);
+                // if(nd->_parent)//IN CASE OF ROOT TO BE REMOVED TMP HAS OLD ROOT
+                //     return (nd);
                 return (tmp);
             }
             void    destroy_node(_node *nd)
             {
                 allocator.destroy(nd);
+                allocator.deallocate(nd, 1);
             }
             ~my_tree(){};
             _node *tree_node;
         private:
             node_allocator allocator;
     };
-    template <class node_pointer>
-    node_pointer *tree_min(node_pointer *nd)
+    template <class node_>
+    node_ *tree_min(node_ *nd)
     {
         while (nd && nd->_left_child)
         {
@@ -331,8 +341,8 @@ namespace ft
         }
         return (nd);
     }
-    template <class node_pointer>
-    node_pointer *tree_max(node_pointer *nd)
+    template <class node_>
+    node_ *tree_max(node_ *nd)
     {
         while (nd && nd->_right_child)
         {
@@ -340,8 +350,8 @@ namespace ft
         }
         return (nd);
     }
-    template <class node_pointer>
-    int wich_parent_side(node_pointer *nd, node_pointer *nd_parent)
+    template <class node_>
+    int wich_parent_side(node_ *nd, node_ *nd_parent)
     {
         if (nd && nd_parent)
         {
@@ -354,8 +364,8 @@ namespace ft
         }
         return (-1);
     }
-    template <class node_pointer>
-    node_pointer *find_successor(node_pointer * nd)
+    template <class node_>
+    node_ *find_successor(node_ * nd)
     {
         if (nd)
         {
@@ -365,7 +375,6 @@ namespace ft
             }
             else
             {
-                // printf("node %d was here\n", nd->_value.first);
                 int side = 0;
                 side = wich_parent_side(nd, nd->_parent);
                 if (side == 2)
@@ -380,19 +389,12 @@ namespace ft
                     }
                     return (nd->_parent);
                 }
-                // if (side == -1)
-                //     return (nd->_parent);
-                // else
-                // {
-                //     // std::cout << nd->_value.first << " " << side << std::endl;
-                //     // std::cout << "Error in wich parent func" << std::endl;
-                // }
             }
         }
         return (NULL);
     }
-    template <class node_pointer>
-    node_pointer *find_predeccessor(node_pointer * nd)
+    template <class node_>
+    node_ *find_predeccessor(node_ * nd)
     {
         if (nd->_left_child)
         {
@@ -406,7 +408,7 @@ namespace ft
             {
                 return (nd->_parent);
             }
-            else if(side == 2)
+            else/* if(side == 2)*/
             {
                 while((side = wich_parent_side(nd, nd->_parent)) == 2)
                 {
@@ -557,16 +559,28 @@ namespace ft
         }
         return (0);
     }
-    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
+    ///////////////////
+    ////less///////////
+    ///////////////////
+    template <class Key>
+    struct my_less
+    {
+        bool operator()(const Key& x, const Key& y)
+        {
+            return (x < y);
+        }
+    };
+    template< class Key, class T, class Compare = my_less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
     class map
     {
         public:
             typedef Key                                                         key_type;
             typedef T                                                           mapped_type;
             typedef pair<const key_type,mapped_type>                            value_type;
-            typedef node<value_type>                                            _node;
-            typedef Compare                                                     key_compare;
             ////////COMPARE FUNCTION///////
+            typedef my_less<Key>                                                key_compare;
+            typedef node<value_type>                                            _node;
+            // typedef Compare                                                     key_compare;
             typedef Allocator                                                   allocator_type;
             typedef typename allocator_type::reference                          reference;
             typedef typename allocator_type::const_reference                    const_reference;
@@ -608,12 +622,12 @@ namespace ft
                     _node *tmp =  _tree.tree_node;
                     // root = _tree.tree_node;
                     _tree.tree_node = _tree.tree_node->_left_child;
-                    _tree.tree_node->_parent = tmp;
                     for (; first != last; first++)
                     {
                         _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value);
                         _size++;
                     }
+                    _tree.tree_node->_parent = tmp;
                 }
             }
             map (const map& x)
@@ -636,7 +650,7 @@ namespace ft
             }
             size_type max_size() const
             {
-                return (u.max_size);
+                return (u.max_size());
             }
             mapped_type& operator[] (const key_type& k)
             {
@@ -683,6 +697,7 @@ namespace ft
                 if (init_parent)
                 {
                     _tree.tree_node->_parent = _tree.new_node();
+                    _tree.tree_node->_parent->_left_child = _tree.tree_node;
                 }
                 // if (_size == 0)
                 //     _tree.tree_node->_parent = root;
@@ -694,11 +709,13 @@ namespace ft
                 int init_parent = 0;
                 if (!_tree.tree_node)
                     init_parent = 1;
-                _tree.tree_node = _tree.insert();
+                position = insert(val).first;
                 if (init_parent)
                 {
                     _tree.tree_node->_parent = _tree.new_node();
+                    _tree.tree_node->_parent->_left_child = _tree.tree_node;
                 }
+                return (position);
             }
             template <class InputIterator>
             void insert (InputIterator first, InputIterator last)
@@ -713,6 +730,7 @@ namespace ft
                 if (init_parent)
                 {
                     _tree.tree_node->_parent = _tree.new_node();
+                    _tree.tree_node->_parent->_left_child = _tree.tree_node;
                 }
             }
             void erase (iterator position)
@@ -727,15 +745,21 @@ namespace ft
             }
             void erase (iterator first, iterator last)
             {
-                for (; first != last; first++)
+                iterator tmp = first;
+                for (; tmp != last;/* first++*/)
                 {
+                    first = tmp;
+                    tmp++;
                     erase(first);
-                }
-                
+                }  
             }
             iterator begin()
             {
                 return (iterator(tree_min(_tree.tree_node)));
+            }
+            const_iterator begin() const
+            {
+                return (const_iterator(tree_min(_tree.tree_node)));
             }
             iterator end()
             {
@@ -745,7 +769,11 @@ namespace ft
                 // std::cout << "here" << std::endl;
                 // std::cout << test->first << std::endl;
                 // std::cout << "here2" << std::endl; 
-                return (_tree.tree_node->_parent);
+                return (++iterator(tree_max(_tree.tree_node)));
+            }
+            const_iterator end() const
+            {
+                return (const_iterator(_tree.tree_node->_parent));
             }
             // const_iterator cbegin()
             // {
@@ -798,24 +826,136 @@ namespace ft
                     return(0);
                 return ( const_cast<map *>(this)->find(k) == const_cast<map *>(this)->end() ? 0 : 1);///////////calling a non-const func inside a const func/////////
             }
-            // void swap (map& x)
-            // {
-            //     map *tmp = this;
-            //     this->_tree = x._tree;
-            //     this->_size = x._size;
-            //     x._tree = tmp->_tree;
-            //     x._size = tmp->_size;
-            // }
+            void swap (map& x)
+            {
+                map tmp = *this;
+                this->_tree = x._tree;
+                this->_size = x._size;
+                x._tree = tmp._tree;
+                x._size = tmp._size;
+            }
             void clear()
             {
-                for (iterator it = this->end(); this->begin() != it; it--)
+                iterator it = this->begin();
+                iterator finish = this->end();
+                iterator tmp = it;
+                for (; tmp != finish ;/* it++*/)
                 {
-                    _tree.destroy_node(it.ptr);
+                    it = tmp;
+                    tmp++;
+                    erase(it._ptr);
+                    _tree.destroy_node(it._ptr);
                 }
+            }
+            key_compare key_comp() const
+            {
+                key_compare tmp;
+                return (tmp);
+            }
+            iterator lower_bound (const key_type& k)
+            {
+                if (count(k))
+                    return (find(k));
+                else
+                {
+                    iterator it = this->begin();
+                    while (it != this->end() && it->first < k)
+                    {
+                        it++;
+                    }
+                    if (it == this->end())
+                        return (this->end());
+                    else
+                    {
+                        return --it;
+                    }
+                }
+                // return (this->end());
+            }
+            const_iterator lower_bound (const key_type& k) const
+            {
+                if (count(k))
+                    return (find(k));
+                else
+                {
+                    iterator it = this->begin();
+                    while (it != this->end() && it->first < k)
+                    {
+                        it++;
+                    }
+                    if (it == this->end())
+                        return (this->end());
+                    else
+                    {
+                        return --it;
+                    }
+                }
+            }
+            iterator upper_bound (const key_type& k)
+            {
+                if (count(k))
+                    return (++find(k));
+                else
+                {
+                    iterator it = this->end();
+                    while (it != this->begin() && it->first > k)
+                    {
+                        it--;
+                    }
+                    if (it == this->begin())
+                        return (this->end());
+                    else
+                    {
+                        return ++it;
+                    }
+                }
+                // return (this->end());
+            }
+            const_iterator upper_bound (const key_type& k) const
+            {
+                if (count(k))
+                    return (++find(k));
+                else
+                {
+                    iterator it = this->end();
+                    while (it != this->begin() && it->first > k)
+                    {
+                        it--;
+                    }
+                    if (it == this->begin())
+                        return (this->end());
+                    else
+                    {
+                        return ++it;
+                    }
+                }
+            }
+            pair<iterator,iterator> equal_range (const key_type& k)
+            {
+                if (count(k))
+                    return (ft::make_pair<iterator, iterator> (find(k), ++find(k)));
+                if (k > tree_max(_tree.tree_node)->_value.first)
+                {
+                    return(ft::make_pair<iterator, iterator> (this->end(), this->end()));
+                }
+                else
+                    return (ft::make_pair<iterator, iterator> (lower_bound(k), upper_bound(k)));
+            }
+            pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+            {
+                if (count(k))
+                    return (ft::make_pair<iterator, iterator> (find(k), ++find(k)));
+                if (k > tree_max(_tree.tree_node)->_value.first)
+                {
+                    return(ft::make_pair<iterator, iterator> (this->end(), this->end()));
+                }
+                else
+                    return (ft::make_pair<iterator, iterator> (lower_bound(k), upper_bound(k)));
             }
             tree        _tree;
             private:
                 _node *root;
+                key_compare cmp;
                 allocator_type u;
                 size_type _size;
     };
