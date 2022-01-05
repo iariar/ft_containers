@@ -141,14 +141,15 @@ namespace ft
             {
                 _node *old_right = nd->_right_child;
 
-                nd->_right_child = old_right->_left_child;
+                if (nd->_right_child)
+                    nd->_right_child = old_right->_left_child;
                 if (old_right->_left_child)                     //////connect right child's left child to nd////
                     old_right->_left_child->_parent = nd;
 
                 old_right->_parent = nd->_parent;       /////////connect nd's right child to nd's parent//////
 
                 if (nd->_parent == root)                /////in case nd was connected to end update root/////
-                    root = old_right;
+                    root->_left_child = old_right;
                 else if (nd->_parent->_right_child == nd)
                     nd->_parent->_right_child = old_right;  /////////connect nd's parent to nd's right child as a child//////
                 else
@@ -235,33 +236,35 @@ namespace ft
                 else if (pair.first > parent->_value.first)
                     parent->_right_child = tmp = new_node(pair);
                 tmp->_parent = parent;
-                while (tmp && tmp != nd->_parent)
+                while (tmp && tmp != root)
                 {
                     tmp->height = 1 + max(height(tmp->_left_child), height(tmp->_right_child));
                     int balance = get_balance(tmp);
                     tmp->balance_factor = balance;
                     if (balance > 1 && pair.first < tmp->_left_child->_value.first)
                     {
-                        return (right_rotation(tmp, root));//left left case////
+                        tmp = right_rotation(tmp, root);// left case////
                     }
-                    if (balance < -1 && pair.first > tmp->_right_child->_value.first)
+                    else if (balance < -1 && pair.first > tmp->_right_child->_value.first)
                     {
-                        return (left_rotation(tmp, root));//right right case////
+                        tmp = left_rotation(tmp, root);// right case////
                     }
-                    if (balance > 1 && pair.first > tmp->_left_child->_value.first)
+                    else if (balance > 1 && pair.first > tmp->_left_child->_value.first)
                     {
+                        // std::cout << "here\n";
                         tmp->_left_child = left_rotation(tmp->_left_child, root);
-                        return (right_rotation(tmp, root));//left right case////
+                        tmp = right_rotation(tmp, root);//left right case////
                     }
-                    if (balance < -1 && pair.first < tmp->_right_child->_value.first)
+                    else if (balance < -1 && pair.first < tmp->_right_child->_value.first)
                     {
-                        tmp->_right_child = left_rotation(tmp->_left_child, root);
-                        return (left_rotation(tmp, root));//right left case////
+                        tmp->_right_child = right_rotation(tmp->_right_child, root);
+                        // std::cout << "here2\n";
+                        tmp = left_rotation(tmp, root);//right left case////
                     }
                     tmp = tmp->_parent;
                 }
                 if (root != nd->_parent)
-                    return (root)
+                    return (root->_left_child);
                 return (nd);
             }
             _node *erase(_node *nd, key_type k)
@@ -862,29 +865,29 @@ namespace ft
             }
             iterator find (const key_type& k) 
             {
-                // if (_size == 0)
-                // {
-                //     return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
-                // }
-                iterator it = this->begin();
-                for (iterator it = this->begin(); it != this->end(); it++)
+                _node *tmp = _tree.tree_node;
+                while (tmp)
                 {
-                    if (k == it->first)
-                        return (it);
+                    if (tmp->_value.first < k)
+                        tmp = tmp->_right_child;
+                    else if (tmp->_value.first > k)
+                        tmp = tmp->_left_child;
+                    else
+                        return (iterator(tmp));
                 }
-                return (this->end()); 
+                return (this->end()); ; 
             }
             const_iterator find (const key_type& k) const
             {
-                // if (_size == 0)
-                // {
-                //     return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
-                // }
-                iterator it = this->begin();
-                for (iterator it = this->begin(); it != this->end(); it++)
+                _node *tmp = _tree.tree_node;
+                while (tmp)
                 {
-                    if (k == it->first)
-                        return (it);
+                    if (tmp->_value.first < k)
+                        tmp = tmp->_right_child;
+                    else if (tmp->_value.first > k)
+                        tmp = tmp->_left_child;
+                    else
+                        return (const_iterator(tmp));
                 }
                 return (this->end()); 
             }
@@ -1028,8 +1031,8 @@ namespace ft
                 else
                     return (ft::make_pair<iterator, iterator> (lower_bound(k), upper_bound(k)));
             }
-            tree        _tree;
             private:
+                tree        _tree;
                 _node *root;
                 allocator_type u;
                 size_type _size;

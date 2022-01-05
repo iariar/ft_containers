@@ -24,7 +24,7 @@ struct Buffer
 };
 
 
-#define COUNT 10/*(MAX_RAM / (int)sizeof(Buffer))*/
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
 class MutantStack : public ft::stack<T>
@@ -46,13 +46,13 @@ public:
 };
 
 int main(int argc, char** argv) {
-	if (argc != 2)
-	{
-		std::cerr << "Usage: ./test seed" << std::endl;
-		std::cerr << "Provide a seed please" << std::endl;
-		std::cerr << "Count value:" << COUNT << std::endl;
-		return 1;
-	}
+	// if (argc != 2)
+	// {
+	// 	std::cerr << "Usage: ./test seed" << std::endl;
+	// 	std::cerr << "Provide a seed please" << std::endl;
+	// 	std::cerr << "Count value:" << COUNT << std::endl;
+	// 	return 1;
+	// }
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
@@ -92,15 +92,16 @@ int main(int argc, char** argv) {
 	// {
 	// 	//NORMAL ! :P
 	// }
-	for (int i = 0; i < COUNT; ++i)
+	for (int i = 1; i < COUNT; ++i)
 	{
 		// std::cout << i << std::endl;
 		map_int.insert(ft::make_pair(i, rand()));
 	}
-	map_int._tree.prettyPrint();
-	// map_int.insert(ft::make_pair(-1, rand()));
-	// map_int.insert(ft::make_pair(-3, rand()));
-	// map_int.insert(ft::make_pair(-2, rand()));
+	// map_int.insert(ft::make_pair(1, rand()));
+	// map_int.insert(ft::make_pair(3, rand()));
+	// map_int.insert(ft::make_pair(2, rand()));
+
+	// map_int._tree.prettyPrint();
 	// map_int._tree.prettyPrint();
 	// int sum = 0;
 	// for (int i = 0; i < 10000; i++)

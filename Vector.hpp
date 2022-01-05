@@ -239,8 +239,8 @@ namespace ft
             }
         ~my_iterator()
         {return;}
-            pointer iterator_pointer;
         private:
+            pointer iterator_pointer; /*this pointer was public*/
     };
     /////////////////////////////////////
     ////rational operators for iterator//
@@ -655,8 +655,11 @@ namespace ft
         }
         void pop_back()
         {
-            u.destroy(data + (_size - 1));
-            _size--;
+            if (_size)
+            {
+                u.destroy(data + (_size - 1));
+                _size--;
+            }
         }
         iterator insert (iterator position, const value_type& val)//WORKING
         {
