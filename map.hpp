@@ -89,7 +89,30 @@ namespace ft
                 nd->height = 1;/*probably a 0*/  
                 return (nd);
             }
-            _node *right_rotation(_node *nd)
+            void printHelper(_node *root,std::string indent, bool last) 
+            {
+                if (root != nullptr)
+                {
+                    std::cout << indent;
+                    if (last) 
+                    {
+                        std::cout<<"R >>> ";
+                        indent += "     ";
+                    } 
+                    else 
+                    {
+                        std::cout<<"L >>> ";
+                        indent += "|    ";
+                    }
+                    std::cout<<root->_value.first<<"( BF = " << root->height << ")"<<std::endl;
+                    printHelper(root->_left_child, indent, false);
+                    printHelper(root->_right_child, indent, true);
+                }
+            }
+            void prettyPrint() {
+                printHelper(this->tree_node, "", true);
+            }
+            _node *right_rotation(_node *nd, _node *root)
             {
                 _node *old_left = nd->_left_child;
                 _node *old_left_right = old_left->_right_child;
@@ -106,7 +129,7 @@ namespace ft
 
                 return (old_left);
             }
-            _node *left_rotation(_node *nd)
+            _node *left_rotation(_node *nd, _node *root)
             {
                 _node *old_right = nd->_right_child;
                 _node *old_right_left = old_right->_left_child;
@@ -168,7 +191,7 @@ namespace ft
                 }
                 return (x);
             }
-            _node *insert(_node *nd, value_type pair)
+            _node *insert(_node *nd, value_type pair, _node *root)
             {
                 _node *tmp = nd;
                 _node *parent = NULL;
@@ -178,43 +201,49 @@ namespace ft
                 }
                 while (tmp)
                 {
+                    parent  = tmp;
                     if (pair.first < tmp->_value.first)
                         tmp = tmp->_left_child;
                     else if (pair.first > tmp->_value.first)
                         tmp = tmp->_right_child;
                     else
                     {
-                        return(tmp);
+                        return(nd);
                     }
                 }
                 int side = 0;
-                parent = prev_node(nd, pair.first, &side);
+                // parent = prev_node(nd, pair.first, &side);
                 if (pair.first < parent->_value.first)
                     parent->_left_child = tmp = new_node(pair);
                 else if (pair.first > parent->_value.first)
                     parent->_right_child = tmp = new_node(pair);
                 tmp->_parent = parent;
-                // nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
-                // int balance = get_balance(nd);
-                // nd->balance_factor = balance;
-                // if (balance > 1 && pair.first < nd->_left_child->_value.first)
-                // {
-                //     return (right_rotation(nd));//left left case////
-                // }
-                // if (balance < -1 && pair.first > nd->_right_child->_value.first)
-                // {
-                //     return (left_rotation(nd));//right right case////
-                // }
-                // if (balance > 1 && pair.first > nd->_left_child->_value.first)
-                // {
-                //     nd->_left_child = left_rotation(nd->_left_child);
-                //     return (right_rotation(nd));//left right case////
-                // }
-                // if (balance < -1 && pair.first < nd->_right_child->_value.first)
-                // {
-                //     nd->_right_child = left_rotation(nd->_left_child);
-                //     return (left_rotation(nd));//right left case////
-                // }
+                // std::cout << "here?" << std::endl;
+                while (tmp && tmp != nd->_parent)
+                {
+                    tmp->height = 1 + max(height(tmp->_left_child), height(tmp->_right_child));
+                    int balance = get_balance(tmp);
+                    tmp->balance_factor = balance;
+                    if (balance > 1 && pair.first < tmp->_left_child->_value.first)
+                    {
+                        return (right_rotation(tmp, root));//left left case////
+                    }
+                    if (balance < -1 && pair.first > tmp->_right_child->_value.first)
+                    {
+                        return (left_rotation(tmp, root));//right right case////
+                    }
+                    if (balance > 1 && pair.first > tmp->_left_child->_value.first)
+                    {
+                        tmp->_left_child = left_rotation(tmp->_left_child, root);
+                        return (right_rotation(tmp, root));//left right case////
+                    }
+                    if (balance < -1 && pair.first < tmp->_right_child->_value.first)
+                    {
+                        tmp->_right_child = left_rotation(tmp->_left_child, root);
+                        return (left_rotation(tmp, root));//right left case////
+                    }
+                    tmp = tmp->_parent;
+                }
                 return (nd);
             }
             _node *erase(_node *nd, key_type k)
@@ -623,7 +652,6 @@ namespace ft
             typedef size_t                                                      size_type;
             typedef my_tree<value_type, key_type, allocator_type>               tree;
 
-            
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 _size = 0;
@@ -653,7 +681,7 @@ namespace ft
                     _tree.tree_node = _tree.tree_node->_left_child;
                     for (; first != last; first++)
                     {
-                        _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value);
+                        _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value, root);
                         _size++;
                     }
                     _tree.tree_node->_parent = tmp;
@@ -713,11 +741,12 @@ namespace ft
                 {
                     return ft::make_pair (find(val.first), 0);///////return pair who's first type is an iterator pointing to where it found it and 0 in case it was there /////
                 }
-                _tree.tree_node = _tree.insert(_tree.tree_node, val);
+                _tree.tree_node = _tree.insert(_tree.tree_node, val, root);
                 if (init_parent)
                 {
                     _tree.tree_node->_parent = _tree.new_node();
                     _tree.tree_node->_parent->_left_child = _tree.tree_node;
+                    root = _tree.tree_node->_parent;
                 }
                 // if (_size == 0)
                 //     _tree.tree_node->_parent = root;
@@ -734,6 +763,7 @@ namespace ft
                 {
                     _tree.tree_node->_parent = _tree.new_node();
                     _tree.tree_node->_parent->_left_child = _tree.tree_node;
+                    root = _tree.tree_node->_parent;
                 }
                 return (position);
             }
@@ -751,6 +781,7 @@ namespace ft
                 {
                     _tree.tree_node->_parent = _tree.new_node();
                     _tree.tree_node->_parent->_left_child = _tree.tree_node;
+                    root = _tree.tree_node->_parent;
                 }
             }
             void erase (iterator position)
