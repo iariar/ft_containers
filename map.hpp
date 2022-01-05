@@ -3,7 +3,10 @@
 
 
 #include "iostream"
-#include "Vector.hpp"
+#include "vector.hpp"
+#include <stack>
+#include "lexicographical_compare.hpp"
+#include "pair.hpp"
 
 namespace ft
 {
@@ -94,9 +97,13 @@ namespace ft
                 old_left->_right_child = nd;
                 nd->_left_child = old_left_right;
 
+                // nd->_left_child->_parent = nd;
+                // nd->_parent = old_left;
+
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 old_left->height = max(height(old_left->_left_child), height(old_left->_right_child) + 1);
                 old_left->balance_factor = get_balance(old_left);
+
                 return (old_left);
             }
             _node *left_rotation(_node *nd)
@@ -106,6 +113,9 @@ namespace ft
 
                 old_right->_left_child = nd;
                 nd->_right_child = old_right_left;
+
+                // nd->_right_child->_parent = nd;
+                // nd->_parent = old_right;
 
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 old_right->height = max(height(old_right->_left_child), height(old_right->_right_child) + 1);
@@ -148,6 +158,16 @@ namespace ft
                 }
                 return (prev);
             }
+            _node *copy_insert(_node *nd, _node *x)
+            {
+                if (x)  //PREORDER TRAVERSAL//
+                {
+                    nd = new_node(x->_value);                       /*INSERT CURRENT NODE*/
+                    copy_insert(nd->_left_child, x->_left_child);/*TRAVESES to the left node first then right*/
+                    copy_insert(nd->_right_child, x->_right_child);
+                }
+                return (x);
+            }
             _node *insert(_node *nd, value_type pair)
             {
                 _node *tmp = nd;
@@ -187,10 +207,12 @@ namespace ft
                 // }
                 // if (balance > 1 && pair.first > nd->_left_child->_value.first)
                 // {
+                //     nd->_left_child = left_rotation(nd->_left_child);
                 //     return (right_rotation(nd));//left right case////
                 // }
                 // if (balance < -1 && pair.first < nd->_right_child->_value.first)
                 // {
+                //     nd->_right_child = left_rotation(nd->_left_child);
                 //     return (left_rotation(nd));//right left case////
                 // }
                 return (nd);
@@ -312,10 +334,12 @@ namespace ft
                 // }
                 // if (balance > 1 && k > nd->_left_child->_value.first)
                 // {
+                //     nd->_left_child = left_rotation(nd->_left_child);
                 //     return (right_rotation(nd));//left right case////
                 // }
                 // if (balance < -1 && k < nd->_right_child->_value.first)
                 // {
+                //     nd->_right_child = left_rotation(nd->_left_child);
                 //     return (left_rotation(nd));//right left case////
                 // }
                 // if(nd->_parent)//IN CASE OF ROOT TO BE REMOVED TMP HAS OLD ROOT
@@ -433,7 +457,8 @@ namespace ft
             nodePtr _ptr;
             my_map_iterator():_ptr(){}
             my_map_iterator(nodePtr ptr):_ptr(ptr){}
-            my_map_iterator(const my_map_iterator  &it)
+            template <class iterator>
+            my_map_iterator(const iterator &it)
             {
                 this->_ptr = it._ptr;
             }
@@ -490,111 +515,115 @@ namespace ft
         }
         return (0);
     }
-    template <class value_type, class node_pointer>
+    template <class T>
     class my_map_reverse_iterator
     {
-        typedef value_type*        pointer;
-        typedef value_type&        reference;
-        typedef node_pointer       nodePtr;
+        typedef typename T::pointer        pointer;
+        typedef typename T::reference       reference;
+        // typedef node_pointer       nodePtr;
+        typedef T                  iterator_type;
 
         private:
+            iterator_type _iterator;
         public:
-            nodePtr _ptr;
-            my_map_reverse_iterator():_ptr(){};
-            my_map_reverse_iterator(nodePtr ptr):_ptr(ptr){}
+            // nodePtr _ptr;
+            my_map_reverse_iterator():_iterator(){};
+            my_map_reverse_iterator(iterator_type it):_iterator(it){}
             my_map_reverse_iterator(const my_map_reverse_iterator  &it)
             {
-                this->_ptr = it._ptr;
+                this->_iterator = it._iterator;
             }
             my_map_reverse_iterator operator=(const my_map_reverse_iterator &it)
             {
-                this->_ptr = it._ptr;
+                this->_iterator = it._iterator;
                 return (*this);
             }
             reference operator*() const
             {
-                return (*_ptr->_value.second);
+                return (_iterator._ptr->value);
             }
             pointer operator->() const
             {
-                return (&_ptr->_value);
+                return (&_iterator._ptr->_value);
             }
             my_map_reverse_iterator &operator++()
             {
-                this->_ptr = find_predeccessor(_ptr);
+                _iterator._ptr = find_predeccessor(_iterator._ptr);
                 return (*this);
             }
             my_map_reverse_iterator operator++(int)       /*COULD BE WRONG*//*RETURNS DECREMENTED VALUE IN THE SAME LINE*/
             {
                 my_map_reverse_iterator tmp = *this;
-                this->_ptr = find_predeccessor(_ptr);
+                this->_iterator._ptr = find_predeccessor(_iterator._ptr);
                 return (tmp);
             }
             my_map_reverse_iterator &operator--()
             {
-                this->_ptr = find_successor(_ptr);
+                this->_iterator._ptr = find_successor(_iterator._ptr);
                 return (*this);
             }
             my_map_reverse_iterator operator--(int)       /*COULD BE WRONG*/
             {
                 my_map_reverse_iterator tmp = *this;
-                this->_ptr = find_successor(_ptr);
+                this->_iterator._ptr= find_successor(_iterator._ptr);
                 return (tmp);
             }
             ~my_map_reverse_iterator(){};
     };
-    template <class value_type, class node_pointer>
-    bool operator== (const my_map_reverse_iterator<value_type, node_pointer>& lhs, const my_map_reverse_iterator<value_type, node_pointer>& rhs)
+    template <class iterator>
+    bool operator== (const my_map_reverse_iterator<iterator>& lhs, const my_map_reverse_iterator<iterator>& rhs)
     {
-        if (lhs._ptr->_value == rhs._ptr->_value && lhs._ptr->_left_child == rhs._ptr->_left_child && lhs._ptr->_right_child == rhs._ptr->_right_child && lhs._ptr->_parent == rhs._ptr->_parent)
+        if (lhs == rhs)
             return (1);
         return (0);
     }
-    template <class value_type, class node_pointer>
-    bool operator!= (const my_map_reverse_iterator<value_type, node_pointer>& lhs, const my_map_reverse_iterator<value_type, node_pointer>& rhs)
+    template <class iterator>
+    bool operator!= (const my_map_reverse_iterator<iterator>& lhs, const my_map_reverse_iterator<iterator>& rhs)
     {
-        if (lhs._ptr->_value != rhs._ptr->_value || lhs._ptr->_left_child != rhs._ptr->_left_child || lhs._ptr->_right_child != rhs._ptr->_right_child || lhs._ptr->_parent != rhs._ptr->_parent)
+        if (lhs != rhs)
         {
             return (1);
         }
         return (0);
     }
-    ///////////////////
-    ////less///////////
-    ///////////////////
-    template <class Key>
-    struct my_less
-    {
-        bool operator()(const Key& x, const Key& y)
-        {
-            return (x < y);
-        }
-    };
-    template< class Key, class T, class Compare = my_less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
+    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
     class map
     {
         public:
+            typedef Compare                                                     key_compare;
             typedef Key                                                         key_type;
+            template <class value_type>
+            class my_less
+            {
+                public:
+                key_compare cmp;
+                my_less(Compare c) : cmp(c){};/*DUNNO ABOUT THIS*/
+                my_less(){};
+                bool operator() (const value_type& x, const value_type& y) 
+                {
+                    return cmp(x.first , y.first);
+                }
+            };
             typedef T                                                           mapped_type;
             typedef pair<const key_type,mapped_type>                            value_type;
-            ////////COMPARE FUNCTION///////
-            typedef my_less<Key>                                                key_compare;
+
+            typedef my_less<value_type>                                         value_compare;
+
             typedef node<value_type>                                            _node;
-            // typedef Compare                                                     key_compare;
             typedef Allocator                                                   allocator_type;
             typedef typename allocator_type::reference                          reference;
             typedef typename allocator_type::const_reference                    const_reference;
             typedef typename allocator_type::pointer                            pointer;
             typedef typename allocator_type::const_pointer                      const_pointer;
-            typedef my_map_iterator<value_type, _node *>    iterator;
-            typedef my_map_iterator<const value_type, const _node *>            const_iterator;
-            typedef my_map_reverse_iterator<value_type, _node *>                reverse_iterator;
-            typedef my_map_reverse_iterator<const value_type, const _node *>    const_reverse_iterator;
+            typedef my_map_iterator<value_type, _node *>                        iterator;
+            typedef my_map_iterator<const value_type, _node *>                  const_iterator;
+            typedef my_map_reverse_iterator<iterator>                           reverse_iterator;
+            typedef my_map_reverse_iterator<const_iterator>                     const_reverse_iterator;
             typedef ptrdiff_t                                                   differende_type;
             typedef size_t                                                      size_type;
             typedef my_tree<value_type, key_type, allocator_type>               tree;
 
-
+            
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 _size = 0;
@@ -637,7 +666,7 @@ namespace ft
             map& operator= (const map& x)
             {
                 _size = x._size;
-                _tree = x._tree;
+                _tree.tree_node = _tree.copy_insert(_tree.tree_node, x._tree.tree_node);       
                 return (*this);
             }
             bool empty() const
@@ -675,15 +704,6 @@ namespace ft
                     return insert(ft::make_pair (k, NULL)).first->second;//////////NEED TO FIX INSERT RETUTRN VALUE///////////
                 }
             }
-			// void insert (const value_type& val)
-			// {
-            //     // if (count(val.first))
-            //     // {
-            //     //     return (ft::make_pair(find(val.first), 0));
-            //     // }
-            //     _tree.tree_node = _tree.insert(_tree.tree_node, val);
-            //     _size += 1;
-			// }
 			pair<iterator, bool> insert (const value_type& val)
 			{
                 int init_parent = 0;
@@ -785,7 +805,7 @@ namespace ft
             // }
             reverse_iterator rbegin()
             {
-                return (reverse_iterator(tree_max(_tree.tree_node)));
+                return (++reverse_iterator(tree_max(_tree.tree_node)));
             }
             reverse_iterator rend()
             {
@@ -793,13 +813,11 @@ namespace ft
             }
             iterator find (const key_type& k) 
             {
-                if (_size == 0)
-                {
-                    return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
-                }
+                // if (_size == 0)
+                // {
+                //     return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
+                // }
                 iterator it = this->begin();
-                // std::cout << "this begin before" << std::endl;
-                // std::cout << "this begin = " << it->first << std::endl;
                 for (iterator it = this->begin(); it != this->end(); it++)
                 {
                     if (k == it->first)
@@ -807,16 +825,20 @@ namespace ft
                 }
                 return (this->end()); 
             }
-            // const_iterator find (const key_type& k)
-            // {
-            //     for (const_iterator it = this->cbegin(); it != this->cend(); it++)//////////////requires cbegin/cend/////////
-            //     {
-            //         // printf("%d\n", it._ptr->_value.first);
-            //         if (k == it->first)
-            //             return (it);
-            //     }
-            //     return (this->cend()); 
-            // }
+            const_iterator find (const key_type& k) const
+            {
+                // if (_size == 0)
+                // {
+                //     return (this->end());       //////TEMPORARY CONDITION TILL I FIX THIS->END()////////
+                // }
+                iterator it = this->begin();
+                for (iterator it = this->begin(); it != this->end(); it++)
+                {
+                    if (k == it->first)
+                        return (it);
+                }
+                return (this->end()); 
+            }
             size_type count (const key_type& k) const
             {
                 // if (find(k) == this->end())
@@ -849,8 +871,13 @@ namespace ft
             }
             key_compare key_comp() const
             {
-                key_compare tmp;
-                return (tmp);
+                key_compare ret;
+                return (ret);
+            }
+            value_compare value_comp() const
+            {
+                value_compare ret(key_comp());
+                return (ret);
             }
             iterator lower_bound (const key_type& k)
             {
@@ -955,7 +982,6 @@ namespace ft
             tree        _tree;
             private:
                 _node *root;
-                key_compare cmp;
                 allocator_type u;
                 size_type _size;
     };

@@ -6,6 +6,8 @@
 #include <iterator>
 #include <map>
 #include <algorithm>
+#include "lexicographical_compare.hpp"
+#include "pair.hpp"
 
 namespace ft
 {
@@ -168,7 +170,7 @@ namespace ft
             template <class Iter>
             my_iterator (const my_iterator<Iter>& it)
             {
-                *this = it;
+                this->iterator_pointer = it.iterator_pointer;
             }
             value_type base() const
             {
@@ -237,8 +239,8 @@ namespace ft
             }
         ~my_iterator()
         {return;}
-        private:
             pointer iterator_pointer;
+        private:
     };
     /////////////////////////////////////
     ////rational operators for iterator//
@@ -564,9 +566,7 @@ namespace ft
                 }
                 if (_capacity)
                 {
-                    // printf("capacity =  %d\n", _capacity);
                     u.deallocate(data, _capacity);
-                    // printf("here2\n");
                 }
                 data = tmp;
                 // _size = n;
@@ -771,8 +771,8 @@ namespace ft
         }
         ~vector()
         { 
-            this->clear();
-            u.deallocate(data, _capacity);
+            // this->clear();
+            // u.deallocate(data, _size);
 
         };
         private:
@@ -829,103 +829,7 @@ namespace ft
     bool operator>=  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
     {
         return (lhs.data >= rhs.data);
-    }
-    ///////////////////////////////
-    // lexicographical_compare()///
-    ///////////////////////////////
-    template <class InputIterator1, class InputIterator2>/*DEBATABLE*/
-    bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
-    {
-        while (first1 != last1)
-        {
-            if (first2 != last2 || *first1 > *first2)
-                return(0);
-            else if (*first1 < *first2)
-                return (1);
-            first1++;
-            first2++;   
-        }
-        return(first1 != last1);
-    }
-    template <class InputIterator1, class InputIterator2, class Compare>
-    bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2, Compare comp)
-    {
-        while (first1 != last1)
-        {
-            if (first2 != last2 || !comp(*first1, *first2))
-                return(0);                                              ///////something wrong//////////
-            else if (comp(*first1, *first2))
-                return (1);
-            first1++;
-            first2++;   
-        }
-        return(first1 != last1);
-    }
-    template <class T1, class T2>
-    struct pair
-    {
-        public:
-            typedef T1 first_type; 
-            typedef T2 second_type;
-            pair() : first() , second()
-            {
-                return; 
-            }
-            template <class U, class V>
-            pair (const pair<U,V>& pr) : first(pr.first)
-            {
-                // this->first = pr.first;
-                this->second = pr.second;
-            }
-            pair (const first_type& a, const second_type& b) : first(a)
-            {
-                // first = a;
-                second = b;
-            }
-            pair& operator= (const pair& pr)
-            {
-                this->first = pr.first;
-                this->second = pr.second;
-                return (*this);
-            }
-            first_type first;
-            second_type second;
-    };
-    template <class T1, class T2>
-    bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {
-        return (lhs.first == rhs.first && lhs.second == rhs.second);
-    }
-    template <class T1, class T2>
-    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {
-        return (lhs.first != rhs.first && lhs.second != rhs.second);
-    }
-    template <class T1, class T2>
-    bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {        
-        return (lhs.first < rhs.first && lhs.second < rhs.second);
-    }
-    template <class T1, class T2>
-    bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {
-        return (lhs.first <= rhs.first && lhs.second <= rhs.second);
-    }
-    template <class T1, class T2>
-    bool operator> (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {
-        return (lhs.first > rhs.first && lhs.second > rhs.second);
-    }
-    template <class T1, class T2>
-    bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-    {
-        return (lhs.first >= rhs.first && lhs.second >= rhs.second);
-    }
-    template <class T1,class T2>
-    pair<T1,T2> make_pair (T1 x, T2 y)
-    {
-        return ( pair<T1,T2>(x,y) );
-    };
+    } 
 }
 
 #endif

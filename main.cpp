@@ -1,6 +1,8 @@
 #include "Vector.hpp"
 #include "map.hpp"
 #include <map>
+#include "stack.hpp"
+#include <stack>
 
 
 // template <typename T>
@@ -798,6 +800,7 @@
         // }
 
 //     }
+    
 // }
 
 // int main()
@@ -2023,5 +2026,124 @@ int main ()
     //         << it.second->first
     //         << ":" << it.second->second;
     // }
+    //////////////////////
+    //KEY_COMP////////////
+    //////////////////////
+    // {
+    //     std::map<char,int> mymap;
+
+    //     std::map<char,int>::key_compare mycomp = mymap.key_comp();
+
+    //     mymap['a']=100;
+    //     mymap['b']=200;
+    //     mymap['c']=300;
+
+    //     std::cout << "mymap contains:\n";
+
+    //     char highest = mymap.rbegin()->first;     // key value of last element
+
+    //     std::map<char,int>::iterator it = mymap.begin();
+    //     do {
+    //         std::cout << it->first << " => " << it->second << '\n';
+    //     } while ( mycomp((*it++).first, highest) );
+
+    //     std::cout << '\n';
+    // }
+    // {
+    //     ft::map<char,int> mymap;
+
+    //     ft::map<char,int>::key_compare mycomp = mymap.key_comp();
+
+    //     mymap['a']=100;
+    //     mymap['b']=200;
+    //     mymap['c']=300;
+
+    //     std::cout << "mymap contains:\n";
+
+    //     char highest = mymap.rbegin()->first;     // key value of last element
+
+    //     ft::map<char,int>::iterator it = mymap.begin();
+    //     do {
+    //         std::cout << it->first << " => " << it->second << '\n';
+    //     } while ( mycomp((*it++).first, highest) );
+
+    //     std::cout << '\n';
+    // }
+    //////////////////////
+    //VALUE_COMP//////////
+    //////////////////////
+    // {
+    //     std::map<char,int> mymap;
+
+    //     mymap['x']=1001;
+    //     mymap['y']=2002;
+    //     mymap['z']=3003;
+
+    //     std::cout << "mymap contains:\n";
+
+    //     std::pair<char,int> highest = *mymap.rbegin();          // last element
+
+    //     std::map<char,int>::iterator it = mymap.begin();
+    //     do {
+    //         std::cout << it->first << " => " << it->second << '\n';
+    //     } while ( mymap.value_comp()(*it++, highest) );
+    // }
+    // {
+        // ft::map<char,int> mymap;
+
+        // mymap['x']=1001;
+        // mymap['y']=2002;
+        // mymap['z']=3003;
+
+    //     std::cout << "mymap contains:\n";
+
+    //     ft::pair<char,int> highest = *mymap.rbegin();          // last element
+
+    //     ft::map<char,int>::iterator it = mymap.begin();
+    //     do {
+    //         std::cout << it->first << " => " << it->second << '\n';
+    //     } while ( mymap.value_comp()(*it++, highest) );
+    // }
+    // {
+        // map<char, int> m = {
+        //     { 'a', 1 },
+        //     { 'b', 2 },
+        //     { 'c', 3 },
+        //     { 'd', 4 },
+        //     { 'e', 5 },
+        // };
+    
+        // auto last = *m.rbegin();
+        // auto i = m.begin();
+    
+        // cout << "Map contains "
+        //     << "following elements"
+        //     << endl;
+    
+        // do {
+    
+        //     cout << i->first
+        //         << " = "
+        //         << i->second
+        //         << endl;
+        // } while (m.value_comp()(*i++, last));
+    // }
 //   return 0;
+    // std::map<int , int> mymap;
+    // mymap[10] = 20;
+    // mymap[-1] = 20;
+    // mymap[2] = 20;
+    // mymap[40] = 20;
+    // mymap[20] = 20;
+    // mymap[25] = 20;
+    // mymap[30] = 20;
+    // mymap[27] = 20;
+    // std::map<int , int> mysecmap(mymap);
+    // for (std::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
+    // {
+    //     std::cout << it->first << std::endl;
+    // }
+    // ft::stack<int> name;
+    // name.push(10);
+    // std::cout << name.empty() << std::endl;
 }
