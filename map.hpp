@@ -115,34 +115,51 @@ namespace ft
             _node *right_rotation(_node *nd, _node *root)
             {
                 _node *old_left = nd->_left_child;
-                _node *old_left_right = old_left->_right_child;
 
-                old_left->_right_child = nd;
-                nd->_left_child = old_left_right;
+                nd->_left_child = old_left->_right_child;          //////connect left child's right child to nd////
+                if (old_left->_right_child)
+                    old_left->_right_child->_parent = nd;/**/
 
-                // nd->_left_child->_parent = nd;
-                // nd->_parent = old_left;
+                old_left->_parent = nd->_parent;            /////////connect nd's left child to nd's parent//////
+    
+                if (nd->_parent == root)                    /////in case nd was connected to end update root/////
+                    root->_left_child = old_left;
+                else if (nd == nd->_parent->_left_child)    /////////connect nd's parent to nd's right child as a child//////
+                    nd->_parent->_left_child = old_left;
+                else
+                    nd->_parent->_right_child = old_left;
+
+                old_left->_right_child = nd;                /////connect nd and it's left child//////
+                nd->_parent = old_left;
 
                 nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
                 old_left->height = max(height(old_left->_left_child), height(old_left->_right_child) + 1);
                 old_left->balance_factor = get_balance(old_left);
-
                 return (old_left);
             }
             _node *left_rotation(_node *nd, _node *root)
             {
                 _node *old_right = nd->_right_child;
-                _node *old_right_left = old_right->_left_child;
 
-                old_right->_left_child = nd;
-                nd->_right_child = old_right_left;
+                nd->_right_child = old_right->_left_child;
+                if (old_right->_left_child)                     //////connect right child's left child to nd////
+                    old_right->_left_child->_parent = nd;
 
-                // nd->_right_child->_parent = nd;
-                // nd->_parent = old_right;
+                old_right->_parent = nd->_parent;       /////////connect nd's right child to nd's parent//////
 
-                nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);
+                if (nd->_parent == root)                /////in case nd was connected to end update root/////
+                    root = old_right;
+                else if (nd->_parent->_right_child == nd)
+                    nd->_parent->_right_child = old_right;  /////////connect nd's parent to nd's right child as a child//////
+                else
+                    nd->_parent->_left_child = old_right;
+
+                old_right->_left_child = nd; /////connect nd and it's right child//////
+                nd->_parent = old_right;
+
+                nd->height = max(height(nd->_left_child), height(nd->_right_child) + 1);  ///update height by choosing the biggest height of the subtrees///
                 old_right->height = max(height(old_right->_left_child), height(old_right->_right_child) + 1);
-                old_right->balance_factor = get_balance(old_right);
+                old_right->balance_factor = get_balance(old_right); ////update balance///
                 return (old_right);
             }
             int get_balance(_node *nd)
@@ -218,7 +235,6 @@ namespace ft
                 else if (pair.first > parent->_value.first)
                     parent->_right_child = tmp = new_node(pair);
                 tmp->_parent = parent;
-                // std::cout << "here?" << std::endl;
                 while (tmp && tmp != nd->_parent)
                 {
                     tmp->height = 1 + max(height(tmp->_left_child), height(tmp->_right_child));
@@ -244,6 +260,8 @@ namespace ft
                     }
                     tmp = tmp->_parent;
                 }
+                if (root != nd->_parent)
+                    return (root)
                 return (nd);
             }
             _node *erase(_node *nd, key_type k)
