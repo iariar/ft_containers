@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 	// 	std::cerr << "Count value:" << COUNT << std::endl;
 	// 	return 1;
 	// }
-	const int seed = atoi(argv[1]);
+	const int seed = 1;
 	srand(seed);
 
 	// ft::vector<std::string> vector_str;
@@ -97,10 +97,30 @@ int main(int argc, char** argv) {
 		// std::cout << i << std::endl;
 		map_int.insert(ft::make_pair(i, rand()));
 	}
+	// for (int i = 1; i < COUNT; ++i)
+	// {
+	// // 	// std::cout << i << std::endl;
+	// 	map_int.erase(i);
+	// }
+	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); ++it)
+	// {
+	// 	std::cout << it->first << std::endl;
+	// }
+	map_int.clear();
+	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
+	// {
+	// std::cout << "je" <<std::endl;
+	// 	std::cout << it->first << std::endl;
+	// }
+	
 	// map_int.insert(ft::make_pair(1, rand()));
 	// map_int.insert(ft::make_pair(3, rand()));
 	// map_int.insert(ft::make_pair(2, rand()));
+	for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
+	{
 
+		std::cout << it->first << std::endl;
+	}
 	// map_int._tree.prettyPrint();
 	// map_int._tree.prettyPrint();
 	// int sum = 0;
@@ -126,6 +146,6 @@ int main(int argc, char** argv) {
 	// 	// std::cout << "here7\n";
 	// 	std::cout << *it;
 	// }
-	std::cout << std::endl;
+	// std::cout << std::endl;
 	return (0);
 }

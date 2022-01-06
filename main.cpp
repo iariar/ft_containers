@@ -2147,16 +2147,28 @@ int main ()
     // name.push(10);
     // std::cout << name.empty() << std::endl;
     ft::map<int, int> mp;
-    mp[0] = 1;
-    mp[1] = 1;
-    mp[2] = 1;
-    mp[3] = 1;
-    ft::map<int, int> mp2;
-    mp2.insert(mp.begin() , mp.end());
-    for (ft::map<int, int>::iterator it = mp2.begin(); it != mp2.end(); it++)
+    mp[0] = 0;
+    mp[1] = 10;
+    mp[2] = 20;
+    mp[3] = 30;
+    ft::map<int, int> mp2(mp);
+    mp2[4] = 0;
+    mp2[6] = 10;
+    mp2[5] = 20;
+    mp2[7] = 30;
+    mp.insert(mp2.begin(), mp2.end());
+    mp.equal_range(5);
+    // std::cout << mp[0] << std::endl;
+    // std::cout << mp[1] << std::endl;
+    // std::cout << mp[2] << std::endl;
+    // std::cout << mp[3] << std::endl;
+    // std::cout << mp.size() << std::endl;
+    // mp2.insert(mp.begin() , mp.end());
+    for (ft::map<int, int>::iterator it = mp.begin(); it != mp.end(); it++)
     {
         std::cout << it->first <<std::endl;
     }
+    mp.clear();
     
     // vec.pop_back();
     // vec.pop_back();
