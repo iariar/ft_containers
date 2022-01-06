@@ -2146,8 +2146,18 @@ int main ()
     // ft::stack<int> name;
     // name.push(10);
     // std::cout << name.empty() << std::endl;
-    ft::vector<int> vec;
-    ft::vector<int>::iterator vec_it = vec.begin();
+    ft::map<int, int> mp;
+    mp[0] = 1;
+    mp[1] = 1;
+    mp[2] = 1;
+    mp[3] = 1;
+    ft::map<int, int> mp2;
+    mp2.insert(mp.begin() , mp.end());
+    for (ft::map<int, int>::iterator it = mp2.begin(); it != mp2.end(); it++)
+    {
+        std::cout << it->first <<std::endl;
+    }
+    
     // vec.pop_back();
     // vec.pop_back();
     // vec.pop_back();

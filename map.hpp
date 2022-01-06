@@ -401,6 +401,9 @@ namespace ft
                 allocator.destroy(nd);
                 allocator.deallocate(nd, 1);
             }
+            ///////////////////////////////////////////////////
+            //functions i added to make tree_node private//////
+            ///////////////////////////////////////////////////
             ~my_tree(){};
             _node *tree_node;
         private:
@@ -503,8 +506,12 @@ namespace ft
         typedef node_pointer       nodePtr;
 
         private:
-        public:
             nodePtr _ptr;
+            template <class val_type, class node_ptr>
+            friend bool operator== (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs);
+            template <class val_type, class node_ptr>
+            friend bool operator!= (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs);
+        public:
             my_map_iterator():_ptr(){}
             my_map_iterator(nodePtr ptr):_ptr(ptr){}
             template <class iterator>
@@ -549,21 +556,15 @@ namespace ft
             }
             ~my_map_iterator(){};
     };
-    template <class value_type, class node_pointer>
-    bool operator== (const my_map_iterator<value_type, node_pointer>& lhs, const my_map_iterator<value_type, node_pointer>& rhs)
+    template <class val_type, class node_ptr>
+    bool operator== (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs)
     {
-        if (lhs._ptr->_value == rhs._ptr->_value && lhs._ptr->_left_child == rhs._ptr->_left_child && lhs._ptr->_right_child == rhs._ptr->_right_child && lhs._ptr->_parent == rhs._ptr->_parent)
-            return (1);
-        return (0);
+        return (lhs._ptr == rhs._ptr);
     }
-    template <class value_type, class node_pointer>
-    bool operator!= (const my_map_iterator<value_type, node_pointer>& lhs, const my_map_iterator<value_type, node_pointer>& rhs)
+    template <class val_type, class node_ptr>
+    bool operator!= (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs)
     {
-        if (lhs._ptr->_value != rhs._ptr->_value || lhs._ptr->_left_child != rhs._ptr->_left_child || lhs._ptr->_right_child != rhs._ptr->_right_child || lhs._ptr->_parent != rhs._ptr->_parent)
-        {
-            return (1);
-        }
-        return (0);
+        return (lhs._ptr != rhs._ptr);
     }
     template <class T>
     class my_map_reverse_iterator
@@ -693,19 +694,11 @@ namespace ft
             map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
             {
                 _size = 0;
-                if (first._ptr)
+
+                for (;first != last; first++)
                 {
-                    _tree.tree_node = _tree.new_node();
-                    // std::cout << _tree.tree_node->_value.first;
-                    _node *tmp =  _tree.tree_node;
-                    // root = _tree.tree_node;
-                    _tree.tree_node = _tree.tree_node->_left_child;
-                    for (; first != last; first++)
-                    {
-                        _tree.tree_node = _tree.insert(_tree.tree_node, first._ptr->_value, root);
-                        _size++;
-                    }
-                    _tree.tree_node->_parent = tmp;
+                    insert(ft::make_pair (first->first, first->second));
+                    _size++;
                 }
             }
             map (const map& x)
@@ -796,9 +789,9 @@ namespace ft
                     init_parent = 1;
                 for (; first != last; first++)
                 {
-                    insert(first._ptr->_value);
+                    insert(ft::make_pair (first->first, first->second));
                 }
-                if (init_parent)
+                if (_tree.tree_node && init_parent)
                 {
                     _tree.tree_node->_parent = _tree.new_node();
                     _tree.tree_node->_parent->_left_child = _tree.tree_node;
