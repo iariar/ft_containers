@@ -46,17 +46,34 @@ namespace ft
                 // tree_node._right_child = nullptr;
                 tree_node = nullptr;
             }
+            void    actual_copy_function(_node *nd, _node *x)
+            {
+                if (x)  //PREORDER TRAVERSAL//
+                {
+                    nd = new_node(x->_value);                       /*INSERT CURRENT NODE*/
+                    actual_copy_function(nd->_left_child, x->_left_child); /*start with root and then traverses to the left node first then right*/
+                    actual_copy_function(nd->_right_child, x->_right_child);
+                }
+                tree_node = nd;
+            }
+            void copy_tree(my_tree x)
+            {
+                actual_copy_function(tree_node, x.tree_node);
+                // tree_node = nd;
+                // return (x);
+            }
             my_tree operator= (const my_tree& x)
             {
-                if (x.tree_node)
-                {
-                    tree_node = allocator.allocate(1);
-                    allocator.construct(tree_node, x.tree_node->_value);
-                    this->tree_node->balance_factor = x.tree_node->balance_factor;
-                    this->tree_node->_left_child = x.tree_node->_left_child;
-                    this->tree_node->_parent = x.tree_node->_parent;
-                    this->tree_node->_right_child = x.tree_node->_right_child;
-                }
+                // if (x.tree_node)
+                // {
+                //     tree_node = allocator.allocate(1);
+                //     allocator.construct(tree_node, x.tree_node->_value);
+                //     this->tree_node->balance_factor = x.tree_node->balance_factor;
+                //     this->tree_node->_left_child = x.tree_node->_left_child;
+                //     this->tree_node->_parent = x.tree_node->_parent;
+                //     this->tree_node->_right_child = x.tree_node->_right_child;
+                // }
+                this->copy_tree(x);
                 return (*this);
             }
             int height(_node *nd)
@@ -109,6 +126,16 @@ namespace ft
                     printHelper(root->_left_child, indent, false);
                     printHelper(root->_right_child, indent, true);
                 }
+            }
+            my_tree    swap(my_tree tree)
+            {
+                _node *nd = this->tree_node;
+                _node *cp_root = this->root;
+                this->tree_node = tree.tree_node;
+                this->root = tree.root;
+                tree.tree_node = nd;
+                tree.root = cp_root;
+                return (tree);
             }
             void prettyPrint() {
                 printHelper(this->tree_node, "", true);
@@ -200,21 +227,6 @@ namespace ft
                 }
                 return (prev);
             }
-            void    actual_copy_function(_node *nd, _node *x)
-            {
-                if (x)  //PREORDER TRAVERSAL//
-                {
-                    nd = new_node(x->_value);                       /*INSERT CURRENT NODE*/
-                    actual_copy_function(nd->_left_child, x->_left_child);/*TRAVESES to the left node first then right*/
-                    actual_copy_function(nd->_right_child, x->_right_child);
-                }
-            }
-            void copy_tree(my_tree x)
-            {
-                actual_copy_function(this->tree_node, x.tree_node);
-                // tree_node = nd;
-                // return (x);
-            }
             _node *insert(_node *nd, value_type pair, _node *root)
             {
                 _node *tmp = nd;
@@ -228,48 +240,46 @@ namespace ft
                     parent  = tmp;
                     if (pair.first < tmp->_value.first)
                         tmp = tmp->_left_child;
-                    else if (pair.first > tmp->_value.first)
+                    else if (pair.first > tmp->_value.first)        /////iterates in the tree till it finds pointer to where the node shoud be inserted////
                         tmp = tmp->_right_child;
                     else
                     {
-                        return(nd);
+                        return(nd);                 /////if there was already a node with the same key it should return the unchanged head//////
                     }
                 }
-                int side = 0;
-                // parent = prev_node(nd, pair.first, &side);
                 if (pair.first < parent->_value.first)
-                    parent->_left_child = tmp = new_node(pair);
+                    parent->_left_child = tmp = new_node(pair);         ////inserts the new node depending on it's valuecompared to the parent/////
                 else if (pair.first > parent->_value.first)
                     parent->_right_child = tmp = new_node(pair);
-                tmp->_parent = parent;
+                tmp->_parent = parent;              ///link new node to it's new parent///
                 while (tmp && tmp != root)
                 {
-                    tmp->height = 1 + max(height(tmp->_left_child), height(tmp->_right_child));
+                    tmp->height = 1 + max(height(tmp->_left_child), height(tmp->_right_child));     //// update height of nodes throught the loop coz we need it to calcul balance///
                     int balance = get_balance(tmp);
-                    tmp->balance_factor = balance;
-                    if (balance > 1 && pair.first < tmp->_left_child->_value.first)
-                    {
-                        tmp = right_rotation(tmp, root);// left case////
-                    }
-                    else if (balance < -1 && pair.first > tmp->_right_child->_value.first)
-                    {
-                        tmp = left_rotation(tmp, root);// right case////
-                    }
-                    else if (balance > 1 && pair.first > tmp->_left_child->_value.first)
-                    {
-                        // std::cout << "here\n";
-                        tmp->_left_child = left_rotation(tmp->_left_child, root);
-                        tmp = right_rotation(tmp, root);//left right case////
-                    }
-                    else if (balance < -1 && pair.first < tmp->_right_child->_value.first)
-                    {
-                        tmp->_right_child = right_rotation(tmp->_right_child, root);
-                        // std::cout << "here2\n";
-                        tmp = left_rotation(tmp, root);//right left case////
+                    tmp->balance_factor = balance;      ///update balance///
+                    if (balance > 1 && pair.first < tmp->_left_child->_value.first)    //// nd  ////
+                    {                                                                  ////  \   //// 
+                        tmp = right_rotation(tmp, root);// left case////                ////  nd ////
+                    }                                                                   ////   \ ////
+                    else if (balance < -1 && pair.first > tmp->_right_child->_value.first)////  nd ////   ////   nd  ////
+                    {                                                                                    ////   /   ////
+                        tmp = left_rotation(tmp, root);// right case////                                ////   nd  ////
+                    }                                                                                  ////   /   ////
+                    else if (balance > 1 && pair.first > tmp->_left_child->_value.first)              ////  nd   ////
+                    {                                                                                                 //  nd ///
+                        // std::cout << "here\n";                                                                  //      /   ////
+                        tmp->_left_child = left_rotation(tmp->_left_child, root);                                 ///   nd     ////
+                        tmp = right_rotation(tmp, root);//left right case////                                     //      \   ///
+                   }                                                                                               //       nd  //
+                    else if (balance < -1 && pair.first < tmp->_right_child->_value.first)              //   nd   ///
+                    {                                                                                  //      \  ///
+                        tmp->_right_child = right_rotation(tmp->_right_child, root);                   ///      nd  //
+                        // std::cout << "here2\n";                                                   ///        /  //
+                        tmp = left_rotation(tmp, root);//right left case////                          //       nd  //
                     }
                     tmp = tmp->_parent;
                 }
-                if (root != nd->_parent)
+                if (root != nd->_parent)                ///in case root was changed return new root(not end) ///
                     return (root->_left_child);
                 return (nd);
             }
@@ -290,20 +300,20 @@ namespace ft
                     {
                         nd = nd->_left_child;
                     }
-                    else if (k > nd->_value.first && nd->_right_child)
+                    else if (k > nd->_value.first && nd->_right_child)    /////iterates in the tree till it finds the node it needs to erase////
                     {
-                        nd = nd->_right_child;                                                  /*MAY NEED TO FIX HEIGHT / BALANCE*/
+                        nd = nd->_right_child;                                                  
                     }
                     else
                     {
                         prev = prev_node(tmp, nd->_value.first, &side);
-                        if (!nd->_right_child && !nd->_left_child)
+                        if (!nd->_right_child && !nd->_left_child)          //if it has no children we can point it's parent to null ///
                         {
                             if (side == 1)
                                 nd->_parent->_right_child = nullptr;
                             else
                                 nd->_parent->_left_child = nullptr;
-                            if (nd == tmp)
+                            if (nd == tmp)                                  ////in case nd was root ///
                                 return ;
                         }
                         else if (nd->_right_child && !nd->_left_child)
@@ -316,7 +326,7 @@ namespace ft
                             {
                                 nd->_parent->_left_child = nd->_right_child;
                             }
-                            nd->_right_child->_parent = nd->_parent;/*debatable*//*NOT*/
+                            nd->_right_child->_parent = nd->_parent;
                             if (nd == tmp)
                             {
                                 tree_node = nd->_right_child;
@@ -347,34 +357,42 @@ namespace ft
                             _node *old_right = nd->_right_child;
                             _node *old_left = nd->_left_child;
                             _node *old_parent = nd->_parent;
-                            //////place tr_min in place of nd that we want to erase///////
-                            if (nd->_parent)
-                            {
-                                prev_node(tmp, nd->_value.first, &side);////if nd is not root place tr_min on it's right or left depending on wich side nd was////
-                                if (side == 1)
-                                {
-                                    nd->_parent->_right_child = tr_min;                                      /*VERY DEBATABLE SINCE I CHANGED THE PARENT OF ROOT TO END*/
-                                }
-                                else if (side == 2)
-                                    nd->_parent->_left_child = tr_min;
-                            }
+                            _node *tr_min_old_parent = tr_min->_parent;
+
                             ///PARKOUR///
                             nd = tr_min;
                             nd->_parent = old_parent;
                             nd->_right_child = old_right;
                             nd->_left_child = old_left;
-                            old_right->_parent = nd;
-                            old_left->_parent = nd;
+                            // old_right->_parent = nd;
+                            // old_left->_parent = nd;
+                            //////place tr_min in place of nd that we want to erase///////
+                            if (old_nd->_parent)
+                            {
+                                prev_node(tmp, nd->_value.first, &side);////if nd is not root place tr_min on it's right or left depending on wich side nd was////
+                                if (side == 1)
+                                {
+                                    nd->_parent->_right_child = tr_min;                                      /*VERY DEBATABLE SINCE I CHANGED THE PARENT OF ROOT TO END*/
+                                    old_left->_parent = nd;
+                                }
+                                else if (side == 2)
+                                {
+                                    nd->_parent->_left_child = tr_min;
+                                    old_right->_parent = nd;
+                                }
+                            }
                             side = 0;
                             ///REMOVE TR_MIN FROM ORIGINAL PLACE////
-                            /*prev = */prev_node(nd, tr_min->_value.first, &side);
+                            if (tr_min_old_parent == old_nd)    /////in case tr_min was  attached to the node we deleted
+                                tr_min_old_parent = nd;
+                            side = wich_parent_side(tr_min, tr_min_old_parent);
                             if (side == 1)
                             {
-                                tr_min->_parent->_right_child = NULL;
+                                tr_min_old_parent->_right_child = NULL;
                             }
                             else if (side == 2)
                             {
-                                tr_min->_parent->_left_child = NULL;
+                                tr_min_old_parent->_left_child = NULL;
                             }
                             if (old_nd == tmp)
                             {
@@ -464,13 +482,13 @@ namespace ft
             _node *tree_max()
             {
                 _node *tmp = tree_node;
-                if (tmp)
-                {
+                // if (tmp)
+                // {
                     while (tmp && tmp->_right_child)
                     {
                         tmp = tmp->_right_child;
                     }
-                }
+                // }
                 return (tmp);
             }
             _node *tree_min()
@@ -507,7 +525,9 @@ namespace ft
             {
                 if (tree_node && !tree_node->_parent)
                 {
+                    // std::cout << "here\n";
                     tree_node->_parent = root;
+
                 }
             }
             _node *find_successor(_node * nd)
@@ -654,6 +674,8 @@ namespace ft
                 {
                     nd = nd->_parent;
                 }
+                if (!nd->_parent)
+                    return (nd);
                 return (nd->_parent);
             }
             // else
@@ -664,17 +686,14 @@ namespace ft
     template <class value_type, class node_pointer>
     class my_map_iterator
     {
-        typedef value_type*        pointer;
-        typedef value_type&        reference;
-        typedef node_pointer       nodePtr;
-
-        private:
-            nodePtr _ptr;
+        public:
             template <class val_type, class node_ptr>
             friend bool operator== (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs);
             template <class val_type, class node_ptr>
             friend bool operator!= (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs);
-        public:
+            typedef value_type*        pointer;
+            typedef value_type&        reference;
+            typedef node_pointer       nodePtr;
             my_map_iterator():_ptr(){}
             my_map_iterator(nodePtr ptr):_ptr(ptr){}
             template <class iterator>
@@ -718,6 +737,8 @@ namespace ft
                 return (tmp);
             }
             ~my_map_iterator(){};
+            private:
+                nodePtr _ptr;
     };
     template <class val_type, class node_ptr>
     bool operator== (const my_map_iterator<val_type, node_ptr>& lhs, const my_map_iterator<val_type, node_ptr>& rhs)
@@ -731,15 +752,12 @@ namespace ft
     }
     template <class T>
     class my_map_reverse_iterator
-    {
-        typedef typename T::pointer        pointer;
-        typedef typename T::reference       reference;
-        // typedef node_pointer       nodePtr;
-        typedef T                  iterator_type;
-
-        private:
-            iterator_type _iterator;
+    { 
         public:
+            typedef typename T::pointer        pointer;
+            typedef typename T::reference       reference;
+            // typedef node_pointer       nodePtr;
+            typedef T                  iterator_type;
             // nodePtr _ptr;
             my_map_reverse_iterator():_iterator(){};
             my_map_reverse_iterator(iterator_type it):_iterator(it){}
@@ -754,47 +772,53 @@ namespace ft
             }
             reference operator*() const
             {
-                return (_iterator._ptr->value);
+                return (*_iterator);
             }
             pointer operator->() const
             {
-                return (&_iterator._ptr->_value);
+                return (&(*_iterator));
             }
             my_map_reverse_iterator &operator++()
             {
-                _iterator._ptr = find_predeccessor(_iterator._ptr);
+                // _iterator._ptr = find_predeccessor(_iterator._ptr);
+                _iterator--;
                 return (*this);
             }
             my_map_reverse_iterator operator++(int)       /*COULD BE WRONG*//*RETURNS DECREMENTED VALUE IN THE SAME LINE*/
             {
                 my_map_reverse_iterator tmp = *this;
-                this->_iterator._ptr = find_predeccessor(_iterator._ptr);
+                // this->_iterator._ptr = find_predeccessor(_iterator._ptr);
+                _iterator--;
                 return (tmp);
             }
             my_map_reverse_iterator &operator--()
             {
-                this->_iterator._ptr = find_successor(_iterator._ptr);
+                // this->_iterator._ptr = find_successor(_iterator._ptr);
+                _iterator++;
                 return (*this);
             }
             my_map_reverse_iterator operator--(int)       /*COULD BE WRONG*/
             {
                 my_map_reverse_iterator tmp = *this;
-                this->_iterator._ptr= find_successor(_iterator._ptr);
+                _iterator++;
+                // this->_iterator._ptr= find_successor(_iterator._ptr);
                 return (tmp);
             }
             ~my_map_reverse_iterator(){};
+        private:
+            iterator_type _iterator;
     };
     template <class iterator>
     bool operator== (const my_map_reverse_iterator<iterator>& lhs, const my_map_reverse_iterator<iterator>& rhs)
     {
-        if (lhs == rhs)
+        if (*lhs == *rhs)
             return (1);
         return (0);
     }
     template <class iterator>
     bool operator!= (const my_map_reverse_iterator<iterator>& lhs, const my_map_reverse_iterator<iterator>& rhs)
     {
-        if (lhs != rhs)
+        if (*lhs != *rhs)
         {
             return (1);
         }
@@ -807,12 +831,12 @@ namespace ft
             typedef Compare                                                     key_compare;
             typedef Key                                                         key_type;
             template <class value_type, class key_type>
-            class my_less
+            class my_cmp_type
             {
                 public:
                 key_compare cmp;
-                my_less(Compare c) : cmp(c){};/*DUNNO ABOUT THIS*/
-                my_less(){};
+                my_cmp_type(Compare c) : cmp(c){};/*DUNNO ABOUT THIS*/
+                my_cmp_type(){};
                 bool operator() (const value_type& x, const value_type& y) 
                 {
                     return cmp(x.first , y.first);
@@ -821,15 +845,19 @@ namespace ft
                 {
                     return cmp(x , y.first);
                 }
+                bool operator() (const value_type& x, const key_type& y) 
+                {
+                    return cmp(x.first , y);
+                }
                 bool operator() (const key_type& x, const key_type& y) 
                 {
-                    return cmp(x.first , y.first);
+                    return cmp(x , y);
                 }
             };
             typedef T                                                           mapped_type;
             typedef pair<const key_type,mapped_type>                            value_type;
 
-            typedef my_less<value_type, key_type>                                         value_compare;
+            typedef my_cmp_type<value_type, key_type>                                         value_compare;
 
             typedef node<value_type>                                            _node;
             typedef Allocator                                                   allocator_type;
@@ -848,14 +876,14 @@ namespace ft
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc) , comp_obj(comp)
             {
                 _size = 0;
-                root = _tree.insert_end();
+                /*root = */_tree.insert_end();
             }
             template <class InputIterator>
-            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc)
+            map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc) , comp_obj(comp)
             {
                 _size = 0;
 
-                root = _tree.insert_end();
+                /*root = */_tree.insert_end();
                 for (;first != last; first++)
                 {
                     insert(ft::make_pair (first->first, first->second));
@@ -870,7 +898,7 @@ namespace ft
             map& operator= (const map& x)
             {
                 this->_size = x._size;
-                this->root = x.root;
+                // this->root = x.root;
                 _tree.copy_tree(x._tree);       
                 return (*this);
             }
@@ -895,7 +923,7 @@ namespace ft
                 }
                 else
                 {
-                    return insert(ft::make_pair (k, NULL)).first->second;//////////NEED TO FIX INSERT RETUTRN VALUE///////////
+                    return (insert(ft::make_pair (k, mapped_type())).first)->second;
                 }
             }
 			pair<iterator, bool> insert (const value_type& val)
@@ -962,26 +990,26 @@ namespace ft
             }
             reverse_iterator rbegin()
             {
-                return (++reverse_iterator(_tree.tree_max()));
+                return (reverse_iterator(_tree.tree_max()));
             }
             const_reverse_iterator rbegin() const
             {
-                return (++const_reverse_iterator(_tree.tree_max()));
+                return (const_reverse_iterator(_tree.tree_max()));
             }
             reverse_iterator rend()
             {
-                return (reverse_iterator(_tree.tree_min()));
+                return (++reverse_iterator(_tree.tree_min()));
             }
             const_reverse_iterator rend() const
             {
-                return (const_reverse_iterator(_tree.tree_min()));
+                return (++const_reverse_iterator(_tree.tree_min()));
             }
             iterator find (const key_type& k) 
             {
                 _node *tmp;
                 if ((tmp = _tree.find(k)))
                 {
-                    return(tmp);
+                    return(iterator(tmp));
                 }
                 return (this->end());
             }
@@ -1004,10 +1032,14 @@ namespace ft
             void swap (map& x)
             {
                 map tmp = *this;
-                this->_tree = x._tree;
+
+                x._tree = this->_tree.swap(x._tree);
                 this->_size = x._size;
-                x._tree = tmp._tree;
+                // this->root = x.root;
+                // x._tree = tmp._tree;
+                // x._tree.swap(tmp._tree);
                 x._size = tmp._size;
+                // x.root = tmp.root;
             }
             void clear()
             {
@@ -1126,11 +1158,11 @@ namespace ft
             }
             ~map()
             {
-                
+                // _tree.prettyPrint();
             }
             private:
                 tree        _tree;
-                _node *root;
+                // _node *root;
                 allocator_type u;
                 value_compare comp_obj;
                 size_type _size;

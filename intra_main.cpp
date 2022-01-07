@@ -45,7 +45,7 @@ public:
 	iterator end() { return this->c.end(); }
 };
 
-int main(int argc, char** argv) {
+int main() {
 	// if (argc != 2)
 	// {
 	// 	std::cerr << "Usage: ./test seed" << std::endl;
@@ -92,11 +92,14 @@ int main(int argc, char** argv) {
 	// {
 	// 	//NORMAL ! :P
 	// }
-	for (int i = 1; i < COUNT; ++i)
+	for (int i = 1; i < 10; ++i)
 	{
 		// std::cout << i << std::endl;
 		map_int.insert(ft::make_pair(i, rand()));
 	}
+	map_int.lower_bound(1);
+	for (ft::map<int,int>::iterator it=map_int.begin(); it != map_int.end(); ++it)
+            std::cout << "|" << it->first<< "|" << " => " << it->second << '\n';
 	// for (int i = 1; i < COUNT; ++i)
 	// {
 	// // 	// std::cout << i << std::endl;
@@ -106,7 +109,7 @@ int main(int argc, char** argv) {
 	// {
 	// 	std::cout << it->first << std::endl;
 	// }
-	map_int.clear();
+	// map_int.clear();
 	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
 	// {
 	// std::cout << "je" <<std::endl;
@@ -116,11 +119,11 @@ int main(int argc, char** argv) {
 	// map_int.insert(ft::make_pair(1, rand()));
 	// map_int.insert(ft::make_pair(3, rand()));
 	// map_int.insert(ft::make_pair(2, rand()));
-	for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
-	{
+	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
+	// {
 
-		std::cout << it->first << std::endl;
-	}
+	// 	std::cout << it->first << std::endl;
+	// }
 	// map_int._tree.prettyPrint();
 	// map_int._tree.prettyPrint();
 	// int sum = 0;

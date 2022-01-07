@@ -1524,11 +1524,10 @@ int main ()
     //     first['y']=16;
     //     first['z']=32;
 
-
     //     second=first;                // second now contains 3 ints
     //     first=ft::map<char,int>();  // and first is now empty
 
-    //     std::cout << "Size of first: " << second.size() << '\n';
+    //     std::cout << "Size of first: " << first.size() << '\n';
     //     std::cout << "Size of second: " << second.size() << '\n';
     // }
     //////////////////////
@@ -1547,14 +1546,13 @@ int main ()
     // }
     // {
     //     ft::map<char,int> mymap;
-
     //     mymap['b'] = 100;
     //     mymap['a'] = 200;
     //     mymap['c'] = 300;
 
     //     // show content:
     //     for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    //         std::cout << it->first << " => " << it->second << '\n';
+    //         std::cout << it->first<< " => " << it->second << '\n';
     // }
     //////////////////////
     ////END()/////////////
@@ -1797,6 +1795,8 @@ int main ()
     //     mymap.erase ( it, mymap.end() );    // erasing by range
 
     //     // show content:
+    //     ft::map<char,int>::iterator iter = mymap.end();
+
     //     for (it=mymap.begin(); it!=mymap.end(); ++it)
     //         std::cout << it->first << " => " << it->second << '\n';
     // }
@@ -1818,10 +1818,12 @@ int main ()
     //     std::cout << "foo contains:\n";
     //     for (std::map<char,int>::iterator it=foo.begin(); it!=foo.end(); ++it)
     //         std::cout << it->first << " => " << it->second << '\n';
+    //     std::cout << "Foo size = " << foo.size() << std::endl;
 
     //     std::cout << "bar contains:\n";
     //     for (std::map<char,int>::iterator it=bar.begin(); it!=bar.end(); ++it)
     //         std::cout << it->first << " => " << it->second << '\n';
+    //     std::cout << "Bar size = " << bar.size() << std::endl;
     // }
     // {
     //     ft::map<char,int> foo,bar;
@@ -1838,10 +1840,12 @@ int main ()
     //     std::cout << "foo contains:\n";
     //     for (ft::map<char,int>::iterator it=foo.begin(); it!=foo.end(); ++it)
     //         std::cout << it->first << " => " << it->second << '\n';
+    //     std::cout << "Foo size = " << foo.size() << std::endl;
 
     //     std::cout << "bar contains:\n";
     //     for (ft::map<char,int>::iterator it=bar.begin(); it!=bar.end(); ++it)
     //         std::cout << it->first << " => " << it->second << '\n';
+    //     std::cout << "Bar size = " << bar.size() << std::endl;
     // }
     //////////////////////
     //CLEAR()/////////////
@@ -1986,9 +1990,9 @@ int main ()
     //     ft::map<int, int> mp;
  
     //     // insert elements in random order
-        // mp.insert(ft::make_pair ( 4, 30 ));
-        // mp.insert(ft::make_pair ( 1, 40 ));
-        // mp.insert(ft::make_pair ( 6, 60 ));
+    //     mp.insert(ft::make_pair ( 4, 30 ));
+    //     mp.insert(ft::make_pair ( 1, 40 ));
+    //     mp.insert(ft::make_pair ( 6, 60 ));
     
     //     ft::pair<ft::map<int, int>::iterator,
     //         ft::map<int, int>::iterator>
@@ -2004,6 +2008,7 @@ int main ()
     //         << it.second->first
     //         << ":" << it.second->second;
     // }
+    ///still  testing equal range
     // {
     //     std::map<int, int> mp;
  
@@ -2014,6 +2019,28 @@ int main ()
     
     //     std::pair<std::map<int, int>::iterator,
     //         std::map<int, int>::iterator>        /////something aint right here/////
+    //         it;
+    
+    //     // iterator of pairs
+    //     it = mp.equal_range(10);
+    //     std::cout << "The lower bound is "
+    //         << it.first->first << ":"
+    //         << it.first->second;
+    
+    //     std::cout << "\nThe upper bound is "
+    //         << it.second->first
+    //         << ":" << it.second->second;
+    // }
+    // {
+    //     ft::map<int, int> mp;
+ 
+    //     // insert elements in random order
+    //     mp.insert(ft::make_pair ( 4, 30 ));
+    //     mp.insert(ft::make_pair ( 1, 40 ));
+    //     mp.insert(ft::make_pair ( 6, 60 ));
+    
+    //     ft::pair<ft::map<int, int>::iterator,
+    //         ft::map<int, int>::iterator>        /////something aint right here/////
     //         it;
     
     //     // iterator of pairs
@@ -2043,8 +2070,8 @@ int main ()
     //     char highest = mymap.rbegin()->first;     // key value of last element
 
     //     std::map<char,int>::iterator it = mymap.begin();
-    //     do {
-    //         std::cout << it->first << " => " << it->second << '\n';
+    //     do {     
+    //         std::cout << it->first << " => " << it->second << '\n';                                  ///////reverse_iterator still fucked up/////
     //     } while ( mycomp((*it++).first, highest) );
 
     //     std::cout << '\n';
@@ -2063,8 +2090,8 @@ int main ()
     //     char highest = mymap.rbegin()->first;     // key value of last element
 
     //     ft::map<char,int>::iterator it = mymap.begin();
-    //     do {
-    //         std::cout << it->first << " => " << it->second << '\n';
+    //     do {     
+    //         std::cout << it->first << " => " << it->second << '\n';                                  ///////reverse_iterator still fucked up/////
     //     } while ( mycomp((*it++).first, highest) );
 
     //     std::cout << '\n';
@@ -2089,11 +2116,11 @@ int main ()
     //     } while ( mymap.value_comp()(*it++, highest) );
     // }
     // {
-        // ft::map<char,int> mymap;
+    //     ft::map<char,int> mymap;
 
-        // mymap['x']=1001;
-        // mymap['y']=2002;
-        // mymap['z']=3003;
+    //     mymap['x']=1001;
+    //     mymap['y']=2002;
+    //     mymap['z']=3003;
 
     //     std::cout << "mymap contains:\n";
 
@@ -2105,28 +2132,28 @@ int main ()
     //     } while ( mymap.value_comp()(*it++, highest) );
     // }
     // {
-        // map<char, int> m = {
-        //     { 'a', 1 },
-        //     { 'b', 2 },
-        //     { 'c', 3 },
-        //     { 'd', 4 },
-        //     { 'e', 5 },
-        // };
+    //     map<char, int> m = {
+    //         { 'a', 1 },
+    //         { 'b', 2 },
+    //         { 'c', 3 },
+    //         { 'd', 4 },
+    //         { 'e', 5 },
+    //     };
     
-        // auto last = *m.rbegin();
-        // auto i = m.begin();
+    //     auto last = *m.rbegin();
+    //     auto i = m.begin();
     
-        // cout << "Map contains "
-        //     << "following elements"
-        //     << endl;
+    //     cout << "Map contains "
+    //         << "following elements"
+    //         << endl;
     
-        // do {
+    //     do {
     
-        //     cout << i->first
-        //         << " = "
-        //         << i->second
-        //         << endl;
-        // } while (m.value_comp()(*i++, last));
+    //         cout << i->first
+    //             << " = "
+    //             << i->second
+    //             << endl;
+    //     } while (m.value_comp()(*i++, last));
     // }
 //   return 0;
     // std::map<int , int> mymap;
@@ -2146,29 +2173,29 @@ int main ()
     // ft::stack<int> name;
     // name.push(10);
     // std::cout << name.empty() << std::endl;
-    ft::map<int, int> mp;
-    mp[0] = 0;
-    mp[1] = 10;
-    mp[2] = 20;
-    mp[3] = 30;
-    ft::map<int, int> mp2(mp);
-    mp2[4] = 0;
-    mp2[6] = 10;
-    mp2[5] = 20;
-    mp2[7] = 30;
-    mp.insert(mp2.begin(), mp2.end());
-    mp.equal_range(5);
-    // std::cout << mp[0] << std::endl;
-    // std::cout << mp[1] << std::endl;
-    // std::cout << mp[2] << std::endl;
-    // std::cout << mp[3] << std::endl;
-    // std::cout << mp.size() << std::endl;
-    // mp2.insert(mp.begin() , mp.end());
-    for (ft::map<int, int>::iterator it = mp.begin(); it != mp.end(); it++)
-    {
-        std::cout << it->first <<std::endl;
-    }
-    mp.clear();
+    // ft::map<int, int> mp;
+    // mp[0] = 0;
+    // mp[1] = 10;
+    // mp[2] = 20;
+    // mp[3] = 30;
+    // ft::map<int, int> mp2(mp);
+    // mp2[4] = 0;
+    // mp2[6] = 10;
+    // mp2[5] = 20;
+    // mp2[7] = 30;
+    // mp.insert(mp2.begin(), mp2.end());
+    // mp.equal_range(5);
+    // // std::cout << mp[0] << std::endl;
+    // // std::cout << mp[1] << std::endl;
+    // // std::cout << mp[2] << std::endl;
+    // // std::cout << mp[3] << std::endl;
+    // // std::cout << mp.size() << std::endl;
+    // // mp2.insert(mp.begin() , mp.end());
+    // for (ft::map<int, int>::iterator it = mp.begin(); it != mp.end(); it++)
+    // {
+    //     std::cout << it->first <<std::endl;
+    // }
+    // mp.clear();
     
     // vec.pop_back();
     // vec.pop_back();
