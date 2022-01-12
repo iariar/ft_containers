@@ -41,12 +41,9 @@ namespace ft
             typedef node<value_type> _node;
             typedef typename allocator_type::template rebind<_node>::other node_allocator;
             typedef comp comparison_type;
-            my_tree(/* args */)
+            my_tree(void)
             {
                 tree_node = nullptr;
-                // int i = 0;
-                // int j = 1;
-                // std::cout << "this is the comparison ret" << cmp(i, j) << std::endl;
             }
             void    actual_copy_function(_node **nd, _node *x, _node **prev_node)
             {
@@ -68,8 +65,9 @@ namespace ft
             }
             my_tree operator= (const my_tree& x)
             {
-                // clear_call(0);
-                insert_end();
+                // clear_call(1);
+                // if (!root)
+                    insert_end();
                 this->copy_tree(x);
                 return (*this);
             }
@@ -856,7 +854,7 @@ namespace ft
             typedef T                                                           mapped_type;
             typedef pair<const key_type,mapped_type>                            value_type;
 
-            typedef my_cmp_type<value_type, key_type>                                         value_compare;
+            typedef my_cmp_type<value_type, key_type>                           value_compare;
 
             typedef node<value_type>                                            _node;
             typedef Allocator                                                   allocator_type;
@@ -870,7 +868,7 @@ namespace ft
             typedef my_map_reverse_iterator<const iterator>                     const_reverse_iterator;
             typedef ptrdiff_t                                                   differende_type;
             typedef size_t                                                      size_type;
-            typedef my_tree<value_type, key_type, allocator_type, value_compare>               tree;
+            typedef my_tree<value_type, key_type, allocator_type, key_compare>     tree;
 
             explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : u(alloc) , comp_obj(comp)
             {
@@ -1157,15 +1155,13 @@ namespace ft
             ~map()
             {
                 _tree.clear_call(1);
-                // _tree.prettyPrint();
-                // std::cout << "here\n";
             }
             private:
-                tree        _tree;
                 // _node *root;
-                allocator_type u;
-                value_compare comp_obj;
-                size_type _size;
+                allocator_type  u;
+                Compare   comp_obj;
+                tree            _tree;
+                size_type       _size;
     };
 }
 

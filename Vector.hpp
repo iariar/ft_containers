@@ -467,12 +467,8 @@ namespace ft
         }
         vector &operator=(vector const &rhs)
         {
-            // clear();
-            // if (this->data > 0)
-            // {
-            //     u.deallocate(data, _capacity);
-            // }
-            this->data = u.allocate(rhs._capacity);
+            if (rhs._capacity > 0)
+                this->data = u.allocate(rhs._capacity);
             for (int i = 0; i < rhs._size; i++)
             {
                 this->data[i] = rhs.data[i];
@@ -794,7 +790,6 @@ namespace ft
         ~vector()
         { 
             clear();
-            // u.deallocate(data, _size);
 
         };
         private:
@@ -802,10 +797,6 @@ namespace ft
             allocator_type u;
             int _size;
             int _capacity;
-            // reference operator*() const
-            // {
-            //     return *(data);
-            // }
             template <class it>
             int dis(it start, it last)
             {
