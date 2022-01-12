@@ -25,6 +25,15 @@ namespace ft
         node(){};
         node(value_type pir) : _value(pir){};
     };
+    template <class node_>
+    node_ *tree_min_out(node_ *nd)
+    {
+        while (nd && nd->_left_child)
+        {
+            nd = nd->_left_child;
+        }
+        return (nd);
+    }
     template <class value_type, class key_type, class allocator_type, class comp>
     class my_tree
     {
@@ -32,47 +41,35 @@ namespace ft
             typedef node<value_type> _node;
             typedef typename allocator_type::template rebind<_node>::other node_allocator;
             typedef comp comparison_type;
-            // typename allocator_type::rebind<node<value_type> >::other;
-            // template< class U > struct rebind
-            // {
-            //     typedef allocator_type<U> other;
-            // };
             my_tree(/* args */)
             {
-                // tree_node._value = nullptr;
-                // tree_node.balance_factor = 0;
-                // // tree_node._root = nullptr;
-                // tree_node._left_child = nullptr;
-                // tree_node._right_child = nullptr;
                 tree_node = nullptr;
+                // int i = 0;
+                // int j = 1;
+                // std::cout << "this is the comparison ret" << cmp(i, j) << std::endl;
             }
-            void    actual_copy_function(_node *nd, _node *x)
+            void    actual_copy_function(_node **nd, _node *x, _node **prev_node)
             {
                 if (x)  //PREORDER TRAVERSAL//
                 {
-                    nd = new_node(x->_value);                       /*INSERT CURRENT NODE*/
-                    actual_copy_function(nd->_left_child, x->_left_child); /*start with root and then traverses to the left node first then right*/
-                    actual_copy_function(nd->_right_child, x->_right_child);
+                    (*nd) = new_node(x->_value);                       /*INSERT CURRENT NODE*/
+                    (*nd)->height = x->height;
+                    (*nd)->balance_factor = x->balance_factor;
+                    (*nd)->_parent = *prev_node;
+                    actual_copy_function(&((*nd)->_left_child), x->_left_child, &(*nd)); /*start with root and then traverses to the left node first then right*/
+                    actual_copy_function(&((*nd)->_right_child), x->_right_child, &(*nd));
                 }
-                tree_node = nd;
             }
             void copy_tree(my_tree x)
             {
-                actual_copy_function(tree_node, x.tree_node);
-                // tree_node = nd;
-                // return (x);
+                actual_copy_function(&tree_node, x.tree_node, &root);
+                if (tree_node && root)
+                    root->_left_child = tree_node;
             }
             my_tree operator= (const my_tree& x)
             {
-                // if (x.tree_node)
-                // {
-                //     tree_node = allocator.allocate(1);
-                //     allocator.construct(tree_node, x.tree_node->_value);
-                //     this->tree_node->balance_factor = x.tree_node->balance_factor;
-                //     this->tree_node->_left_child = x.tree_node->_left_child;
-                //     this->tree_node->_parent = x.tree_node->_parent;
-                //     this->tree_node->_right_child = x.tree_node->_right_child;
-                // }
+                // clear_call(0);
+                insert_end();
                 this->copy_tree(x);
                 return (*this);
             }
@@ -127,15 +124,14 @@ namespace ft
                     printHelper(root->_right_child, indent, true);
                 }
             }
-            my_tree    swap(my_tree tree)
+            void    swap(my_tree *tree)
             {
                 _node *nd = this->tree_node;
                 _node *cp_root = this->root;
-                this->tree_node = tree.tree_node;
-                this->root = tree.root;
-                tree.tree_node = nd;
-                tree.root = cp_root;
-                return (tree);
+                this->tree_node = tree->tree_node;
+                this->root = tree->root;
+                tree->tree_node = nd;
+                tree->root = cp_root;
             }
             void prettyPrint() {
                 printHelper(this->tree_node, "", true);
@@ -296,23 +292,31 @@ namespace ft
                 }
                 while(nd)
                 {
-                    if (k < nd->_value.first && nd->_left_child)
+                    if (k < nd->_value.first/* && nd->_left_child*/)
                     {
                         nd = nd->_left_child;
                     }
-                    else if (k > nd->_value.first && nd->_right_child)    /////iterates in the tree till it finds the node it needs to erase////
+                    else if (k > nd->_value.first/* && nd->_right_child*/)    /////iterates in the tree till it finds the node it needs to erase////
                     {
                         nd = nd->_right_child;                                                  
                     }
                     else
                     {
+                        if (!nd)
+                            return ;
                         prev = prev_node(tmp, nd->_value.first, &side);
                         if (!nd->_right_child && !nd->_left_child)          //if it has no children we can point it's parent to null ///
                         {
                             if (side == 1)
+                            {
+                                allocator.deallocate(nd->_parent->_right_child , 1);
                                 nd->_parent->_right_child = nullptr;
+                            }
                             else
+                            {
+                                allocator.deallocate(nd->_parent->_left_child , 1);
                                 nd->_parent->_left_child = nullptr;
+                            }
                             if (nd == tmp)                                  ////in case nd was root ///
                                 return ;
                         }
@@ -327,11 +331,13 @@ namespace ft
                                 nd->_parent->_left_child = nd->_right_child;
                             }
                             nd->_right_child->_parent = nd->_parent;
+                            _node *old_nd = nd;
                             if (nd == tmp)
                             {
                                 tree_node = nd->_right_child;
-                                return ;
+                                // return ;
                             }
+                            allocator.deallocate(old_nd, 1);
                         }
                         else if (nd->_left_child && !nd->_right_child)
                         {
@@ -344,96 +350,96 @@ namespace ft
                                 nd->_parent->_left_child = nd->_left_child;
                             }
                             nd->_left_child->_parent = nd->_parent;
+                            _node *old_nd = nd;
                             if (nd == tmp)
                             {
-                                tree_node = nd->_right_child;
-                                return ;
+                                nd = nd->_right_child;
+                                tree_node = nd;
+                                // return ;
                             }
+                            allocator.deallocate(old_nd, 1);
                         }
                         else
                         {
-                            _node *tr_min = tree_min();
+                            _node *tr_min = tree_min_out(nd->_right_child);
+                            _node *tr_min_old_parent = tr_min->_parent;
                             _node *old_nd = nd;
                             _node *old_right = nd->_right_child;
-                            _node *old_left = nd->_left_child;
+                            _node *old_left = nd->_left_child;      //saving old adressed attached to node we wanna delete///
                             _node *old_parent = nd->_parent;
-                            _node *tr_min_old_parent = tr_min->_parent;
 
-                            ///PARKOUR///
-                            nd = tr_min;
-                            nd->_parent = old_parent;
-                            nd->_right_child = old_right;
-                            nd->_left_child = old_left;
-                            // old_right->_parent = nd;
-                            // old_left->_parent = nd;
-                            //////place tr_min in place of nd that we want to erase///////
-                            if (old_nd->_parent)
+                            side = wich_parent_side(old_nd, old_parent);
+                            if (tr_min == nd->_right_child)             //in case tr_min was attached to nd /////
                             {
-                                prev_node(tmp, nd->_value.first, &side);////if nd is not root place tr_min on it's right or left depending on wich side nd was////
+                                nd = tr_min;
                                 if (side == 1)
-                                {
-                                    nd->_parent->_right_child = tr_min;                                      /*VERY DEBATABLE SINCE I CHANGED THE PARENT OF ROOT TO END*/
-                                    old_left->_parent = nd;
-                                }
+                                    old_parent->_right_child = nd;
                                 else if (side == 2)
+                                    old_parent->_left_child = nd;
+                                nd->_parent = old_parent;
+                                nd->_left_child = old_left;
+                                old_left->_parent = nd;
+                                nd->_right_child = old_right->_right_child;
+                                if (old_right->_right_child)
                                 {
-                                    nd->_parent->_left_child = tr_min;
-                                    old_right->_parent = nd;
+                                    old_right->_right_child->_parent = nd;
                                 }
                             }
-                            side = 0;
-                            ///REMOVE TR_MIN FROM ORIGINAL PLACE////
-                            if (tr_min_old_parent == old_nd)    /////in case tr_min was  attached to the node we deleted
-                                tr_min_old_parent = nd;
-                            side = wich_parent_side(tr_min, tr_min_old_parent);
-                            if (side == 1)
+                            else
                             {
-                                tr_min_old_parent->_right_child = NULL;
-                            }
-                            else if (side == 2)
-                            {
+                                nd = tr_min;
+                                if (side == 1)
+                                    old_parent->_right_child = nd;
+                                else if (side == 2)
+                                    old_parent->_left_child = nd;
+                                nd->_parent = old_parent;
+                                nd->_right_child = old_right;
+                                nd->_left_child = old_left;
+                                old_left->_parent = nd;
+                                old_right->_parent = nd;
                                 tr_min_old_parent->_left_child = NULL;
                             }
-                            if (old_nd == tmp)
-                            {
+                            allocator.deallocate(old_nd, 1);
+                            if (tmp == old_nd)
                                 tree_node = nd;
-                                return ;
-                            }
-                            // nd->_parent = prev;
                         }
                         break ;
                     }
                 }
-                // while (nd && nd != root)
-                // {
-                //     nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
-                //     int balance = get_balance(nd);
-                //     nd->balance_factor = balance;
-                //     if (balance > 1 && k < nd->_left_child->_value.first)
-                //     {
-                //         nd = right_rotation(nd, root);// left case////
-                //     }
-                //     else if (balance < -1 && k > nd->_right_child->_value.first)
-                //     {
-                //         nd = left_rotation(nd, root);// right case////
-                //     }
-                //     else if (balance > 1 && k > nd->_left_child->_value.first)
-                //     {
-                //         // std::cout << "here\n";
-                //         nd->_left_child = left_rotation(nd->_left_child, root);
-                //         nd = right_rotation(nd, root);//left right case////
-                //     }
-                //     else if (balance < -1 && k < nd->_right_child->_value.first)
-                //     {
-                //         nd->_right_child = right_rotation(nd->_right_child, root);
-                //         // std::cout << "here2\n";
-                //         nd = left_rotation(nd, root);//right left case////
-                //     }
-                //     nd = nd->_parent;
-                // }
-                // if (root != tmp->_parent)
-                //     tree_node = root->_left_child;
-                tree_node = tmp;
+                // prettyPrint();
+                while (nd && nd != root)
+                {
+                    nd->height = 1 + max(height(nd->_left_child), height(nd->_right_child));
+                    int balance = get_balance(nd);
+                    nd->balance_factor = balance;
+                    if (balance > 1 && k > nd->_left_child->_value.first)
+                    {
+                        nd = right_rotation(nd, root);// left case////
+                    }
+                    else if (balance < -1 && k < nd->_right_child->_value.first)
+                    {
+                        nd = left_rotation(nd, root);// right case////
+                    }
+                    else if (balance > 1 && k < nd->_left_child->_value.first)
+                    {
+                        // std::cout << "here\n";
+                        nd->_left_child = left_rotation(nd->_left_child, root);
+                        nd = right_rotation(nd, root);//left right case////
+                    }
+                    else if (balance < -1 && k > nd->_right_child->_value.first)
+                    {
+                        nd->_right_child = right_rotation(nd->_right_child, root);
+                        // std::cout << "here2\n";
+                        nd = left_rotation(nd, root);//right left case////
+                    }
+                    nd = nd->_parent;
+                }
+                if (root->_left_child != nd)
+                {
+                    tree_node = root->_left_child;
+                    return ;
+                }
+                // tree_node = tmp;
             }
             ///////////////////////////////////////////////////
             //functions i added to make tree_node private//////
@@ -462,20 +468,24 @@ namespace ft
             {
                 if (nd)
                 {
-                    // std::cout << "here\n";
-                    // _node *tmp_left = nd->_left_child;
-                    // _node *tmp_right = nd->_right_child;
-
                     recursive_delete(nd->_left_child);/*TRAVESES to the left node first then right*/
                     recursive_delete(nd->_right_child);
+                    // std::cout << nd->_value.first << std::endl;
                     destroy_node(nd);                  /*destroy CURRENT NODE*/
+                    nd = nullptr;
                 }
-
+                nd = nullptr;
+                root->_left_child = nullptr;
             }
-            void    clear_call()
+            void    clear_call(int last)
             {
-
-                recursive_delete(tree_node);
+                if (root)
+                    recursive_delete(root->_left_child);
+                if (last)
+                {
+                    // std::cout << "here" << std::endl;
+                    allocator.deallocate(root, 1);
+                }
                 // std::cout << root->_value.first <<std::endl;
                 tree_node = nullptr;
             }
@@ -523,11 +533,11 @@ namespace ft
             }
             void    link_to_root()
             {
-                if (tree_node && !tree_node->_parent)
+                if (tree_node && (!tree_node->_parent || !root->_left_child))
                 {
                     // std::cout << "here\n";
                     tree_node->_parent = root;
-
+                    root->_left_child = tree_node;
                 }
             }
             _node *find_successor(_node * nd)
@@ -602,15 +612,6 @@ namespace ft
         return (nd);
     }
     template <class node_>
-    node_ *tree_min(node_ *nd)
-    {
-        while (nd && nd->_left_child)
-        {
-            nd = nd->_left_child;
-        }
-        return (nd);
-    }
-    template <class node_>
     int wich_parent_side(node_ *nd, node_ *nd_parent)
     {
         if (nd && nd_parent)
@@ -631,7 +632,7 @@ namespace ft
         {
             if (nd->_right_child)
             {
-                return (tree_min(nd->_right_child));
+                return (tree_min_out(nd->_right_child));
             }
             else
             {
@@ -678,8 +679,6 @@ namespace ft
                     return (nd);
                 return (nd->_parent);
             }
-            // else
-            //     std::cout << "Error in wich_parent func" << std::endl;
         }
         return (NULL);
     }
@@ -897,9 +896,9 @@ namespace ft
             }
             map& operator= (const map& x)
             {
+                this->_tree = x._tree;      
                 this->_size = x._size;
-                // this->root = x.root;
-                _tree.copy_tree(x._tree);       
+                this->u = x.u;
                 return (*this);
             }
             bool empty() const
@@ -965,7 +964,7 @@ namespace ft
             void erase (iterator first, iterator last)
             {
                 iterator tmp = first;
-                for (; tmp != last;/* first++*/)
+                for (; tmp != last;)
                 {
                     first = tmp;
                     tmp++;
@@ -1031,19 +1030,18 @@ namespace ft
             }
             void swap (map& x)
             {
-                map tmp = *this;
+                int tmp_size = this->_size;
+                allocator_type tmp_u = this->u;
 
-                x._tree = this->_tree.swap(x._tree);
+                _tree.swap(&x._tree);
                 this->_size = x._size;
-                // this->root = x.root;
-                // x._tree = tmp._tree;
-                // x._tree.swap(tmp._tree);
-                x._size = tmp._size;
-                // x.root = tmp.root;
+                this->u = x.u;
+                x._size = tmp_size;
+                x.u = tmp_u;
             }
             void clear()
-            {
-                _tree.clear_call();
+            {    
+                _tree.clear_call(0);
                 _size = 0;
             }
             key_compare key_comp() const
@@ -1158,7 +1156,9 @@ namespace ft
             }
             ~map()
             {
+                _tree.clear_call(1);
                 // _tree.prettyPrint();
+                // std::cout << "here\n";
             }
             private:
                 tree        _tree;

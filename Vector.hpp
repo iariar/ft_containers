@@ -172,9 +172,9 @@ namespace ft
             {
                 this->iterator_pointer = it.iterator_pointer;
             }
-            value_type base() const
+            pointer base() const
             {
-                return *(iterator_pointer);
+                return iterator_pointer;
             }
             reference operator*() const
             {
@@ -233,10 +233,6 @@ namespace ft
                 this->iterator_pointer = rhs.iterator_pointer;
                 return (*this);
             }
-            pointer get_my_iterator_pointer(void) const
-            {
-                return (iterator_pointer);
-            }
         ~my_iterator()
         {return;}
         private:
@@ -248,37 +244,42 @@ namespace ft
     template <class Iterator>
     bool operator== (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() == rhs.get_my_iterator_pointer());
+        return (lhs.base() == rhs.base());
     }
     template <class Iterator>
     bool operator!= (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() != rhs.get_my_iterator_pointer());
+        return (lhs.base() != rhs.base());
     }
     template <class Iterator>
     bool operator<  (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() < rhs.get_my_iterator_pointer());
+        return (lhs.base() < rhs.base());
     }
     template <class Iterator>
     bool operator<=  (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() <= rhs.get_my_iterator_pointer());
+        return (lhs.base() <= rhs.base());
     }
     template <class Iterator>
     bool operator>  (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() > rhs.get_my_iterator_pointer());
+        return (lhs.base() > rhs.base());
     }
     template <class Iterator>
     bool operator>=  (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
     {
-        return (lhs.get_my_iterator_pointer() >= rhs.get_my_iterator_pointer());
+        return (lhs.base() >= rhs.base());
     }
     template <class Iterator>
     my_iterator<Iterator> operator+ (typename my_iterator<Iterator>::difference_type n, const my_iterator<Iterator>& it)
     {
-        return *(it + n);
+        return *(it.base() + n);
+    }
+    template <class Iterator>
+    typename my_iterator<Iterator>::difference_type operator- (const my_iterator<Iterator>& lhs, const my_iterator<Iterator>& rhs)
+    {
+        return rhs.base() - lhs.base();
     }
     template <class T>
     class my_reverse_iterator
@@ -292,12 +293,11 @@ namespace ft
             typedef typename iterator_traits<T>::iterator_category  iterator_category;
 
             // explicit my_reverse_iterator(pointer ptr) : iterator_pointer(ptr){};
-            my_reverse_iterator(){/*_iter = NULL;*/};
+            my_reverse_iterator() : _iter() {};
             explicit my_reverse_iterator (iterator_type it)
             {
                 _iter = it;
             }
-            // MISSING CONSTRUCTOR//maybe not
             template <class Iter>
             my_reverse_iterator (const my_reverse_iterator<Iter>& it)
             {
@@ -305,7 +305,7 @@ namespace ft
             }
             iterator_type base() const
             {
-                return (_iter);
+                return (_iter - 1);
             }
             reference operator*() const
             {
@@ -318,13 +318,13 @@ namespace ft
 
             my_reverse_iterator &operator++()
             {
-                _iter--;
+                --_iter;
                 return (*this);
             }
             my_reverse_iterator operator++(int)
             {
                 my_reverse_iterator tmp = *this;
-                --(*this);
+                ++(*this);
                 return (tmp);
             }
             my_reverse_iterator& operator+=(difference_type n)
@@ -338,13 +338,13 @@ namespace ft
             }
             my_reverse_iterator &operator--()
             {
-                _iter++;
+                ++_iter;
                 return (*this);
             }
             my_reverse_iterator operator--(int)
             {
                 my_reverse_iterator tmp = this;
-                ++(*this);
+                --(*this);
                 return (tmp);
             }
             my_reverse_iterator& operator-= (difference_type n)
@@ -358,7 +358,7 @@ namespace ft
             }
             reference operator[] (difference_type n) const
             {
-                return *(_iter - n - 1);
+                return *(_iter.base() - n - 1);/*WHAT THE FUCK IS -1 DOIUNG HERE*/
             }
         ~my_reverse_iterator()
         {return;}
@@ -402,12 +402,12 @@ namespace ft
     template <class Iterator>
     my_reverse_iterator<Iterator> operator+ (typename my_reverse_iterator<Iterator>::difference_type n, const my_reverse_iterator<Iterator>& rev_it)
     {
-        return  my_reverse_iterator<Iterator>(rev_it + n);
+        return  my_reverse_iterator<Iterator>(rev_it.base() - n + 1);/*that + 1 has no job there*/
     }
     template <class Iterator>
     typename my_reverse_iterator<Iterator>::difference_type operator- (const my_reverse_iterator<Iterator>& lhs, const my_reverse_iterator<Iterator>& rhs)
     {
-        return rhs.base() - lhs.base();
+        return  lhs.base() - rhs.base();
     }
     //////////////////////////////
     /////////vector///////////////
@@ -417,19 +417,19 @@ namespace ft
     {
         public:
             typedef T                                                   value_type;
-            typedef size_t                                              size_type;
-            typedef T*                                                  pointer_type;
-            typedef T&                                                  reference_type;
             typedef Alloc                                               allocator_type;
-            typedef ptrdiff_t                                           difference_type;
-            typedef typename ft::my_iterator<T*>                        iterator;
-            typedef typename ft::my_iterator<const T*>                  const_iterator;
-            typedef typename ft::my_reverse_iterator<iterator>          reverse_iterator;
-            typedef typename ft::my_reverse_iterator<const iterator>    const_reverse_iterator;
             typedef typename allocator_type::reference                  reference;
             typedef typename allocator_type::const_reference            const_reference;
             typedef typename allocator_type::pointer                    pointer;
             typedef typename allocator_type::const_pointer              const_pointer;
+            typedef typename ft::my_iterator<T*>                        iterator;
+            typedef typename ft::my_iterator<const T*>                  const_iterator;
+            typedef typename ft::my_reverse_iterator<iterator>          reverse_iterator;
+            typedef typename ft::my_reverse_iterator<const iterator>    const_reverse_iterator;
+            typedef ptrdiff_t                                           difference_type;
+            typedef size_t                                              size_type;
+            typedef T*                                                  pointer_type;
+            // typedef T&                                                  reference_type;
 
 
         explicit vector(const allocator_type &alloc = allocator_type()) : u(alloc)
@@ -467,6 +467,11 @@ namespace ft
         }
         vector &operator=(vector const &rhs)
         {
+            // clear();
+            // if (this->data > 0)
+            // {
+            //     u.deallocate(data, _capacity);
+            // }
             this->data = u.allocate(rhs._capacity);
             for (int i = 0; i < rhs._size; i++)
             {
@@ -503,11 +508,11 @@ namespace ft
         }
         reverse_iterator rend()
         {
-            return (reverse_iterator(begin()));/*VERY DEBATABLE*/
+            return (reverse_iterator(begin()));
         }
         const_reverse_iterator rend() const
         {
-            return (const_reverse_iterator(begin()));/*SAME*/
+            return (const_reverse_iterator(begin()));
         }
         size_type size() const
         {
@@ -522,26 +527,36 @@ namespace ft
         {
             if (n < _size)
             {
-                for (; n < _size; n++)
+                for (int i = n; i < _size; i++)
                 {
-                    u.destroy(data + n);
+                    u.destroy(data + i);
                 }  
             }
-            if (n > _size)
+            else if (n > _size)
             {
-                pointer_type tmp = u.allocate(n);
-                for (int i = 0; i < _size; i++)
+                if (n > _capacity)
                 {
-                    tmp[i] = data[i];
+                    pointer_type tmp = u.allocate(n);
+                    for (int i = 0; i < _size; i++)
+                    {
+                        tmp[i] = data[i];
+                    }
+                    for (int i = _size ; i < n; i++)
+                    {
+                        tmp[i] = val;
+                    }
+                    if (_capacity)
+                        u.deallocate(data, _capacity);
+                    data = tmp;
+                    _capacity = n;
                 }
-                for (int i = _size ; i < n; i++)
+                else
                 {
-                    tmp[i] = val;
+                    for (int i = _size; i < n; i++)
+                    {
+                        data[i] = val;
+                    }
                 }
-                if (_capacity)
-                    u.deallocate(data, _capacity);
-                data = tmp;
-                _capacity = n;
             }
             _size = n;
         }
@@ -557,7 +572,8 @@ namespace ft
         {
             if (n > max_size())
                 throw std::length_error("something");
-            if (n > _capacity)
+            size_type cap = _capacity;
+            if (n > cap)
             {
                 pointer_type tmp = u.allocate(n);
                 for (int i = 0; i < _size; i++)
@@ -583,7 +599,8 @@ namespace ft
         }
         reference at (size_type n)
         {
-            if (n < 0 || n >= _size)
+            size_type sz = _size;
+            if (n < 0 || n >= sz)
                 throw std::out_of_range("Out of range");
             return (data[n]);
         }
@@ -617,7 +634,7 @@ namespace ft
             {
                 u.destroy(data + i);
             }
-            if (_size != len)
+            if (_capacity < len)
                 resize(len);
             for (int i = 0; first != last; first++)
             {
@@ -642,13 +659,9 @@ namespace ft
             if (_size + 1 > _capacity)
             {
                 if (_capacity == 0)
-                {
                     reserve(1);
-                }
                 else
-                {
                     reserve(_capacity * 2);
-                }
             }
             _size++;
             data[_size - 1] = val;
@@ -665,10 +678,10 @@ namespace ft
         {
             iterator start = this->begin();
             iterator last = this->end();
-            int len = dis(this->begin(), this->end());
+            int len = /*dis(this->begin(), this->end())*/_size;
             int number_elements_after = dis(position, this->end());
-            _size++;
-            if (_size + 1 >= _capacity)
+            // _size++;
+            if (_size + 1 > _capacity)
             {
                 if (_capacity == 0)
                     reserve(1);
@@ -681,6 +694,7 @@ namespace ft
                 len--;
             }
             data[len] = val;
+            _size++;
             return (iterator(&data[len]));
         }
         void insert (iterator position, size_type n, const value_type& val)//WORKING
@@ -689,7 +703,7 @@ namespace ft
             if (_size + n > _capacity)
                 reserve(_size + n);
             _size = _size + n;
-            int distance_vector = dis(this->begin(), this->end());
+            int distance_vector = _size;
             for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - n];
@@ -715,7 +729,7 @@ namespace ft
                     reserve(_capacity * 2);
             }
             _size += small_vec_len;
-            int distance_vector = dis(this->begin(), this->end());
+            int distance_vector = _size;
             for (; number_of_elements_after >= 0; number_of_elements_after--)
             {
                 data[distance_vector] = data[distance_vector - small_vec_len];
@@ -755,17 +769,22 @@ namespace ft
         }
         void swap (vector& x)
         {
-            vector tmp(x);
+            vector tmp = x;
             x = *this;
             *this = tmp;
         }
         void clear()
         {
-            for (; _size >= 0; _size--)
+            if (_size)
             {
-                u.destroy(data + _size);
+                for (int i = _size; i >= 0; i--)
+                {
+                    u.destroy(data + i);
+                }
+                u.deallocate(data, _capacity);
             }
             _size = 0;
+            _capacity = 0;
         }
         allocator_type get_allocator() const
         {
@@ -774,7 +793,7 @@ namespace ft
         }
         ~vector()
         { 
-            // this->clear();
+            clear();
             // u.deallocate(data, _size);
 
         };

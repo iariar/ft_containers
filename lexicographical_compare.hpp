@@ -11,10 +11,10 @@ namespace ft
 	{
 		while (first1 != last1)
 		{
-			if (first2 != last2 || *first1 > *first2)
-				return(0);
-			else if (*first1 < *first2)
+			if (*first1 < *first2)
 				return (1);
+			else if (first2 == last2 || *first1 > *first2)
+				return(0);
 			first1++;
 			first2++;   
 		}
@@ -25,10 +25,10 @@ namespace ft
 	{
 		while (first1 != last1)
 		{
-			if (first2 != last2 || !comp(*first1, *first2))
-				return(0);                                              ///////something wrong//////////
-			else if (comp(*first1, *first2))
+			if (comp(*first1, *first2))
 				return (1);
+			else if (first2 == last2 || !comp(*first1, *first2))
+				return(0);                                              ///////something wrong//////////
 			first1++;
 			first2++;   
 		}

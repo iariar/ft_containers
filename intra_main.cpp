@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <deque>
-
 #if 0 //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
@@ -46,109 +45,67 @@ public:
 };
 
 int main() {
-	// if (argc != 2)
-	// {
-	// 	std::cerr << "Usage: ./test seed" << std::endl;
-	// 	std::cerr << "Provide a seed please" << std::endl;
-	// 	std::cerr << "Count value:" << COUNT << std::endl;
-	// 	return 1;
-	// }
 	const int seed = 1;
 	srand(seed);
 
-	// ft::vector<std::string> vector_str;
-	// ft::vector<int> vector_int;
-	// // ft::stack<int> stack_int;
-	// ft::vector<Buffer> vector_buffer;
-	// // ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
+	ft::vector<std::string> vector_str;
+	ft::vector<int> vector_int;
+	ft::stack<int> stack_int;
+	ft::vector<Buffer> vector_buffer;
+	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	ft::map<int, int> map_int;
 
-	// for (int i = 0; i < COUNT; i++)
-	// {
-	// 	// std::cout << "before" << std::endl;
-	// 	vector_buffer.push_back(Buffer());
-	// 	// std::cout << "after" << std::endl;
-	// }
-
-	// for (int i = 0; i < COUNT; i++)
-	// {
-	// 	// std::cout << "here2\n";
-	// 	const int idx = rand() % COUNT;
-	// 	vector_buffer[idx].idx = 5;
-	// }
-	// ft::vector<Buffer>().swap(vector_buffer);
-
-	// try
-	// {
-	// 	for (int i = 0; i < COUNT; i++)
-	// 	{
-	// 		// std::cout << "here3\n";
-	// 		const int idx = rand() % COUNT;
-	// 		vector_buffer.at(idx);
-	// 		std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-	// 	}
-	// }
-	// catch(const std::exception& e)
-	// {
-	// 	//NORMAL ! :P
-	// }
-	for (int i = 1; i < 10; ++i)
+	for (int i = 0; i < COUNT; i++)
 	{
-		// std::cout << i << std::endl;
-		map_int.insert(ft::make_pair(i, rand()));
+		vector_buffer.push_back(Buffer());
 	}
-	map_int.lower_bound(1);
-	for (ft::map<int,int>::iterator it=map_int.begin(); it != map_int.end(); ++it)
-            std::cout << "|" << it->first<< "|" << " => " << it->second << '\n';
-	// for (int i = 1; i < COUNT; ++i)
-	// {
-	// // 	// std::cout << i << std::endl;
-	// 	map_int.erase(i);
-	// }
-	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); ++it)
-	// {
-	// 	std::cout << it->first << std::endl;
-	// }
-	// map_int.clear();
-	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
-	// {
-	// std::cout << "je" <<std::endl;
-	// 	std::cout << it->first << std::endl;
-	// }
+
+	for (int i = 0; i < COUNT; i++)
+	{
+		const int idx = rand() % COUNT;
+		vector_buffer[idx].idx = 5;
+	}
+	ft::vector<Buffer>().swap(vector_buffer);
+
+	try
+	{
+		for (int i = 0; i < COUNT; i++)
+		{
+			const int idx = rand() % COUNT;
+			vector_buffer.at(idx);
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+		}
+	}
+	catch(const std::exception& e)
+	{
+		//NORMAL ! :P
+	}
 	
-	// map_int.insert(ft::make_pair(1, rand()));
-	// map_int.insert(ft::make_pair(3, rand()));
-	// map_int.insert(ft::make_pair(2, rand()));
-	// for (ft::map<int, int>::iterator it = map_int.begin(); it != map_int.end(); it++)
-	// {
+	for (int i = 0; i < COUNT; ++i)
+	{
+		map_int.insert(ft::make_pair(rand(), rand()));
+	}
 
-	// 	std::cout << it->first << std::endl;
-	// }
-	// map_int._tree.prettyPrint();
-	// map_int._tree.prettyPrint();
-	// int sum = 0;
-	// for (int i = 0; i < 10000; i++)
-	// {
-	// 	// std::cout << "here5\n";
-	// 	int access = rand();
-	// 	sum += map_int[access];
-	// }
-	// std::cout << "should be constant with the same seed: " << sum << std::endl;
+	int sum = 0;
+	for (int i = 0; i < 10000; i++)
+	{
+		int access = rand();
+		sum += map_int[access];
+	}
 
-	// {
-		// ft::map<int, int> copy = map_int;
-	// }
-	// MutantStack<char> iterable_stack;
-	// for (char letter = 'a'; letter <= 'z'; letter++)
-	// {
-	// 	// std::cout << "here6\n";
-	// 	 iterable_stack.push(letter);
-	// }
-	// for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-	// {
-	// 	// std::cout << "here7\n";
-	// 	std::cout << *it;
-	// }
-	// std::cout << std::endl;
+	{
+		ft::map<int, int> copy = map_int;
+		std::cout << "should be constant with the same seed: " << sum << std::endl;
+		copy.clear();
+	}
+	map_int.clear();
+	MutantStack<char> iterable_stack;
+	for (char letter = 'a'; letter <= 'z'; letter++)
+		iterable_stack.push(letter);
+	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
+	{
+		std::cout << *it;
+	}
+	std::cout << std::endl;
 	return (0);
 }
