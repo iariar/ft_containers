@@ -1,6 +1,8 @@
 #ifndef _STACk_H__
 #define _STACk_H__
 
+#include "vector.hpp"
+
 namespace ft
 {
 	template <class T, class Container = ft::vector<T> >
@@ -10,7 +12,19 @@ namespace ft
 			typedef Container	container_type;
 			typedef T			value_type;
 			typedef size_t		size_type;
-			explicit stack (const container_type& vec = container_type()) : c(vec) {};
+			template <class type, class Con>
+  			friend bool operator== (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			template <class type, class Con>
+  			friend bool operator!= (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			template <class type, class Con>
+  			friend bool operator< (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			template <class type, class Con>
+  			friend bool operator<= (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			template <class type, class Con>
+  			friend bool operator> (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			template <class type, class Con>
+  			friend bool operator>= (const stack<type,Con>& lhs, const stack<type,Con>& rhs);
+			explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {};
 			bool empty() const
 			{
 				return (c.empty());
@@ -20,6 +34,10 @@ namespace ft
 				return (c.size());
 			}
 			value_type& top()
+			{
+				return (c.back());
+			}
+			const value_type& top() const
 			{
 				return (c.back());
 			}
@@ -33,7 +51,6 @@ namespace ft
 			}
 		protected:
 			container_type c;
-			// int _size;
 	};
 	template <class T, class Container>
   	bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
@@ -65,6 +82,7 @@ namespace ft
 	{
 		return (lhs.c >= rhs.c);
 	}
+	
 }
 
 #endif
